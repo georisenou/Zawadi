@@ -1,0 +1,683 @@
+{% extends 'client_app/_base.html' %}
+
+{% block content %}
+<div class="pt-14 mh-screen">
+    <div class="w-full ah-screen md:h-screen"
+        style=" background-size: cover; background-position: top center; background-image: url('/static/img/backe.jpg'); ">
+        <div class="py-4 px-2 text-2xl text-white text-center font-semibold md:text-3xl ">
+            Dites-nous ce que vous prévoyez acheter et nous vous enverrons les meilleurs vendeurs
+        </div>
+        <div class="flex flex-col items-center justify-center px-6 py-6 md:py-0 mx-auto md:h-screen lg:py-0">
+            <div
+                class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                <div v-if="show_thank" class="flex p-4 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800"
+                    role="alert">
+                    <span class="material-icons " style="position: relative; bottom: 0.2rem; right: 0.1rem;" >
+                        checklist
+                    </span>
+                    <span class="sr-only">Info</span>
+                    <div>
+                        <span class="font-medium">Votre demande a bien été pris en compte</span>
+                    </div>
+                </div>
+                <div class="pb-6 px-6 space-y-4 md:space-y-6 sm:p-8">
+                    <form class="space-y-4 md:space-y-6" {% if True %} @submit.prevent="activeMod()" {% else %}
+                        action="" method="POST" {% endif %}>
+                        {% csrf_token %}
+                        <div>
+                            <label for="small"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Choisissez la
+                                catégorie </label>
+                            <select id="countries" required name="category"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                {% for c in categories %}
+                                <option {% if forloop.first %} selected {% endif %} value="{{c.pk}}">{{c.name}}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div>
+                            <label for="countries_multiple"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Sélectionnez les
+                                prooduits que vous désirez</label>
+                            {% for c in categories %}
+                            <select v-if="cat == '{{c.pk}}'" multiple id="countries_multiple" name="subs[]" required
+                                v-model="subs"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                {% for s in c.subs.all %}
+                                <option>{{s.name}}</option>
+                                {% endfor %}
+                            </select>
+                            {% endfor %}
+                        </div>
+
+                        <div>
+                            <label for="small"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Choisissez
+                                l'urgence du besoin</label>
+                            <select id="small" v-model="emer" required name="emer"
+                                class="block p-2 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-rose-500 focus:border-rose-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-rose-500 dark:focus:border-rose-500">
+
+                                <option value="Pas urgent">Pas urgent</option>
+                                <option value="Peu urgent">Peu urgent</option>
+                                <option value="Urgent">Urgent</option>
+                            </select>
+                        </div>
+                        <div v-if="subs.length">
+                            <div v-for="s in subs" :key="s"
+                                class="inline-block px-2 py-1 mr-1 my-1 text-sm bg-rose-100 text-rose-600 rounded">
+                                ${s}
+                            </div>
+                        </div>
+                        <div v-if="!sending">
+                            <button type="submit"
+                                class="w-full text-white bg-rose-700 hover:bg-rose-800 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-rose-600 dark:hover:bg-rose-700 dark:focus:ring-rose-800">Enregistrer</button>
+                        </div>
+                        <div v-else>
+                            <button type="button"
+                                class="py-2.5 px-5 mr-2 mb-2 w-full text-center text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-rose-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                                <div class="flex justify-around items-center">
+                                    <div>
+                                        <span>
+                                            <div role="status">
+                                                <svg class="inline mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600"
+                                                    viewBox="0 0 100 101" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                                        fill="currentColor" />
+                                                    <path
+                                                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                                        fill="currentFill" />
+                                                </svg>
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="py-3 flex justify-around ">
+            <button type="button" data-modal-toggle="all_list"
+                class="py-2.5 px-5 mr-2 mb-2  text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-rose-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                <div class="flex items-center">
+                    <div class="mr-2">
+                        <span class="material-icons" style="position: relative; top: 0.1rem;">list</span>
+                    </div>
+                    <div>
+                        <span>Voir mes dernières demandes</span>
+                    </div>
+                </div>
+
+            </button>
+        </div>
+
+        <div class="py-4 px-5">
+            <div class="text-2xl ">
+                A quoi sert <span class="font-semibold">Zawadi</span> ?
+            </div>
+            <div class="my-1 w-8 h-1 rounded-full bg-rose-600">
+
+            </div>
+            <div class="py-3 text-sm">
+                Zawadi a été conçu pour réduire totalement les tracas de recherche de produits ou services que ce soit
+                en présentiel avec les vendeurs ou sur un site de vente. Grâce à Zawadi l'effort pour trouver le produit
+                qui vous convient est totalement éliminé.
+            </div>
+        </div>
+        <div class="py-4 px-5">
+            <div class="text-2xl ">
+                Comment <span class="font-semibold">acheter</span> alors grâce à Zawadi ?
+            </div>
+            <div class="my-1 w-8 h-1 rounded-full bg-rose-600">
+
+            </div>
+            <div class="py-3 text-sm">
+                C'est simple. Lorsque vous voulez acheter un produit ou un service ou que vous prévoyez juste en acheter (sans disposez
+                de la totalité de l'argent), vous n'avez qu'a remplir
+                le petit formulaire en haut et enregistrer la requête d'achat. Très vite les
+                meilleurs vendeurs de votre localité vont vous contacter (par Whatsapp, appel ou Email) et vous
+                présenter des produits de qualité. Il ne vous reste qu'à choisir.
+            </div>
+        </div>
+        <div class="py-4 px-5">
+            <div class="text-2xl ">
+                Puis-je enregistrer des requêtes <span class="font-semibold">d'autres personnes</span> ?
+            </div>
+            <div class="my-1 w-8 h-1 rounded-full bg-rose-600">
+
+            </div>
+            <div class="py-3 text-sm">
+                Oui, vous pouvez enregistrer les requetes d'autres personnes que vous sur Zawadi, la récompense est
+                toujours prise en compte pour vous. Cependant assurez vous de rediriger le vendeur vers la personne
+                concernée.
+            </div>
+        </div>
+        <div class="py-4 px-5">
+            <div class="text-xl ">
+                Dois-je nécéssairement avoir la <span class="font-semibold"> totalité de l'argent</span> du produit
+                avant d'enregistrer une requete ?
+            </div>
+            <div class="my-1 w-8 h-1 rounded-full bg-rose-600">
+
+            </div>
+            <div class="py-3 text-sm">
+                Non, les vendeurs sur Zawadi comprennent que le besoin de l'achat peut ne pas être urgent et donc que
+                vous ne disposez pas forcément de la totalité de l'argent. Vous constituez alors juste un acheteur
+                potentiel pour eux.
+            </div>
+        </div>
+        <div class="py-4 px-5">
+            <div class="text-2xl ">
+                Comment gagner la <span class="font-semibold">récompense du jour</span> ?
+            </div>
+            <div class="my-1 w-8 h-1 rounded-full bg-rose-600">
+
+            </div>
+            <div class="py-3 text-sm">
+                Chaque jour Zawadi accorde au meilleur acheteur du jour une récompense qui peut aller jusqu'à <span
+                    class="text-rose-500">50.000 XOF</span>. Le meilleur acheteur du jour est choisi en fonction du
+                nombre de requête d'achat enregistrées et de l'appréciation des vendeurs. Donc pour gagner la récompense
+                chaque jour il faut recevoir une bonne appréciation des vendeurs envoyés par Zawadi ou enregistrer le
+                maximum de requête dans la journée.
+            </div>
+        </div>
+        <div class="py-4 px-5">
+            <div class="text-2xl ">
+                Avis et Témoignages.
+            </div>
+            <div class="my-1 w-8 h-1 rounded-full bg-rose-600">
+
+            </div>
+            <div class="py-3 text-sm">
+                {% if feeds.count %}
+                <div class="grid lg:grid-cols-4 md:grid-cols-3 space-y-5 ">
+                    {% for feed in feeds %}
+                    <div class="pb-2">
+                        <div class="flex items-center  ">
+                            <div class="pr-2 ">
+                                <div :style="{
+                        width: '3.5rem',
+                        height: '3.5rem',
+                        'border-radius': '100%',
+                        'background-size': 'cover',
+                        'background-position': 'top center',
+                        'background-image': `url('{{feed.get_picture}}')`,
+                        
+                                }"></div>
+                            </div>
+                            <div>
+                                <div class="font-semibold ">
+                                    {{feed.user}}
+                                </div>
+                                <div class="text-gray-700">
+                                    {{feed.seller}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-1 text-sm">
+                            {{feed.text|safe}}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="w-full bg-gray-100 text-center pt-4 pb-16">
+        Copyright &copy; 2022 <br>
+        All Right Reserved <a class="text-rose-500" href="#">Elife Global</a>
+    </div>
+
+</div>
+
+</div>
+
+<!-- Main AllList -->
+<div id="all_list" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full justify-center items-center">
+    <div class="relative p-4 w-full max-w-md h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button type="button"
+                class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                data-modal-toggle="all_list">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="py-6 px-6 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Récentes demandes</h3>
+                {% if not count %}
+                <div class="py-12 flex justify-around">
+                    <img src="/static/img/empty.svg" />
+                </div>
+                <div class="p-6 text-sm font-medium text-center">
+                    Aucune demande enregistrée pour le moment.
+                </div>
+                {% else %}
+
+                <div class="overflow-x-auto relative shadow-md sm:rounded-lg py-4">
+                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="py-3 px-6">
+                                    Produits demandés
+                                </th>
+                                <th scope="col" class="py-3 px-6">
+                                    <div class="flex items-center">
+
+                                    </div>
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for d in dems %}
+                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                <th scope="row"
+                                    class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {{d.subs.name}}
+                                </th>
+                                <td class="py-4 px-6">
+                                    {{d.get_duration}}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal User -->
+<button style="display: none;" id="myBut"
+    class="block text-white bg-rose-700 hover:bg-rose-800 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-rose-600 dark:hover:bg-rose-700 dark:focus:ring-rose-800"
+    type="button" data-modal-toggle="authentication-modal">
+    Toggle modal
+</button>
+
+<!-- Main User -->
+<div id="authentication-modal" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full justify-center items-center">
+    <div class="relative p-4 w-full max-w-md h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button type="button" id="closeModUs"
+                class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                data-modal-toggle="authentication-modal">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="py-6 px-6 lg:px-8">
+                <h3 class="mb-4  font-medium text-gray-900 dark:text-white">Nouveau sur Zawadi! Aidez nos vendeurs à
+                    vous contacter </h3>
+                <form class="space-y-6" @submit.prevent="send_dem()">
+                    <div class="grid grid-cols-2">
+                        <div class="mr-2">
+
+                            <input type="text" id="first_name" name="first_name" v-model="first_name"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-rose-500 focus:border-rose-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-rose-500 dark:focus:border-rose-500"
+                                placeholder="Nom" required>
+                        </div>
+                        <div>
+
+                            <input type="text" id="last_name" name="last_name" v-model="last_name"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-rose-500 focus:border-rose-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-rose-500 dark:focus:border-rose-500"
+                                placeholder="Prénom" required>
+                        </div>
+                    </div>
+                    <div>
+                        <input type="email" id="email" name="email" v-model="email"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="Email" required>
+                    </div>
+                    <div>
+                        <div class="mb-1">
+                            Pays et villes fréquentés
+                        </div>
+                        <div class="grid grid-cols-2">
+                            <div class="mr-2">
+                                <select id="coutries" name="coutry" required v-model="country"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <option value="bj">Benin</option>
+                                    <option value="tg">Togo</option>
+                                    <option value="ci">Côte D'Ivoire</option>
+                                </select>
+                            </div>
+                            <div>
+                                <div v-for="c in countries" :key="c">
+                                    <select name="towns[]" v-if="c == country" required multiple id="coutries_multiple"
+                                        v-model="town"
+                                        class="bg-gray-50 border border-gray-300 t     ext-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                        <option v-for="t in towns[c]" :value="t"> ${t} </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative z-0">
+                        <input id="phone" type="tel" name="phone" v-model="numb"
+                            class="block py-3 px-0 mb-2 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-purple-500 focus:outline-none focus:ring-0 focus:border-purple-600 peer" />
+                    </div>
+                    <div v-show="is_what" class="flex items-center">
+                        <input id="checked-checkbox" v-model="is_what" type="checkbox"
+                            class="w-4 h-4 text-rose-600 bg-gray-100 rounded border-gray-300 focus:ring-rose-500 dark:focus:ring-rose-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="checked-checkbox"
+                            class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">C'est le même que mon
+                            numéro
+                            Whatsapp</label>
+                    </div>
+                    <div v-show="!is_what">
+                        <div class="mb-1">Entrez le numéro whatsapp</div>
+                        <div class="relative z-0">
+                            <input id="phonewhat" type="tel" name="phonewhat" v-model="whatsapp"
+                                class="block py-3 px-0 mb-2 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-purple-500 focus:outline-none focus:ring-0 focus:border-purple-600 peer" />
+                        </div>
+                    </div>
+                    <button type="submit"
+                        class="w-full text-white bg-rose-700 hover:bg-rose-800 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-rose-600 dark:hover:bg-rose-700 dark:focus:ring-rose-800">Confirmer</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="myTo" v-if="false" style="position: absolute; top: 8vh; left: 3vw;">
+    <div id="toast-success"
+        class="flex items-center p-4 mb-4 w-full max-w-xs text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
+        role="alert">
+        <div
+            class="inline-flex flex-shrink-0 justify-center items-center w-8 h-8 text-rose-500 bg-rose-100 rounded-lg dark:bg-rose-800 dark:text-rose-200">
+            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"></path>
+            </svg>
+            <span class="sr-only">Check icon</span>
+        </div>
+        <div class="ml-3 text-sm font-normal">Votre requetes a été enregistrée avec succes.</div>
+        <button type="button"
+            class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+            data-dismiss-target="#toast-success" aria-label="Close">
+            <span class="sr-only">Close</span>
+            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clip-rule="evenodd"></path>
+            </svg>
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="/static/axios.min.js"></script>
+<script>
+   
+    let baseUR = window.location.host
+    let prot = window.location.protocol
+    axios.defaults.baseURL = prot + "//" + baseUR + "/"
+    // sleep time expects milliseconds
+    function sleep(time) {
+        return new Promise((resolve) => setTimeout(resolve, time));
+    }
+    function getIp(callback) {
+        fetch('https://ipinfo.io/json?token=d737ce5f6899f5', { headers: { 'Accept': 'application/json' } })
+            .then((resp) => resp.json())
+            .catch(() => {
+                return {
+                    country: 'bj',
+                };
+            })
+            .then((resp) => { callback(resp.country) });
+    }
+    const { createApp } = Vue
+    const app = createApp({
+        data() {
+            let phonein = null
+            // Usage!
+            sleep(500).then(() => {
+
+                window.phoneInputField = document.getElementById("phone")
+                window.phoneInput = window.intlTelInput(phoneInputField, {
+                    preferredCountries: ["bj", "tg", "ci"],
+                    initialCountry: "auto",
+                    geoIpLookup: getIp,
+                    utilsScript:
+                        "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+                });
+                window.phoneInputField_w = document.getElementById("phonewhat")
+                window.phoneInput_w = window.intlTelInput(phoneInputField_w, {
+                    preferredCountries: ["bj", "tg", "ci"],
+                    initialCountry: "auto",
+                    geoIpLookup: getIp,
+                    utilsScript:
+                        "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+                });
+            });
+
+            return {
+                user: '{% if not has_user %}not{% endif %}',
+                phoneInput: 0,
+                is_what: true,
+                num: "",
+                num_err: [],
+                can_show_valid: true,
+                country: 'bj',
+                numb: "",
+                cat: "{{f}}",
+                subs: [],
+                emer: "Urgent",
+                is_registered: false,
+                first_name: "",
+                last_name: "",
+                email: "",
+                town: [],
+                countries: ['bj', 'tg', 'ci'],
+                number: "",
+                whatsapp: "",
+                sending: false,
+                show_thank: false,
+                towns: {
+                    'bj': [
+                        'Cotonou',
+                        'Porto-Novo',
+                        'Parakou',
+                        'Abomey',
+                        'Djougou',
+                        'Bohicon',
+                        'Kandi',
+                        'Natitingou',
+                        'Ouidah',
+                        'Lokossa',
+                        'Abomey-Calavi'
+                    ],
+                    'tg': [
+                        'Lomé',
+                        'Sokodé',
+                        'Kara',
+                        'Kpalimé',
+                        'Atakpamé',
+                        'Bassar',
+                        'Tsévié',
+                        'Aného',
+                        'Mango',
+                        'Dapaong',
+                        'Tchamba',
+                        'Niamtougou'
+                    ],
+                    'ci': [
+                        'Abidjan',
+                        'Bouaké',
+                        'Daloa',
+                        'Yamoussoukro',
+                        'San-Pédro',
+                        'Divo',
+                        'Korhogo',
+                        'Anyama',
+                        'Abengourou',
+                        'Man',
+                        'Gagnoa',
+                        'Soubré',
+                        'Agboville',
+                        'Dabou',
+                        'Grand-Bassam',
+                        'Bouaflé',
+                        'Issia',
+                        'Sinfra',
+                        'Katiola'
+                    ]
+                },
+            }
+        },
+        mounted() {
+            const end_load = () => {
+        document.getElementById('global_load').style.display = 'none'
+        document.getElementById('app').style.display = 'block'
+    }
+    end_load()
+            let th = this
+            setTimeout(() => {
+                getIp((country) => { th.country = country })
+            }, 500)
+            document.getElementById('countries').addEventListener('change', (e) => {
+                th.cat = e.target.value
+            })
+            const customers_info = localStorage.getItem('customers_info')
+            if (customers_info) {
+                let my_info = JSON.parse(customers_info)
+                th.first_name = my_info['first_name']
+                th.last_name = my_info['last_name']
+                th.email = my_info['email']
+                th.town = my_info['town']
+                th.country = my_info['country']
+                th.whatsapp = my_info['whatsapp']
+                th.number = my_info['number']
+                th.is_registered = my_info['is_registered']
+            }
+        },
+        methods: {
+            activeMod() {
+                let th = this
+               
+                if (!th.is_registered && (th.user == 'not')) { document.getElementById('myBut').click() }
+                else { th.send_dem() }
+            },
+            send_dem() {
+                let th = this
+                th.sending = true
+                if(!th.is_registered && (th.user == 'not')) document.getElementById('closeModUs').click()
+                const form = new FormData()
+                form.append('cat', th.cat)
+                form.append('subs', JSON.stringify(th.subs))
+                form.append('emer', th.emer)
+                if (th.user == 'not') {
+                    th.checkNumber()
+                    if (!th.is_what) {
+                        th.checkNumber_w()
+                    } else {
+                        th.whatsapp = th.number
+                    }
+                    form.append('first_name', th.first_name)
+                    form.append('last_name', th.last_name)
+                    form.append('email', th.email)
+                    form.append('country', th.country)
+                    form.append('town', JSON.stringify(th.town))
+                    form.append('number', th.number)
+                    form.append('whatsapp', th.whatsapp)
+                }
+                axios({
+                    url: 'api/demand/',
+                    method: "POST",
+                    data: form,
+                    headers: {
+                        "accept": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    },
+                }).then(resp => {
+                    if (resp.data['done']) {
+                        th.sending = false
+                        th.show_thank = true
+                        setTimeout(() => {
+                            th.show_thank = false
+                            window.location.href = "/customers"
+                        }, 5000)
+                    }
+                    localStorage.setItem('customers_info', JSON.stringify({
+                        first_name: th.first_name,
+                        last_name: th.last_name,
+                        email: th.email,
+                        country: th.country,
+                        town: th.town,
+                        number: th.number,
+                        whatsapp: th.whatsapp
+                    }))
+                }).catch(err => {
+                    console.log(err);
+                })
+            },
+            showPhone() {
+                if (this.phoneInput) {
+                    return true
+                } else {
+                    this.phoneInput = initphone()
+                    this.showPhone()
+                }
+            },
+            checkNumber() {
+                this.can_show_valid = true
+                this.num_err = []
+                if (!window.phoneInput.isValidNumber()) {
+                    this.can_show_valid = false
+                    setTimeout(() => {
+                        this.can_show_valid = true
+
+                    }, 4000)
+                } else {
+                    let num = window.phoneInput.getNumber();
+                    this.number = num
+                }
+            },
+            checkNumber_w() {
+                this.can_show_valid = true
+                this.num_err = []
+                if (!window.phoneInput_w.isValidNumber()) {
+                    this.can_show_valid = false
+                    setTimeout(() => {
+                        this.can_show_valid = true
+                    }, 4000)
+                } else {
+                    let num = window.phoneInput_w.getNumber();
+                    this.whatsapp = num
+                }
+            },
+        },
+        compilerOptions: {
+            delimiters: ["${", "}"]
+        }
+    }).mount('#app')
+</script>
+{% endblock %}

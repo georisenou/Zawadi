@@ -1,0 +1,297 @@
+<!-- templates/index.html -->
+
+{% extends "_base.html" %}
+
+{% block content %}
+<div class=" bg-blue-100 w-full px-4 pb-4" style="min-height: 100vh;">
+    <div class="pt-12 md:hidden text-gray-700 text-center font-semibold " style="font-size: 5vw;">
+         Grâce à Zawadi, recevez continuellement de nouveaux <span class="text-green-600">clients</span>
+    </div>
+    <div class="md:flex md:justify-between md:items-center md:px-4 md:pt-12  ">
+
+        <div class="hidden md:block ">
+            <div class="pt-12 text-gray-700 text-center text-xl font-semibold ">
+                Grâce à Zawadi, recevez continuellement de nouveaux <span class="text-green-600">clients</span>
+            </div>
+            <div class="pt-4 space-y-2">
+                <div>
+                    <span class="material-icons text-green-600">
+                        check
+                    </span> Obtenez jusqu'à 60 clients par semaines
+                </div>
+                <div>
+                    <span class="material-icons text-green-600">
+                        check
+                    </span> Distinguez le dégré d'urgence de l'achat pour le client
+                </div>
+                <div>
+                    <span class="material-icons text-green-600">
+                        check
+                    </span> Evitez des pertes de temps avec des clients interessés par vos produits
+                </div>
+            </div>
+            <div class="pt-8">
+                <button type="button"
+                    class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg  px-5 py-2.5 text-center mr-2 mb-2">Démarrez
+                    aujourd'hui</button>
+            </div>
+        </div>
+        <div class="flex justify-around   md:w-1/2" style="padding-top: 2vh;">
+            <img src="/static/img/home.svg" />
+        </div>
+        <div class=" md:hidden pt-8 space-y-2">
+            <div>
+                <span class="material-icons text-green-600">
+                    check
+                </span> Obtenez jusqu'à 60 clients par semaines
+            </div>
+            <div>
+                <span class="material-icons text-green-600">
+                    check
+                </span> Distinguez le dégré d'urgence de l'achat pour le client
+            </div>
+            <div>
+                <span class="material-icons text-green-600">
+                    check
+                </span> Evitez des pertes de temps avec des clients interessés par vos produits
+            </div>
+            <div class="pt-4">
+                <a type="button" href="/activate"
+                    class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg  px-5 py-2.5 text-center mr-2 mb-2 w-full">Démarrez
+                    aujourd'hui</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="pt-4 px-4" style="min-height: 100vh;">
+    <div class="uppercase text-center text-sm pt-8 ">
+        Nous fournissons toutes les semaines à nos abonnés des listes de clients intéressés par leur produit ou service. 
+    </div>
+    <div class="pt-8 text-center md:text-3xl text-xl uppercase">
+        Utilisé par plus de <span class="font-bold">200 </span> commercants et entreprises.
+    </div>
+    {% if feeds.count %}
+    <div class="pt-8 md:pt-20 flex justify-around px-4 pb-12">
+        <div class="grid lg:grid-cols-4 md:grid-cols-3  gap-4">
+            {% for feed in feeds %}
+            <div class="pb-2">
+                <div class="flex items-center  ">
+                    <div class="pr-2 ">
+                        <div :style="{
+                        width: '3.5rem',
+                        height: '3.5rem',
+                        'border-radius': '100%',
+                        'background-size': 'cover',
+                        'background-position': 'top center',
+                        'background-image': `url('{{feed.get_picture}}')`,
+                        border: '2px solid green',
+                    }"></div>
+                    </div>
+                    <div>
+                        <div class="font-semibold ">
+                            {{feed.user}}
+                        </div>
+                        <div class="text-gray-700">
+                            {{feed.seller}}
+                        </div>
+                    </div>
+                </div>
+                <div class="pt-4 text-sm">
+                    {{feed.text|safe}}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+<div class="mt-2 px-4">
+    <button type="button" @click="actiMod()"
+        class=" w-full text-center text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800">Ajouter
+        votre avis</button>
+</div>
+<div class=" px-4 bg-gray-100 mh-screen " id="howto">
+    <div class="py-6 text-2xl text-gray-700 text-center font-semibold">
+        Comment ça marche ?
+    </div>
+    <div class="pt-4 space-y-2">
+        <div>
+            <span class="material-icons text-green-600" style="position: relative; top: 0.4rem;">
+                looks_one
+            </span> Creez votre compte sur Zawadi et chosissez l'offre qui vous convient 
+        </div>
+        <div>
+            <span class="material-icons text-green-600" style="position: relative; top: 0.4rem;">
+                looks_two
+            </span> Choississez les catégories de produits que vous vendez.
+        </div>
+        <div>
+            <span class="material-icons text-green-600" style="position: relative; top: 0.4rem;">
+                looks_3
+            </span> Lancez la recherche constante de clients et Zawadi mettra a jour au cours de la semaine une
+            liste de clients intéressés par vos produits.
+        </div>
+        <div>
+            <span class="material-icons text-green-600" style="position: relative; top: 0.4rem;">
+                looks_4
+            </span> Observez pendant la semaine les clients interessés ajoutés a votre liste et contactez-les.
+        </div>
+        <div>
+            <span class="material-icons text-green-600" style="position: relative; top: 0.4rem;">
+                looks_5
+            </span> Apres ventes ou discussions avec le clients revenez sur la plateforme donner votre appréciation des
+            clients.
+        </div>
+    </div>
+    <div class="py-3 text-sm">
+        <span class="material-icons text-green-500" style="position: relative; top: 0.39rem;">
+            chevron_right
+        </span> Les clients disponibles sur les listes de <span class="text-green-600"> Zawadi</span> sont déjà
+        interessés par le type de produit et veulent l'acheter. Il ne vous reste plus qu'à les présenter les produits dont vous disposez. Cependant le degré d'urgence peut varier d'un client a un
+        autre. Zawadi se charge de vous le faire savoir.
+    </div>
+    <div class="py-3 text-sm">
+        <span class="material-icons text-green-500" style="position: relative; top: 0.39rem;">
+            chevron_right
+        </span> La liste de clients est mis à jour au cours de la semaine jusqu'à atteindre la limite définie par
+        votre offre d'abonnement. Cependant aucune régularité n'est garantit, cela voudrait dire que vous pouvez
+        avoir peu de clients dans la liste les trois premiers jours et voir la liste se remplir rapidement les jours
+        suivants.
+    </div>
+    <div class="py-4 text-center underline text-green-600">
+        <a href="{{contact.value}}">Ecrivez-nous pour en savoir plus</a>
+    </div>
+</div>
+<div class="bg-gray-50">
+    <div class="mx-auto max-w-7xl py-12 px-4 sm:px-6 lg:flex lg:items-center lg:justify-between lg:py-16 lg:px-8">
+        <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            <span class="block">Prêt à vous lancer ?</span>
+            <span class="block text-green-600">Commencez par recevoir des clients</span>
+        </h2>
+        <div class="mt-8 flex lg:mt-0 lg:flex-shrink-0">
+            <div class="inline-flex rounded-md shadow">
+                <a href="/activate"
+                    class="inline-flex items-center justify-center rounded-md border border-transparent bg-green-600 px-5 py-3 text-base font-medium text-white hover:bg-green-700">Commencer</a>
+            </div>
+            <div class="ml-3 inline-flex rounded-md shadow">
+                <a href="{{contact.value}}"
+                    class="inline-flex items-center justify-center rounded-md border border-transparent bg-white px-5 py-3 text-base font-medium text-green-600 hover:bg-green-50">Ecrivez-nous</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal toggle -->
+<button style="display: none;" id="myBut"
+    class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+    type="button" data-modal-toggle="authentication-modal">
+    Toggle modal
+</button>
+
+<!-- Main modal -->
+<div id="authentication-modal" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full justify-center items-center">
+    <div class="relative p-4 w-full max-w-md h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button type="button"
+                class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                data-modal-toggle="authentication-modal">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="py-6 px-6 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Ajouter votre avis</h3>
+                <form class="space-y-6" action="" method="POST">
+                    {% csrf_token %}
+                    <div>
+                        <label for="message"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Votre Texte</label>
+                        <textarea id="message" rows="4" name="text"
+                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="Ecrivez ici..." required></textarea>
+                    </div>
+                    <div>
+                        <button type="submit"
+                            class="relative  text-center inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800">
+                            <span
+                                class="  relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                                Envoyer
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="myTo" style="position: absolute; top: 8vh; left: 3vw;">
+    {% if has_submit %}
+    <div id="toast-success"
+        class="flex items-center p-4 mb-4 w-full max-w-xs text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
+        role="alert">
+        <div
+            class="inline-flex flex-shrink-0 justify-center items-center w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"></path>
+            </svg>
+            <span class="sr-only">Check icon</span>
+        </div>
+        <div class="ml-3 text-sm font-normal">Merci d'avoir soumis votre avis !</div>
+        <button type="button"
+            class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+            data-dismiss-target="#toast-success" aria-label="Close">
+            <span class="sr-only">Close</span>
+            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clip-rule="evenodd"></path>
+            </svg>
+        </button>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock content %}
+
+{% block script %}
+<script>
+    const { createApp } = Vue
+    const app = createApp({
+        data() {
+            return {
+                message: 'Hello Vue!'
+            }
+        },
+        mounted(){
+            const end_load = () => {
+        document.getElementById('global_load').style.display = 'none'
+        document.getElementById('app').style.display = 'block'
+    }
+    end_load()
+        },
+        methods: {
+            actiMod() {
+                document.getElementById('myBut').click()
+            }
+        },
+        compilerOptions: {
+            delimiters: ["${", "}"]
+        }
+    }).mount('#app')
+    setTimeout(() => {
+        document.getElementById('myTo').style.display = "none"
+    }, 3000)
+</script>
+
+{% endblock %}

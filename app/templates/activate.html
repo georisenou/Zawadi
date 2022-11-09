@@ -1,0 +1,823 @@
+<!-- templates/_base.html -->
+
+{% load static %}
+{% load pwa %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% progressive_web_app_meta %}
+    <title>Zawadi | Des clients a tout moment</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="/static/src/3.2.js"></script>
+    <style>
+        .mh-screen {
+            min-height: 100vh;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat'],
+                    },
+                    colors: {
+                        red: {
+                            '50': '#ffebee',
+                            '100': '#ffcdd2',
+                            '200': '#ef9a9a',
+                            '300': '#e57373',
+                            '400': '#ef5350',
+                            '500': '#f44336',
+                            '600': '#e53935',
+                            '700': '#d32f2f',
+                            '800': '#c62828',
+                            '900': '#b71c1c',
+                            'accent-100': '#ff8a80',
+                            'accent-200': '#ff5252',
+                            'accent-400': '#ff1744',
+                            'accent-700': '#d50000',
+                        },
+                        purple: {
+                            50: '#f3e5f5',
+                            100: '#e1bee7',
+                            200: '#ce93d8',
+                            300: '#ba68c8',
+                            400: '#ab47bc',
+                            500: '#9c27b0',
+                            600: '#8e24aa',
+                            700: '#7b1fa2',
+                            800: '#6a1b9a',
+                            900: '#4a148c',
+                            'accent-100': '#ea80fc',
+                            'accent-200': '#e040fb',
+                            'accent-400': '#d500f9',
+                            'accent-700': '#aa00ff',
+                        },
+                        'deep-purple': {
+                            50: '#ede7f6',
+                            100: '#d1c4e9',
+                            200: '#b39ddb',
+                            300: '#9575cd',
+                            400: '#7e57c2',
+                            500: '#673ab7',
+                            600: '#5e35b1',
+                            700: '#512da8',
+                            800: '#4527a0',
+                            900: '#311b92',
+                            'accent-100': '#b388ff',
+                            'accent-200': '#7c4dff',
+                            'accent-400': '#651fff',
+                            'accent-700': '#6200ea',
+                        },
+                        teal: {
+                            50: '#e0f2f1',
+                            100: '#b2dfdb',
+                            200: '#80cbc4',
+                            300: '#4db6ac',
+                            400: '#26a69a',
+                            500: '#009688',
+                            600: '#00897b',
+                            700: '#00796b',
+                            800: '#00695c',
+                            900: '#004d40',
+                            'accent-100': '#a7ffeb',
+                            'accent-200': '#64ffda',
+                            'accent-400': '#1de9b6',
+                            'accent-700': '#00bfa5',
+                        },
+                        indigo: {
+                            50: '#e8eaf6',
+                            100: '#c5cae9',
+                            200: '#9fa8da',
+                            300: '#7986cb',
+                            400: '#5c6bc0',
+                            500: '#3f51b5',
+                            600: '#3949ab',
+                            700: '#303f9f',
+                            800: '#283593',
+                            900: '#1a237e',
+                            'accent-100': '#8c9eff',
+                            'accent-200': '#536dfe',
+                            'accent-400': '#3d5afe',
+                            'accent-700': '#304ffe',
+                        },
+                        pink: {
+                            50: '#fce4ec',
+                            100: '#f8bbd0',
+                            200: '#f48fb1',
+                            300: '#f06292',
+                            400: '#ec407a',
+                            500: '#e91e63',
+                            600: '#d81b60',
+                            700: '#c2185b',
+                            800: '#ad1457',
+                            900: '#880e4f',
+                            'accent-100': '#ff80ab',
+                            'accent-200': '#ff4081',
+                            'accent-400': '#f50057',
+                            'accent-700': '#c51162',
+                        },
+                        blue: {
+                            50: '#e3f2fd',
+                            100: '#bbdefb',
+                            200: '#90caf9',
+                            300: '#64b5f6',
+                            400: '#42a5f5',
+                            500: '#2196f3',
+                            600: '#1e88e5',
+                            700: '#1976d2',
+                            800: '#1565c0',
+                            900: '#0d47a1',
+                            'accent-100': '#82b1ff',
+                            'accent-200': '#448aff',
+                            'accent-400': '#2979ff',
+                            'accent-700': '#2962ff',
+                        },
+                        'light-blue': {
+                            50: '#e1f5fe',
+                            100: '#b3e5fc',
+                            200: '#81d4fa',
+                            300: '#4fc3f7',
+                            400: '#29b6f6',
+                            500: '#03a9f4',
+                            600: '#039be5',
+                            700: '#0288d1',
+                            800: '#0277bd',
+                            900: '#01579b',
+                            'accent-100': '#80d8ff',
+                            'accent-200': '#40c4ff',
+                            'accent-400': '#00b0ff',
+                            'accent-700': '#0091ea',
+                        },
+                        cyan: {
+                            50: '#e0f7fa',
+                            100: '#b2ebf2',
+                            200: '#80deea',
+                            300: '#4dd0e1',
+                            400: '#26c6da',
+                            500: '#00bcd4',
+                            600: '#00acc1',
+                            700: '#0097a7',
+                            800: '#00838f',
+                            900: '#006064',
+                            'accent-100': '#84ffff',
+                            'accent-200': '#18ffff',
+                            'accent-400': '#00e5ff',
+                            'accent-700': '#00b8d4',
+                        },
+                        gray: {
+                            50: '#fafafa',
+                            100: '#f5f5f5',
+                            200: '#eeeeee',
+                            300: '#e0e0e0',
+                            400: '#bdbdbd',
+                            500: '#9e9e9e',
+                            600: '#757575',
+                            700: '#616161',
+                            800: '#424242',
+                            900: '#212121',
+                        },
+                        'blue-gray': {
+                            50: '#eceff1',
+                            100: '#cfd8dc',
+                            200: '#b0bec5',
+                            300: '#90a4ae',
+                            400: '#78909c',
+                            500: '#607d8b',
+                            600: '#546e7a',
+                            700: '#455a64',
+                            800: '#37474f',
+                            900: '#263238',
+                        },
+                        green: {
+                            50: '#e8f5e9',
+                            100: '#c8e6c9',
+                            200: '#a5d6a7',
+                            300: '#81c784',
+                            400: '#66bb6a',
+                            500: '#4caf50',
+                            600: '#43a047',
+                            700: '#388e3c',
+                            800: '#2e7d32',
+                            900: '#1b5e20',
+                            'accent-100': '#b9f6ca',
+                            'accent-200': '#69f0ae',
+                            'accent-400': '#00e676',
+                            'accent-700': '#00c853',
+                        },
+                        'light-green': {
+                            50: '#f1f8e9',
+                            100: '#dcedc8',
+                            200: '#c5e1a5',
+                            300: '#aed581',
+                            400: '#9ccc65',
+                            500: '#8bc34a',
+                            600: '#7cb342',
+                            700: '#689f38',
+                            800: '#558b2f',
+                            900: '#33691e',
+                            'accent-100': '#ccff90',
+                            'accent-200': '#b2ff59',
+                            'accent-400': '#76ff03',
+                            'accent-700': '#64dd17',
+                        },
+                        lime: {
+                            50: '#f9fbe7',
+                            100: '#f0f4c3',
+                            200: '#e6ee9c',
+                            300: '#dce775',
+                            400: '#d4e157',
+                            500: '#cddc39',
+                            600: '#c0ca33',
+                            700: '#afb42b',
+                            800: '#9e9d24',
+                            900: '#827717',
+                            'accent-100': '#f4ff81',
+                            'accent-200': '#eeff41',
+                            'accent-400': '#c6ff00',
+                            'accent-700': '#aeea00',
+                        },
+                        amber: {
+                            50: '#fff8e1',
+                            100: '#ffecb3',
+                            200: '#ffe082',
+                            300: '#ffd54f',
+                            400: '#ffca28',
+                            500: '#ffc107',
+                            600: '#ffb300',
+                            700: '#ffa000',
+                            800: '#ff8f00',
+                            900: '#ff6f00',
+                            'accent-100': '#ffe57f',
+                            'accent-200': '#ffd740',
+                            'accent-400': '#ffc400',
+                            'accent-700': '#ffab00',
+                        },
+                        yellow: {
+                            50: '#fffde7',
+                            100: '#fff9c4',
+                            200: '#fff59d',
+                            300: '#fff176',
+                            400: '#ffee58',
+                            500: '#ffeb3b',
+                            600: '#fdd835',
+                            700: '#fbc02d',
+                            800: '#f9a825',
+                            900: '#f57f17',
+                            'accent-100': '#ffff8d',
+                            'accent-200': '#ffff00',
+                            'accent-400': '#ffea00',
+                            'accent-700': '#ffd600',
+                        },
+                        orange: {
+                            50: '#fff3e0',
+                            100: '#ffe0b2',
+                            200: '#ffcc80',
+                            300: '#ffb74d',
+                            400: '#ffa726',
+                            500: '#ff9800',
+                            600: '#fb8c00',
+                            700: '#f57c00',
+                            800: '#ef6c00',
+                            900: '#e65100',
+                            'accent-100': '#ffd180',
+                            'accent-200': '#ffab40',
+                            'accent-400': '#ff9100',
+                            'accent-700': '#ff6d00',
+                        },
+                        'deep-orange': {
+                            50: '#fbe9e7',
+                            100: '#ffccbc',
+                            200: '#ffab91',
+                            300: '#ff8a65',
+                            400: '#ff7043',
+                            500: '#ff5722',
+                            600: '#f4511e',
+                            700: '#e64a19',
+                            800: '#d84315',
+                            900: '#bf360c',
+                            'accent-100': '#ff9e80',
+                            'accent-200': '#ff6e40',
+                            'accent-400': '#ff3d00',
+                            'accent-700': '#dd2c00',
+                        },
+                        brown: {
+                            50: '#efebe9',
+                            100: '#d7ccc8',
+                            200: '#bcaaa4',
+                            300: '#a1887f',
+                            400: '#8d6e63',
+                            500: '#795548',
+                            600: '#6d4c41',
+                            700: '#5d4037',
+                            800: '#4e342e',
+                            900: '#3e2723',
+                        },
+                    },
+                    spacing: {
+                        '7': '1.75rem',
+                        '9': '2.25rem',
+                        '28': '7rem',
+                        '80': '20rem',
+                        '96': '24rem',
+                    },
+                    height: {
+                        '1/2': '50%',
+                    },
+                    scale: {
+                        '30': '.3',
+                    },
+                    boxShadow: {
+                        outline: '0 0 0 3px rgba(101, 31, 255, 0.4)',
+                    },
+                },
+            },
+            variants: {
+                scale: ['responsive', 'hover', 'focus', 'group-hover'],
+                textColor: ['responsive', 'hover', 'focus', 'group-hover'],
+                opacity: ['responsive', 'hover', 'focus', 'group-hover'],
+                backgroundColor: ['responsive', 'hover', 'focus', 'group-hover'],
+            },
+            plugins: [],
+        }
+    </script>
+
+
+</head>
+
+<body>
+    <div id="app">
+        <nav
+            class="bg-white px-2 sm:px-4 py-2.5 dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
+            <div class="container flex items-center justify-around mx-auto">
+                <a href="https://flowbite.com/" class="flex items-center">
+                    <img src="{% static 'logo.png' %}" class="mr-3 h-6 sm:h-9" alt="Flowbite Logo">
+                    <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Zawadi</span>
+                </a>
+                <div class="hidden md:block">
+                    <div class="flex items-center">
+                        <a href="/"
+                            class="mr-2 {% if root == 'home' %} text-green-600 bg-green-200 {% endif %} pb-2 rounded hover:text-green-900 hover:bg-green-300 px-4 cursor-pointer ">
+                            <span style="position: relative; top: 0.3rem;" class="material-icons">
+                                home
+                            </span>
+
+                            Accueil
+                        </a>
+                        <a href="/clients/0/"
+                            class="mr-2 px-4 {% if root == 'client' %} text-green-600 bg-green-200 {% endif %} hover:text-green-900 rounded hover:bg-green-300 pb-2 cursor-pointer ">
+                            <span style="position: relative; top: 0.3rem;" class="material-icons">
+                                groups
+                            </span>
+
+                            Clients
+                        </a>
+                        <a href="/compte"
+                            class="mr-2 px-4 {% if root == 'profil' %} text-green-600 bg-green-200 {% endif %} hover:text-green-900 rounded hover:bg-green-300 pb-2 cursor-pointer ">
+                            <span style="position: relative; top: 0.3rem;" class="material-icons">
+                                person
+                            </span>
+
+                            Compte
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="mt-4  w-full">
+            {% block content %}
+            <div class="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
+                <div class="max-w-xl mb-10 md:mx-auto sm:text-center lg:max-w-2xl md:mb-12">
+
+                    <h2
+                        class="max-w-lg mb-6 font-sans text-xl font-bold leading-none tracking-tight text-gray-900 sm:text-4xl md:mx-auto">
+                        <span class="relative inline-block">
+                            <svg viewBox="0 0 52 24" fill="currentColor"
+                                class="absolute top-0 left-0 z-0 hidden w-32 -mt-8 -ml-20 text-blue-gray-100 lg:w-32 lg:-ml-28 lg:-mt-10 sm:block">
+                                <defs>
+                                    <pattern id="7e5e8ff8-1960-4094-a63a-2a0c0f922d69" x="0" y="0" width=".135"
+                                        height=".30">
+                                        <circle cx="1" cy="1" r=".7"></circle>
+                                    </pattern>
+                                </defs>
+                                <rect fill="url(#7e5e8ff8-1960-4094-a63a-2a0c0f922d69)" width="52" height="24"></rect>
+                            </svg>
+                            <span class="relative">Démarrez</span>
+                        </span>
+                        aujourd'hui avec Zawadi en choisissant l'offre qui vous convient.
+                    </h2>
+                    <p class="text-base text-gray-700 md:text-lg">
+                        Si vous avez déjà souscrit a un abonnement et qu'il a expiré veuillez en choisir un nouveau et
+                        ensuite confirmer les informations entrées précedemment.
+                    </p>
+                </div>
+                <div
+                    class="grid max-w-md gap-10 row-gap-5 lg:max-w-screen-lg sm:row-gap-10 lg:grid-cols-3 xl:max-w-screen-lg sm:mx-auto">
+                    <div
+                        class="flex flex-col justify-between p-8 transition-shadow duration-300 bg-white border rounded shadow-sm sm:items-center hover:shadow">
+                        <div class="text-center">
+                            <div class="text-lg font-semibold">Basique</div>
+                            <div class="flex items-center justify-center mt-2">
+                                <div class="mr-1 text-5xl font-bold">1500 XOF</div>
+                                <div class="text-gray-700">/  mo</div>
+                            </div>
+                            <div class="mt-2 space-y-3">
+                                <div class="text-gray-700"> <span class="material-icons text-green-600"
+                                        style="position: relative; top: 0.38rem;">
+                                        check_circle
+                                    </span>
+                                    Jusqu'a <span class="font-medium">14 clients </span> par semaine</div>
+                                <div class="text-gray-700"> <span class="material-icons text-green-600"
+                                        style="position: relative; top: 0.38rem;">
+                                        check_circle
+                                    </span> Jusqu'a 4 demandes urgentes</div> par semaine
+                                <div class="text-gray-700"> <span class="material-icons text-green-600"
+                                        style="position: relative; top: 0.38rem;">
+                                        check_circle
+                                    </span>
+                                    < 40% de vente en moyenne</div>
+                                </div>
+                            </div>
+                            <div>
+                                <a @click="activeMod(), choice = 'basique', amount = '985'"
+                                    class="inline-flex items-center justify-center w-full h-12 px-6 mt-6 font-medium tracking-wide text-white transition duration-200 bg-gray-800 rounded shadow-md hover:bg-gray-900 focus:shadow-outline focus:outline-none">
+                                    Je choisis
+                                </a>
+                            </div>
+                        </div>
+                        <div
+                            class="relative flex flex-col justify-between p-8 transition-shadow duration-300 bg-white border rounded shadow-sm sm:items-center hover:shadow border-green-400">
+                            <div class="absolute inset-x-0 top-0 flex justify-center -mt-3">
+                                <div
+                                    class="inline-block px-3 py-1 text-xs font-medium tracking-wider text-white uppercase rounded bg-green-400">
+                                    Plus populaire
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-lg font-semibold">Pro</div>
+                                <div class="flex items-center justify-center mt-2">
+                                    <div class="mr-1 text-5xl font-bold">2500 XOF</div>
+                                    <div class="text-gray-700">/ mo</div>
+                                </div>
+                                <div class="mt-2 space-y-3">
+                                    <div class="text-gray-700"> <span class="material-icons text-green-600"
+                                            style="position: relative; top: 0.38rem;">
+                                            check_circle
+                                        </span>
+                                        Jusqu'a <span class="font-medium">30 clients </span> par semaine
+                                    </div>
+                                    <div class="text-gray-700"> <span class="material-icons text-green-600"
+                                            style="position: relative; top: 0.38rem;">
+                                            check_circle
+                                        </span> Jusqu'a 10 demandes urgentes</div> par semaine
+                                    <div class="text-gray-700"> <span class="material-icons text-green-600"
+                                            style="position: relative; top: 0.38rem;">
+                                            check_circle
+                                        </span>
+                                        < 60% de ventes en moyennes </div>
+
+                                    </div>
+                                </div>
+                                <div>
+                                    <a @click="activeMod(),choice = 'pro', amount = '2470'"
+                                        class="inline-flex items-center justify-center w-full h-12 px-6 mt-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-green-400 hover:bg-green-700 focus:shadow-outline focus:outline-none">
+                                        Je choisis
+                                    </a>
+                                </div>
+                            </div>
+                            <div
+                                class="flex flex-col justify-between p-8 transition-shadow duration-300 bg-white border rounded shadow-sm sm:items-center hover:shadow">
+                                <div class="text-center">
+                                    <div class="text-lg font-semibold">Business</div>
+                                    <div class="flex items-center justify-center mt-2">
+                                        <div class="mr-1 text-5xl font-bold">5000 XOF</div>
+                                        <div class="text-gray-700">/ mo</div>
+                                    </div>
+                                    <div class="mt-2 space-y-3">
+                                        <div class="text-gray-700"> <span class="material-icons text-green-600"
+                                                style="position: relative; top: 0.38rem;">
+                                                check_circle
+                                            </span>
+                                            Jusqu'à <span class="font-medium">60 clients </span> par semaine
+                                        </div>
+                                        <div class="text-gray-700"> <span class="material-icons text-green-600"
+                                                style="position: relative; top: 0.38rem;">
+                                                check_circle
+                                            </span>
+                                            Support et aide pour la clientèle </div>
+                                        <div class="text-gray-700"> <span class="material-icons text-green-600"
+                                                style="position: relative; top: 0.38rem;">
+                                                check_circle
+                                            </span> Jusqu'a 35 demandes urgentes</div>
+                                        <div class="text-gray-700"> <span class="material-icons text-green-600"
+                                                style="position: relative; top: 0.38rem;">
+                                                check_circle
+                                            </span>
+                                            > 60% de ventes en moyennes </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <a @click="activeMod(), choice = 'buisness', amount = '4970'"
+                                        class="inline-flex items-center justify-center w-full h-12 px-6 mt-6 font-medium tracking-wide text-white transition duration-200 bg-gray-800 rounded shadow-md hover:bg-gray-900 focus:shadow-outline focus:outline-none">
+                                        Je choisis
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endblock content %}
+                    <div class="w-full bg-blue-100 text-center pt-4 pb-16">
+                        Copyright &copy; 2022 <br>
+                        All Right Reserved <a class="text-green-500" href="#">Elife Global</a>
+                    </div>
+                </div>
+                <!-- Modal toggle -->
+                <button style="display: none;" id="myBut"
+                    class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    type="button" data-modal-toggle="authentication-modal">
+                    Toggle modal
+                </button>
+                <!-- Main modal -->
+                <div id="authentication-modal" tabindex="-1" aria-hidden="true"
+                    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full justify-center items-center">
+                    <div class="relative p-4 w-full max-w-md h-full md:h-auto">
+                        <!-- Modal content -->
+                        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                            <button v-show="transaction == ''" type="button"
+                                class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                                data-modal-toggle="authentication-modal">
+                                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="sr-only">Close modal</span>
+                            </button>
+                            <div class="py-6 px-6 lg:px-8">
+                                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white"> Informations du
+                                    compte</h3>
+                                <form class="space-y-3" action="" @submit.prevent="pay()">
+                                    {% csrf_token %}
+                                    <div>
+                                        <label for="name"
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Nom
+                                            du commerce ou de l'entreprise</label>
+                                        <input type="name" name="name" id="name" v-model="name"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                            {% if not seller %} placeholder="nom..." {% else %} value="{{seller.name}}"
+                                            {% endif %} required>
+                                    </div>
+                                    <div>
+                                        <label for="countries"
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Catégorie
+                                            de produits</label>
+                                        <select id="countries" required name="category" v-model="cat"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                            {% for c in categories %}
+                                            <option {% if c == seller.category %} selected {% endif %} value="{{c.pk}}">
+                                                {{c.name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="countries_multiple"
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Produits
+                                            de catégorie
+                                            disponibles</label>
+                                        {% for c in categories %}
+                                        <select v-if="cat == '{{c.pk}}'" multiple id="countries_multiple" name="subs[]"
+                                            required v-model="subs"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                            {% for s in c.subs.all %}
+                                            <option {% if s in seller.subs.all %} selected {% endif %}>{{s.name}}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="py-2">
+                                        <div v-for="s in subs" :key="s"
+                                            class="inline-block px-2 py-1 mr-1 my-1 text-sm bg-orange-100 text-orange-600 rounded">
+                                            ${s}
+                                        </div>
+
+                                    </div>
+                                    <input v-show="false" :value="transaction" type="text" name="transaction_id" />
+                                    <button v-if="transaction == ''" type="submit"
+                                        class="w-full text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Confirmer
+                                    </button>
+                                    <div v-if="transaction != '' && !done" class="py-2 flex justify-around ">
+                                        <div class="flex items-center">
+                                            <div class="mr-3">
+
+                                                <div role="status">
+                                                    <svg aria-hidden="true"
+                                                        class="mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-green-600"
+                                                        viewBox="0 0 100 101" fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path
+                                                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                                            fill="currentColor"></path>
+                                                        <path
+                                                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                                            fill="currentFill"></path>
+                                                    </svg>
+                                                    <span class="sr-only">Loading...</span>
+                                                </div>
+
+                                            </div>
+                                            <div class="font-medium">
+                                                Activation de l'abonnement
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-if="transaction != '' && done" class="py-2 flex justify-around ">
+                                        <div class="flex items-center">
+                                            <div class="mr-3 text-green-700">
+
+                                                <span class="material-icons">
+                                                    check_circle
+                                                </span>
+
+                                            </div>
+                                            <div class="font-medium">
+                                                Abonnement mis à jour
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <!-- component -->
+                    <div class=" w-full">
+
+                        <!-- <section id="bottom-navigation" class="md:hidden block fixed inset-x-0 bottom-0 z-10 bg-white shadow"> // if shown only tablet/mobile-->
+                        <section id="bottom-navigation"
+                            class="block fixed inset-x-0 bottom-0 z-10 bg-white shadow md:hidden">
+                            <div id="tabs" class="flex justify-between">
+                                <a href="/"
+                                    class="w-full focus:text-green-500 hover:text-green-500 {% if root == 'home' %} text-green-500 {% endif %} justify-center inline-block text-center pt-2 pb-1">
+                                    <svg width="25" height="25" viewBox="0 0 42 42" class="inline-block mb-1">
+                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                            <path
+                                                d="M21.0847458,3.38674884 C17.8305085,7.08474576 17.8305085,10.7827427 21.0847458,14.4807396 C24.3389831,18.1787365 24.3389831,22.5701079 21.0847458,27.6548536 L21.0847458,42 L8.06779661,41.3066256 L6,38.5331279 L6,26.2681048 L6,17.2542373 L8.88135593,12.4006163 L21.0847458,2 L21.0847458,3.38674884 Z"
+                                                fill="currentColor" fill-opacity="0.1"></path>
+                                            <path
+                                                d="M11,8 L33,8 L11,8 Z M39,17 L39,36 C39,39.3137085 36.3137085,42 33,42 L11,42 C7.6862915,42 5,39.3137085 5,36 L5,17 L7,17 L7,36 C7,38.209139 8.790861,40 11,40 L33,40 C35.209139,40 37,38.209139 37,36 L37,17 L39,17 Z"
+                                                fill="currentColor"></path>
+                                            <path
+                                                d="M22,27 C25.3137085,27 28,29.6862915 28,33 L28,41 L16,41 L16,33 C16,29.6862915 18.6862915,27 22,27 Z"
+                                                stroke="currentColor" stroke-width="2" fill="currentColor"
+                                                fill-opacity="0.1">
+                                            </path>
+                                            <rect fill="currentColor"
+                                                transform="translate(32.000000, 11.313708) scale(-1, 1) rotate(-45.000000) translate(-32.000000, -11.313708) "
+                                                x="17" y="10.3137085" width="30" height="2" rx="1"></rect>
+                                            <rect fill="currentColor"
+                                                transform="translate(12.000000, 11.313708) rotate(-45.000000) translate(-12.000000, -11.313708) "
+                                                x="-3" y="10.3137085" width="30" height="2" rx="1"></rect>
+                                        </g>
+                                    </svg>
+                                    <span class="tab tab-home block text-xs">Accueil</span>
+                                </a>
+                                <a href="/clients/0/"
+                                    class="w-full focus:text-green-500 hover:text-green-500 {% if root == 'client' %} text-green-500 {% endif %} justify-center inline-block text-center pt-2 pb-1">
+                                    <svg width="25" height="25" viewBox="0 0 42 42" class="inline-block mb-1">
+                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                            <path
+                                                d="M14.7118754,20.0876892 L8.03575361,20.0876892 C5.82661462,20.0876892 4.03575361,18.2968282 4.03575361,16.0876892 L4.03575361,12.031922 C4.03575361,8.1480343 6.79157254,4.90780265 10.4544842,4.15995321 C8.87553278,8.5612583 8.1226025,14.3600511 10.9452499,15.5413938 C13.710306,16.6986332 14.5947501,18.3118357 14.7118754,20.0876892 Z M14.2420017,23.8186831 C13.515543,27.1052019 12.7414284,30.2811559 18.0438552,31.7330419 L18.0438552,33.4450645 C18.0438552,35.6542035 16.2529942,37.4450645 14.0438552,37.4450645 L9.90612103,37.4450645 C6.14196811,37.4450645 3.09051926,34.3936157 3.09051926,30.6294627 L3.09051926,27.813861 C3.09051926,25.604722 4.88138026,23.813861 7.09051926,23.813861 L14.0438552,23.813861 C14.1102948,23.813861 14.1763561,23.8154808 14.2420017,23.8186831 Z M20.7553776,32.160536 C23.9336213,32.1190063 23.9061943,29.4103976 33.8698747,31.1666916 C34.7935223,31.3295026 35.9925894,31.0627305 37.3154077,30.4407183 C37.09778,34.8980343 33.4149547,38.4450645 28.9036761,38.4450645 C24.9909035,38.4450645 21.701346,35.7767637 20.7553776,32.160536 Z"
+                                                fill="currentColor" opacity="0.1"></path>
+                                            <g transform="translate(2.000000, 3.000000)">
+                                                <path
+                                                    d="M8.5,1 C4.35786438,1 1,4.35786438 1,8.5 L1,13 C1,14.6568542 2.34314575,16 4,16 L13,16 C14.6568542,16 16,14.6568542 16,13 L16,4 C16,2.34314575 14.6568542,1 13,1 L8.5,1 Z"
+                                                    stroke="currentColor" stroke-width="2"></path>
+                                                <path
+                                                    d="M4,20 C2.34314575,20 1,21.3431458 1,23 L1,27.5 C1,31.6421356 4.35786438,35 8.5,35 L13,35 C14.6568542,35 16,33.6568542 16,32 L16,23 C16,21.3431458 14.6568542,20 13,20 L4,20 Z"
+                                                    stroke="currentColor" stroke-width="2"></path>
+                                                <path
+                                                    d="M23,1 C21.3431458,1 20,2.34314575 20,4 L20,13 C20,14.6568542 21.3431458,16 23,16 L32,16 C33.6568542,16 35,14.6568542 35,13 L35,8.5 C35,4.35786438 31.6421356,1 27.5,1 L23,1 Z"
+                                                    stroke="currentColor" stroke-width="2"></path>
+                                                <path
+                                                    d="M34.5825451,33.4769886 L38.3146092,33.4322291 C38.8602707,33.4256848 39.3079219,33.8627257 39.3144662,34.4083873 C39.3145136,34.4123369 39.3145372,34.4162868 39.3145372,34.4202367 L39.3145372,34.432158 C39.3145372,34.9797651 38.8740974,35.425519 38.3265296,35.4320861 L34.5944655,35.4768456 C34.048804,35.4833899 33.6011528,35.046349 33.5946085,34.5006874 C33.5945611,34.4967378 33.5945375,34.4927879 33.5945375,34.488838 L33.5945375,34.4769167 C33.5945375,33.9293096 34.0349773,33.4835557 34.5825451,33.4769886 Z"
+                                                    fill="currentColor"
+                                                    transform="translate(36.454537, 34.454537) rotate(-315.000000) translate(-36.454537, -34.454537) ">
+                                                </path>
+                                                <circle stroke="currentColor" stroke-width="2" cx="27.5" cy="27.5"
+                                                    r="7.5">
+                                                </circle>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                    <span class="tab tab-kategori block text-xs">Clients</span>
+                                </a>
+                                <a href="/compte"
+                                    class="w-full focus:text-green-500 hover:text-green-500 {% if root == 'profil' %} text-green-500 {% endif %} justify-center inline-block text-center pt-2 pb-1">
+                                    <svg width="25" height="25" viewBox="0 0 42 42" class="inline-block mb-1">
+                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                            <path
+                                                d="M20.5890101,0.254646884 C12.8696785,5.50211755 8.0025785,14.258415 14.1941217,18.8708225 C23.16683,25.5550669 13.3362326,40.2698884 33.1021758,38.4149164 C29.6814884,40.8311956 25.5065164,42.2507054 21,42.2507054 C9.40202025,42.2507054 0,32.8486852 0,21.2507054 C0,9.79003409 9.18071714,0.473634138 20.5890101,0.254646884 Z"
+                                                fill="currentColor" opacity="0.1"></path>
+                                            <path
+                                                d="M25.9500282,20.3643496 L22.4308312,38.2677802 C22.3775703,38.5387376 22.1147395,38.7152155 21.8437821,38.6619546 C21.6570955,38.6252584 21.507413,38.4857901 21.4576354,38.3021581 L16.5951895,20.3643496 L20.099732,4.44663907 C20.1385204,4.27046145 20.2692032,4.12883813 20.4417012,4.07604096 C20.7057521,3.99522179 20.9853245,4.14376046 21.0661436,4.40781135 L25.9500282,20.3643496 Z M21.3022963,22.2852638 C22.4068658,22.2852638 23.3022963,21.3898333 23.3022963,20.2852638 C23.3022963,19.1806943 22.4068658,18.2852638 21.3022963,18.2852638 C20.1977268,18.2852638 19.3022963,19.1806943 19.3022963,20.2852638 C19.3022963,21.3898333 20.1977268,22.2852638 21.3022963,22.2852638 Z"
+                                                fill="currentColor"
+                                                transform="translate(21.272609, 20.629524) rotate(-315.000000) translate(-21.272609, -20.629524) ">
+                                            </path>
+                                            <circle stroke="currentColor" stroke-width="2" cx="21" cy="21" r="20">
+                                            </circle>
+                                        </g>
+                                    </svg>
+                                    <span class="tab tab-explore block text-xs">Compte </span>
+                                </a>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+            <script src="/static/axios.min.js"></script>
+            <script src="{% static 'vue.global.js' %}"></script>
+            <script src="https://cdn.kkiapay.me/k.js"></script>
+            {% block script %}
+            <script>
+                let baseUR = window.location.host
+                let prot = window.location.protocol
+                axios.defaults.baseURL = prot + "//" + baseUR + "/"
+                const { createApp } = Vue
+                const app = createApp({
+                    data() {
+                        return {
+                            done: false,
+                            transaction: '',
+                            name: '{{seller.name}}',
+                            choice: 'basique',
+                            amount: 0,
+                            cat: '{{seller.category.pk}}',
+                            subs: [{% for s in seller.subs.all %} '{{s.name}}', {% endfor %}]
+                }
+                    },
+                methods: {
+                    activeMod() {
+                        document.getElementById('myBut').click()
+                    },
+                    pay() {
+                        let th = this
+                        openKkiapayWidget({
+                            amount: th.amount, position: "right",
+                            data: "",
+                            theme: "green",
+                            key: "{{token}}",
+                        })
+                        addSuccessListener(response => {
+                            th.transaction = response.transactionId
+                            th.send_data()
+                        });
+                    },
+                    send_data(){
+                        let th = this
+                        const form = new FormData()
+                        form.append('name', th.name)
+                        form.append('cat', th.cat)
+                        form.append('subs', JSON.stringify(th.subs))
+                        form.append('choice', th.choice)
+                        form.append('transaction', th.transaction)
+                        axios({
+                            url: 'api/activ_abn/',
+                            method: 'POST',
+                            data: form,
+                            headers: {
+                                "accept": "application/json",
+                                "X-CSRFToken": "{{ csrf_token }}",
+                            },
+                        }).then(resp => {
+                            if(resp.data['done']){
+                                th.done = true
+                                setTimeout(() => {
+                                    window.location.href="/clients/0/"
+                                }, 1000);
+                            }
+                        }).catch(err => {
+                            console.log(err);
+                        })
+                    }
+
+                },
+                compilerOptions: {
+                    delimiters: ["${", "}"]
+                }
+                }).mount('#app')
+            </script>
+            {% endblock %}
+            <script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></script>
+</body>
+
+</html>

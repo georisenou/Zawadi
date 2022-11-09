@@ -1,0 +1,44 @@
+"""Zawadi URL Configuration
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/3.2/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
+from unicodedata import name
+from django import views
+from django.contrib import admin
+from django.urls import path
+from django.conf.urls.static import static
+from django.urls.conf import include
+from django.conf import settings
+from app.views import activ_abn, activate, clients, compte, create_devices, customers, daily_task, index, login_view, logout_view, new_activate, offline, register_demand, register_view, vendeur_manifest, vendeur_serviceworker, very_new_activate
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', index, name='index'),
+    path('clients/<int:pk>/', clients, name="clients"),
+    path('login/', login_view, name="login"),
+    path('register/', register_view, name="register"),
+    path('old_activate/', activate, name='activate'),
+    path('compte/', compte, name="compte"),
+    path('customers/', customers, name="customers"),
+    path('api/activ_abn/', activ_abn, name="activ_abn"),
+    path('activate_old/', new_activate, name="new_activate"),
+    path('devices/', create_devices, name="create_devices"),
+    path('api/demand/', register_demand, name="register_demand"),
+    path('activate/', very_new_activate, name="activate2"),
+    path('logout/', logout_view, name="logout"),
+    path('manifest.json/', vendeur_manifest, name="vendeur_manifest" ),
+    path('daily_task/', daily_task, name="daily_task"),
+    path('offline/', offline, name="offline"),
+    path('serviceworker.js', vendeur_serviceworker, name="vendeur_serviceworker")
+]+static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT )

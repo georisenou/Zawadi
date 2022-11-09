@@ -1,0 +1,493 @@
+{% extends '_base.html' %}
+
+{% block content %}
+<div class="md:grid md:grid-cols-2 pt-12">
+    <div class="mh-screen">
+        {% if not seller %}
+        <div class=" pt-4">
+            <div class="text-center text-lg font-medium text-gray-500">
+                Liste de clients vide
+            </div>
+            <div class="px-4 py-8 flex justify-around ">
+                <img src="/static/img/not.svg" class="lg:w-1/2 w-3/4" />
+            </div>
+            <div class="text-sm text-center px-6 py-4">
+                Il se peut que vous ne disposiez pas d'abonnenments ou que ce dernier a expiré.
+            </div>
+            <div class="pt-4 flex justify-around">
+                <div>
+                    <a href="/activate" type="button"
+                        class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Activer
+                        ma liste de clients &RightArrow; </a>
+                </div>
+
+            </div>
+            <div class="pt-3 flex justify-around">
+                <div>
+                    <a href="#howto" type="button"
+                        class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Comment
+                        ça marche &DownArrow; </a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+
+        <div class="">
+
+            <div class="w-full px-4 py-2 flex justify-between items-center bg-gray-50">
+                <div class="flex items-center">
+                    <div class="pr-2 ">
+                        <div :style="{
+                        width: '1.5rem',
+                        height: '1.5rem',
+                        'border-radius': '100%',
+                        'background-size': 'cover',
+                        'background-position': 'top center',
+                        'background-image': `url('{{seller.get_picture}}')`,
+                    }"></div>
+                    </div>
+                    <div class="font-medium">
+                        {{seller.name}}
+                    </div>
+                </div>
+                {% if week.is_on %}
+                <div class="text-green-500">
+                    &bull; Recherche
+                </div>
+                {% else %}
+                <div class="text-blue-500">
+                    &bull; Terminé
+                </div>
+                {% endif %}
+            </div>
+            <div class="text-center text-lg py-3 font-medium text-gray-900">
+                Liste de clients de la semaine
+            </div>
+            <div class="my-2 px-4 flex justify-between items-center">
+                <a {% if week.prev %} href="/clients/{{week.prev}}/" {% endif %}
+                    class="px-2 pb-1 pt-2  rounded-full {% if week.prev %} bg-gray-100 active:bg-gray-300 {% else %} bg-gray-50 text-gray-300 {% endif %}">
+                    <span class="material-icons">
+                        chevron_left
+                    </span>
+                </a>
+                <div class="px-3 py-2 text-gray-600 bg-green-200 rounded">
+                    {{week.get_title}}
+                </div>
+                <a {% if week.next %} href="/clients/{{week.next}}/" {% endif %}
+                    class="px-2 pb-1 pt-2 rounded-full {% if week.next %} bg-gray-100 active:bg-gray-300 {% else %} bg-gray-50 text-gray-300 {% endif %}">
+                    <span class="material-icons">
+                        chevron_right
+                    </span>
+                </a>
+            </div>
+            {% if not week.demandes.count %}
+            <div>
+                <div class="px-4 py-8 flex justify-around ">
+                    <img src="/static/img/s.svg" class="lg:w-1/2 w-3/4" />
+                </div>
+                <div class="px-6 text-center">
+                    En cours de recherche... Aucun client trouvé pour le moment. Nous allons bientôt remplir cette liste
+                    de potentiels clients.
+                </div>
+            </div>
+            {% else %}
+            <div class="py-4">
+                <div>
+                    <div class="overflow-x-auto relative sm:rounded-lg">
+                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                            <thead
+                                class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                <tr>
+                                    <th scope="col" class="py-3 px-6">
+                                        Produit
+                                    </th>
+                                    <th scope="col" class="py-3 px-6">
+                                        Nom
+                                    </th>
+                                    <th scope="col" class="py-3 px-6">
+                                        Urgence
+                                    </th>
+                                    <th scope="col" class="py-3 px-6">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for dem in week.demandes.all %}
+                                <tr class="bg-white border-b dark:bg-gray-900 dark:border-gray-700">
+                                    <th scope="row"
+                                        class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        {{dem.subs.name}}
+                                    </th>
+                                    <td class="py-4 px-6">
+                                        {{dem.client.get_complete_name}}
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <div class="flex items-center">
+                                            <div class="w-3 h-3 rounded-full {% if dem.emergency == 'Urgent' %} bg-red-500 {% elif dem.emergency == 'Peu urgent' %} bg-purple-600 {% elif dem.emergency == 'Pas urgent' %} bg-blue-600 {% endif %} mr-2"
+                                                style="min-width: 0.75rem;">
+                                            </div>
+                                            <div>
+                                                {{dem.emergency}}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <a class="font-medium text-blue-600 dark:text-green-500 hover:underline"
+                                            @click="showMod({whatsapp: '{{dem.client.get_whatsapp}}', phone: '{{dem.client.get_phone}}', email : '{{dem.client.get_email}}', dem : '{{dem.subs.name}}', emer : '{{dem.emergency}}', dem_pk : '{{dem.pk}}', point : '{{dem.point}}'})">Contacter</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="py-3 flex justify-around" v-if="can_notif == 'not'" >
+            <button type="button" @click="notify_me()"
+                class="py-2.5 px-5 mr-2 mb-2  text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-green-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                <div class="flex items-center">
+                    <div class="mr-2">
+                        <span class="material-icons">notifications</span>
+                    </div>
+                    <div>
+                        <span v-if="!notifying">M'avertir quand un client est ajouté</span><span v-else>
+                            <div role="status">
+                                <svg class="inline mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600"
+                                    viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                        fill="currentColor" />
+                                    <path
+                                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                        fill="currentFill" />
+                                </svg>
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+
+            </button>
+
+        </div>
+        {% endif %}
+    </div>
+    <div class=" px-4 bg-blue-200 mh-screen " id="howto">
+        <div class="py-6 text-2xl text-gray-700 text-center font-semibold">
+            Comment ça marche ?
+        </div>
+        <div class="pt-4 space-y-2">
+            <div>
+                <span class="material-icons text-green-600" style="position: relative; top: 0.4rem;">
+                    looks_one
+                </span> Creez votre compte vendeur sur Zawadi et chosissez l'offre qui vous convient.
+            </div>
+            <div>
+                <span class="material-icons text-green-600" style="position: relative; top: 0.4rem;">
+                    looks_two
+                </span> Choississez les catégories de produits que vous vendez.
+            </div>
+            <div>
+                <span class="material-icons text-green-600" style="position: relative; top: 0.4rem;">
+                    looks_3
+                </span> Lancez la recherche constante de clients et Zawadi mettra a jour au cours de la semaine une
+                liste de clients intéressés par vos produits.
+            </div>
+            <div>
+                <span class="material-icons text-green-600" style="position: relative; top: 0.4rem;">
+                    looks_4
+                </span> Observez pendant la semaine les clients interessés ajoutés a votre liste et contactez-les.
+            </div>
+            <div>
+                <span class="material-icons text-green-600" style="position: relative; top: 0.4rem;">
+                    looks_5
+                </span> Apres ventes ou discussions avec le clients revenez sur la plateforme donner votre appréciation
+                des
+                clients.
+            </div>
+        </div>
+        <div class="py-3 text-sm">
+            <span class="material-icons text-green-500" style="position: relative; top: 0.39rem;">
+                chevron_right
+            </span> Les clients disponibles sur les listes de <span class="text-green-600"> Zawadi</span> sont déjà
+            interessés par le produit et veulent l'acheter. Cependant le degré d'urgence peut varier d'un client a un
+            autre. Zawadi se charge de vous le faire savoir.
+        </div>
+        <div class="py-3 text-sm">
+            <span class="material-icons text-green-500" style="position: relative; top: 0.39rem;">
+                chevron_right
+            </span> La liste de clients est mis à jour au cours de la semaine jusqu'à atteindre la limite définie par
+            votre offre d'abonnement. Cependant aucune régularité n'est garantit, cela voudrait dire que vous pouvez
+            avoir peu de clients dans la liste les trois premiers jours et voir la liste se remplir rapidement les jours
+            suivants ou ne pas atteindre le quota défini dans la semaine.
+        </div>
+        <div class="py-4 text-center underline text-green-600">
+            <a href="{{contact.value}}">Ecrivez-nous pour en savoir plus</a>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- Modal toggle -->
+<button v-show="false"
+    class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+    id="myBut" type="button" data-modal-toggle="authentication-modal">
+    Toggle modal
+</button>
+
+<!-- Main modal -->
+<div id="authentication-modal" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full justify-center items-center">
+    <div class="relative p-4 w-full max-w-md h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button type="button"
+                class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                data-modal-toggle="authentication-modal">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="py-6 px-6 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Tobias Lukte</h3>
+                <div class="flex justify-between items-center py-3">
+                    <div class="flex items-center">
+                        <div class="px-4 pb-2 pt-4 mr-2  bg-green-100 text-green-500 rounded-full  ">
+                            <span class="material-icons">
+                                shopping_cart
+                            </span>
+                        </div>
+                        <div class="font-medium" v-html="curent.dem">
+
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-green-500 mr-2">
+                            </div>
+                            <div v-html="curent.emer">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center font-medium">
+                    Contacts
+                </div>
+                <div class="py-3 space-y-2">
+                    <div>
+                        <button type="button"
+                            @click="go_to(`https://wa.me/${curent.whatsapp}/?text=Comment allez-vous? J'ai reçu votre demande de ${curent.dem} par Zawadi...`)"
+                            class="w-full focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                            <div class="flex items-center justify-center">
+                                <img src="/static/img/whatsapp.png" class="w-6 mr-2" />
+                                <div>Whatsapp</div>
+                            </div>
+                        </button>
+                    </div>
+                    <div>
+                        <button type="button" @click="go_to(`mailto:${curent.email}`)"
+                            class=" w-full  text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                            <div class="flex items-center justify-center">
+                                <div class="flex items-center justify-center">
+                                    <img src="/static/img/gmail.png" class="w-6 mr-2" />
+                                    <div>Email</div>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+                    <div>
+                        <button type="button" @click="go_to(`tel:${curent.phone}`)"
+                            class=" w-full text-center focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">Appeler</button>
+                    </div>
+                </div>
+                <div class="py-3">
+                    <div class="text-center font-medium">
+                        Appréciation du client
+                    </div>
+                    <form class="pt-3" action="" method="POST">
+                        {% csrf_token %}
+                        <select id="small" required name="point"
+                            class="block p-2 mb-2  w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500">
+                            <option :selected="curent.point == '10'" value="10">Mauvais Client</option>
+                            <option :selected="curent.point == '20'" value="20">Client Moyen</option>
+                            <option :selected="curent.point == '35'" value="35">Très bon Client</option>
+                            <option :selected="curent.point == '50'" value="50">Client Parfait</option>
+                        </select>
+                        <input type="text" style="display: none;" name="dem" :value="curent.dem_pk" />
+                        <div>
+                            <button type="submit"
+                                class=" w-full text-center text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2 text-center mr-2 mb-2">Valider</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="myTo" style="position: absolute; top: 8vh; left: 3vw;">
+    {% if has_rank %}
+    <div id="toast-success"
+        class="flex items-center p-4 mb-4 w-full max-w-xs text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
+        role="alert">
+        <div
+            class="inline-flex flex-shrink-0 justify-center items-center w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"></path>
+            </svg>
+            <span class="sr-only">Check icon</span>
+        </div>
+        <div class="ml-3 text-sm font-normal">Votre appréciation a été enregistré avec succès.</div>
+        <button type="button"
+            class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+            data-dismiss-target="#toast-success" aria-label="Close">
+            <span class="sr-only">Close</span>
+            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clip-rule="evenodd"></path>
+            </svg>
+        </button>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+{% block firebase %} {% endblock %}
+{% block script %}
+<script src="/static/axios.min.js"></script>
+<script>
+    let baseUR = window.location.host
+    let prot = window.location.protocol
+    axios.defaults.baseURL = prot + "//" + baseUR + "/"
+
+    const { createApp } = Vue
+    const app = createApp({
+        data() {
+            return {
+                message: 'Hello Vue!',
+                curent: {},
+                notifying: false,
+                messaging: null,
+                can_notif : '{% if not can_notif %}not{% endif %}'
+            }
+        },
+        mounted() {
+            const end_load = () => {
+        document.getElementById('global_load').style.display = 'none'
+        document.getElementById('app').style.display = 'block'
+    }
+    end_load()
+            const firebaseConfig = {
+                apiKey: "AIzaSyC5tw6eOAoi0vKT3hiyIAPND8ovAFp91Xs",
+                authDomain: "zawadi-fe511.firebaseapp.com",
+                projectId: "zawadi-fe511",
+                storageBucket: "zawadi-fe511.appspot.com",
+                messagingSenderId: "740387796760",
+                appId: "1:740387796760:web:aec758d6918ce20098d06d",
+                measurementId: "G-8X3HR2FPHK"
+            };
+            const firebas_app = firebase.initializeApp(firebaseConfig);
+            const messaging = firebase.messaging();
+            this.messaging = messaging
+            if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker
+          .register("/serviceworker.js")
+          .then(res => {
+            console.log("service worker registered");
+            messaging.useServiceWorker(res);
+          })
+          .catch(err => console.log("service worker not registered", err))
+      })
+    }
+
+        },
+        methods: {
+            showMod(cur) {
+                this.curent = cur
+                document.getElementById("myBut").click()
+            },
+            go_to(link) {
+                window.location.href = link
+            },
+            send_token(token) {
+                let th = this
+                axios({
+                    url: "devices/",
+                    method: "POST",
+                    data: {
+                        registration_id: token,
+                        type: 'web',
+                    },
+                    headers: {
+                        "accept": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    },
+                }).then(resp => {
+                    notifying = false
+                    if (resp.data['done']) {
+                        th.can_notif = ''
+                        var notification = new Notification("Merci d'avoir accepté les notifications !");
+                    }
+                }).catch(err => {
+                    console.log(err);
+
+                })
+            },
+            get_token() {
+                let th = this
+                th.messaging.getToken({ vapidKey: "BAlE96t0rVs-Ul3U6Tu6pXl_0eSDqT38AlIu--FoLAc_NYIJkL9jaP_FfyIIuwRnCl4uyfd9T1S5RmAes_jYkTk" }).then(token => {
+                    th.send_token(token)
+                }).catch((err) => {
+                    console.log('An error occurred while retrieving token. ', err);
+                });
+            },
+            notify_me() {
+                let th = this
+                th.notifying = true
+                // Let's check if the browser supports notifications
+                if (!("Notification" in window)) {
+                    alert("Votre navigateur ne supporte pas les notifications");
+                }
+
+                // Let's check whether notification permissions have already been granted
+                else if (Notification.permission === "granted") {
+                    // If it's okay let's create a notification
+                    th.get_token()
+                }
+                // Otherwise, we need to ask the user for permission
+                else if (Notification.permission !== "denied") {
+                    Notification.requestPermission().then(function (permission) {
+                        // If the user accepts, let's create a notification
+                        if (permission === "granted") {
+
+                            th.get_token()
+                        }
+                    });
+                }
+            }
+        },
+        compilerOptions: {
+            delimiters: ["${", "}"]
+        }
+    }).mount('#app')
+    setTimeout(() => {
+        document.getElementById('myTo').style.display = "none"
+    }, 4500)
+
+</script>
+{% endblock %}

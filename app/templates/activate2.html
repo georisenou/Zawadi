@@ -1,0 +1,780 @@
+<!-- templates/_base.html -->
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="/manifest.json" />
+  <!-- ios support -->
+  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-72x72.png" />
+  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-96x96.png" />
+  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-128x128.png" />
+  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-144x144.png" />
+  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-152x152.png" />
+  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-192x192.png" />
+  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-384x384.png" />
+  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-512x512.png" />
+  <meta name="apple-mobile-web-app-status-bar" content="#16a34a" />
+    <meta name="theme-color" content="#16a34a" /> 
+  <title>Zawadi | Des clients a tout moment</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="/static/src/3.2.js"></script>
+    <style>
+        .mh-screen {
+            min-height: 100vh;
+        }
+
+        /* Les animations d'entrée (« enter ») et de sortie (« leave »)  */
+        /* peuvent utiliser différentes fonctions de durée et de temps.  */
+        .slide-fade-enter-active {
+            transition: all .3s ease;
+        }
+
+        .slide-fade-leave-active {
+            transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+        }
+
+        .slide-fade-enter,
+        .slide-fade-leave-to
+
+        /* .slide-fade-leave-active below version 2.1.8 */
+            {
+            transform: translateX(10px);
+            opacity: 0;
+        }
+    </style>
+
+</head>
+
+
+<body>
+    <div id="app" style="display: none;" >
+        <nav
+            class="bg-white px-2 sm:px-4 py-2.5 dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
+            <div class="container flex items-center justify-around mx-auto">
+                <a href="https://flowbite.com/" class="flex items-center">
+                    <img src="{% static 'logo.png' %}" class="mr-3 h-6 sm:h-9" alt="Flowbite Logo">
+                    <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Zawadi</span>
+                </a>
+                <div class="hidden md:block">
+                    <div class="flex items-center">
+                        <a href="/"
+                            class="mr-2 {% if root == 'home' %} text-green-600 bg-green-200 {% endif %} pb-2 rounded hover:text-green-900 hover:bg-green-300 px-4 cursor-pointer ">
+                            <span style="position: relative; top: 0.3rem;" class="material-icons">
+                                home
+                            </span>
+
+                            Accueil
+                        </a>
+                        <a href="/clients/0/"
+                            class="mr-2 px-4 {% if root == 'client' %} text-green-600 bg-green-200 {% endif %} hover:text-green-900 rounded hover:bg-green-300 pb-2 cursor-pointer ">
+                            <span style="position: relative; top: 0.3rem;" class="material-icons">
+                                groups
+                            </span>
+
+                            Clients
+                        </a>
+                        <a href="/compte"
+                            class="mr-2 px-4 {% if root == 'profil' %} text-green-600 bg-green-200 {% endif %} hover:text-green-900 rounded hover:bg-green-300 pb-2 cursor-pointer ">
+                            <span style="position: relative; top: 0.3rem;" class="material-icons">
+                                person
+                            </span>
+
+                            Compte
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="pt-12 px-4 mh-screen">
+            <div v-if="!step" class="font-medium text-s3 py-3 text-center">
+                C'est le début d'une belle aventure...
+            </div>
+            <div v-if="!step" class="pt-2 flex justify-around">
+                <img src="/static/img/acto.svg" style="width: 90vw;" />
+            </div>
+            <div v-if="err != ''" class="py-5 px-4">
+                <div class="p-4  text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
+                    role="alert">
+                    ${err}
+
+                </div>
+            </div>
+            <transition name="slide-fade">
+                <div class="pt-12 pb-4 px-4 space-y-3 " v-if="step == 0">
+                    <div class="text-center text-lg ">
+                        Démarrez aujourd'hui avec Zawadi en choisissant l'offre qui vous convient.
+                    </div>
+                    <div class="py-2">
+                        <button type="button" @click="validate()"
+                            class="text-white text-center w-full bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Choisir
+                            mon offre</button>
+                    </div>
+                    <div class="space-y-2">
+                        <div>
+                            <span class="material-icons text-green-600">
+                                check
+                            </span> Ne manquez plus de clients potentiels
+                        </div>
+                        <div>
+                            <span class="material-icons text-green-600">
+                                check
+                            </span> Trouvez des clients prêt à acheter
+                        </div>
+                    </div>
+                </div>
+            </transition>
+            <div v-if="step">
+                <!-- ====== Pricing Section Start -->
+                <section class="relative z-20 overflow-hidden bg-white pt-3 pb-12 lg:pt-[120px] lg:pb-[90px]">
+                    <div class="container mx-auto">
+                        <div class="-mx-4 flex flex-wrap">
+                            <div class="w-full px-4">
+                                <div class="mx-auto mb-[60px] max-w-[510px] text-center lg:mb-20">
+                                    <h2 class="text-dark mb-4 text-3xl font-bold sm:text-4xl md:text-[40px]">
+                                        Nos Offres
+                                    </h2>
+                                    <p class="text-body-color text-sm">
+                                        Veuillez choisir parmi les offres ci-dessous celle qui vous convient. La
+                                        principale différence entre ces offres résident dans la vitesse de recherche, la
+                                        priorité de votre compte et la taille des listes de clients.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="-mx-4 flex flex-wrap justify-center">
+                            <div class="w-full px-4 md:w-1/2 lg:w-1/3">
+                                <div
+                                    class="border-green-bg-green-600 shadow-pricing relative z-10 mb-10 overflow-hidden rounded-xl border border-opacity-20 bg-white py-10 px-8 sm:p-12 lg:py-10 lg:px-6 xl:p-12">
+                                    <span class="text-green-bg-green-600 mb-4 block text-lg font-semibold">
+                                        Basique
+                                    </span>
+                                    <h2 class="text-dark mb-5 text-[42px] font-bold">
+                                         650F
+                                        <span class="text-body-color text-base font-medium"> / mois </span>
+                                    </h2>
+                                    <p class="text-body-color mb-8 border-b border-[#F2F2F2] pb-8 text-base">
+                                        La vitesse de recherche de client est normale et la priorité de votre compte est
+                                        inférieur aux autres offres.
+                                    </p>
+                                    <div class="mb-7">
+                                        <p class="text-body-color mb-1 text-base leading-loose">13 clients maximum par
+                                            liste</p>
+                                        <p class="text-body-color mb-1 text-base leading-loose">
+                                            Environ 40% de demandes urgentes
+                                        </p>
+                                        <p class="text-body-color mb-1 text-base leading-loose">
+                                            Vitesse normale de recherche
+                                        </p>
+                                        <p class="text-body-color mb-1 text-base leading-loose">
+                                            Priorité faible
+                                        </p>
+                                    </div>
+                                    <a @click="activeMod(), choice = 'basique', amount = 640"
+                                        class="text-green-bg-green-600 hover:bg-green-600 hover:border-green-bg-green-600 block w-full rounded-md border border-[#D4DEFF] bg-transparent p-4 text-center text-base font-semibold transition hover:text-white">
+                                        Choisir cette offre
+                                    </a>
+                                    <div>
+                                        <span class="absolute right-0 top-7 z-[-1]">
+                                            <svg width="77" height="172" viewBox="0 0 77 172" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="86" cy="86" r="86" fill="url(#paint0_linear)" />
+                                                <defs>
+                                                    <linearGradient id="paint0_linear" x1="86" y1="0" x2="86" y2="172"
+                                                        gradientUnits="userSpaceOnUse">
+                                                        <stop stop-color="#3056D3" stop-opacity="0.09" />
+                                                        <stop offset="1" stop-color="#C4C4C4" stop-opacity="0" />
+                                                    </linearGradient>
+                                                </defs>
+                                            </svg>
+                                        </span>
+                                        <span class="absolute right-4 top-4 z-[-1]">
+                                            <svg width="41" height="89" viewBox="0 0 41 89" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="38.9138" cy="87.4849" r="1.42021"
+                                                    transform="rotate(180 38.9138 87.4849)" fill="#3056D3" />
+                                                <circle cx="38.9138" cy="74.9871" r="1.42021"
+                                                    transform="rotate(180 38.9138 74.9871)" fill="#3056D3" />
+                                                <circle cx="38.9138" cy="62.4892" r="1.42021"
+                                                    transform="rotate(180 38.9138 62.4892)" fill="#3056D3" />
+                                                <circle cx="38.9138" cy="38.3457" r="1.42021"
+                                                    transform="rotate(180 38.9138 38.3457)" fill="#3056D3" />
+                                                <circle cx="38.9138" cy="13.634" r="1.42021"
+                                                    transform="rotate(180 38.9138 13.634)" fill="#3056D3" />
+                                                <circle cx="38.9138" cy="50.2754" r="1.42021"
+                                                    transform="rotate(180 38.9138 50.2754)" fill="#3056D3" />
+                                                <circle cx="38.9138" cy="26.1319" r="1.42021"
+                                                    transform="rotate(180 38.9138 26.1319)" fill="#3056D3" />
+                                                <circle cx="38.9138" cy="1.42021" r="1.42021"
+                                                    transform="rotate(180 38.9138 1.42021)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="87.4849" r="1.42021"
+                                                    transform="rotate(180 26.4157 87.4849)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="74.9871" r="1.42021"
+                                                    transform="rotate(180 26.4157 74.9871)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="62.4892" r="1.42021"
+                                                    transform="rotate(180 26.4157 62.4892)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="38.3457" r="1.42021"
+                                                    transform="rotate(180 26.4157 38.3457)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="13.634" r="1.42021"
+                                                    transform="rotate(180 26.4157 13.634)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="50.2754" r="1.42021"
+                                                    transform="rotate(180 26.4157 50.2754)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="26.1319" r="1.42021"
+                                                    transform="rotate(180 26.4157 26.1319)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="1.4202" r="1.42021"
+                                                    transform="rotate(180 26.4157 1.4202)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="87.4849" r="1.42021"
+                                                    transform="rotate(180 13.9177 87.4849)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="74.9871" r="1.42021"
+                                                    transform="rotate(180 13.9177 74.9871)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="62.4892" r="1.42021"
+                                                    transform="rotate(180 13.9177 62.4892)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="38.3457" r="1.42021"
+                                                    transform="rotate(180 13.9177 38.3457)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="13.634" r="1.42021"
+                                                    transform="rotate(180 13.9177 13.634)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="50.2754" r="1.42021"
+                                                    transform="rotate(180 13.9177 50.2754)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="26.1319" r="1.42021"
+                                                    transform="rotate(180 13.9177 26.1319)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="1.42019" r="1.42021"
+                                                    transform="rotate(180 13.9177 1.42019)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="87.4849" r="1.42021"
+                                                    transform="rotate(180 1.41963 87.4849)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="74.9871" r="1.42021"
+                                                    transform="rotate(180 1.41963 74.9871)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="62.4892" r="1.42021"
+                                                    transform="rotate(180 1.41963 62.4892)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="38.3457" r="1.42021"
+                                                    transform="rotate(180 1.41963 38.3457)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="13.634" r="1.42021"
+                                                    transform="rotate(180 1.41963 13.634)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="50.2754" r="1.42021"
+                                                    transform="rotate(180 1.41963 50.2754)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="26.1319" r="1.42021"
+                                                    transform="rotate(180 1.41963 26.1319)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="1.4202" r="1.42021"
+                                                    transform="rotate(180 1.41963 1.4202)" fill="#3056D3" />
+                                            </svg>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-full px-4 md:w-1/2 lg:w-1/3">
+                                <div
+                                    class="border-green-bg-green-600 shadow-pricing relative z-10 mb-10 overflow-hidden rounded-xl border border-opacity-20 bg-white py-10 px-8 sm:p-12 lg:py-10 lg:px-6 xl:p-12">
+                                    <span class="text-green-bg-green-600 mb-4 block text-lg font-semibold">
+                                        Pro
+                                    </span>
+                                    <h2 class="text-dark mb-5 text-[42px] font-bold">
+                                        1500F
+                                        <span class="text-body-color text-base font-medium"> / mois </span>
+                                    </h2>
+                                    <p class="text-body-color mb-8 border-b border-[#F2F2F2] pb-8 text-base">
+                                        La vitesse de recherche de client est élevée et la priorité de votre compte est
+                                        supérieure à l'offre basique.
+                                    </p>
+                                    <div class="mb-7">
+                                        <p class="text-body-color mb-1 text-base leading-loose">30 clients maximum par
+                                            liste</p>
+                                        <p class="text-body-color mb-1 text-base leading-loose">
+                                            Environ 50% de demandes urgentes
+                                        </p>
+                                        <p class="text-body-color mb-1 text-base leading-loose">
+                                            Vitesse élevée de recherche
+                                        </p>
+                                        <p class="text-body-color mb-1 text-base leading-loose">
+                                            Priorité supérieur
+                                        </p>
+                                    </div>
+                                    <a @click="activeMod(), choice = 'pro', amount = 1500"
+                                        class="bg-green-600 border-green-bg-green-600 block w-full rounded-md border p-4 text-center text-base font-semibold text-white transition hover:bg-opacity-90">
+                                        Choisir cette offre
+                                    </a>
+                                    <div>
+                                        <span class="absolute right-0 top-7 z-[-1]">
+                                            <svg width="77" height="172" viewBox="0 0 77 172" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="86" cy="86" r="86" fill="url(#paint0_linear)" />
+                                                <defs>
+                                                    <linearGradient id="paint0_linear" x1="86" y1="0" x2="86" y2="172"
+                                                        gradientUnits="userSpaceOnUse">
+                                                        <stop stop-color="#3056D3" stop-opacity="0.09" />
+                                                        <stop offset="1" stop-color="#C4C4C4" stop-opacity="0" />
+                                                    </linearGradient>
+                                                </defs>
+                                            </svg>
+                                        </span>
+                                        <span class="absolute right-4 top-4 z-[-1]">
+                                            <svg width="41" height="89" viewBox="0 0 41 89" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="38.9138" cy="87.4849" r="1.42021"
+                                                    transform="rotate(180 38.9138 87.4849)" fill="#3056D3" />
+                                                <circle cx="38.9138" cy="74.9871" r="1.42021"
+                                                    transform="rotate(180 38.9138 74.9871)" fill="#3056D3" />
+                                                <circle cx="38.9138" cy="62.4892" r="1.42021"
+                                                    transform="rotate(180 38.9138 62.4892)" fill="#3056D3" />
+                                                <circle cx="38.9138" cy="38.3457" r="1.42021"
+                                                    transform="rotate(180 38.9138 38.3457)" fill="#3056D3" />
+                                                <circle cx="38.9138" cy="13.634" r="1.42021"
+                                                    transform="rotate(180 38.9138 13.634)" fill="#3056D3" />
+                                                <circle cx="38.9138" cy="50.2754" r="1.42021"
+                                                    transform="rotate(180 38.9138 50.2754)" fill="#3056D3" />
+                                                <circle cx="38.9138" cy="26.1319" r="1.42021"
+                                                    transform="rotate(180 38.9138 26.1319)" fill="#3056D3" />
+                                                <circle cx="38.9138" cy="1.42021" r="1.42021"
+                                                    transform="rotate(180 38.9138 1.42021)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="87.4849" r="1.42021"
+                                                    transform="rotate(180 26.4157 87.4849)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="74.9871" r="1.42021"
+                                                    transform="rotate(180 26.4157 74.9871)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="62.4892" r="1.42021"
+                                                    transform="rotate(180 26.4157 62.4892)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="38.3457" r="1.42021"
+                                                    transform="rotate(180 26.4157 38.3457)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="13.634" r="1.42021"
+                                                    transform="rotate(180 26.4157 13.634)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="50.2754" r="1.42021"
+                                                    transform="rotate(180 26.4157 50.2754)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="26.1319" r="1.42021"
+                                                    transform="rotate(180 26.4157 26.1319)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="1.4202" r="1.42021"
+                                                    transform="rotate(180 26.4157 1.4202)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="87.4849" r="1.42021"
+                                                    transform="rotate(180 13.9177 87.4849)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="74.9871" r="1.42021"
+                                                    transform="rotate(180 13.9177 74.9871)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="62.4892" r="1.42021"
+                                                    transform="rotate(180 13.9177 62.4892)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="38.3457" r="1.42021"
+                                                    transform="rotate(180 13.9177 38.3457)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="13.634" r="1.42021"
+                                                    transform="rotate(180 13.9177 13.634)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="50.2754" r="1.42021"
+                                                    transform="rotate(180 13.9177 50.2754)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="26.1319" r="1.42021"
+                                                    transform="rotate(180 13.9177 26.1319)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="1.42019" r="1.42021"
+                                                    transform="rotate(180 13.9177 1.42019)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="87.4849" r="1.42021"
+                                                    transform="rotate(180 1.41963 87.4849)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="74.9871" r="1.42021"
+                                                    transform="rotate(180 1.41963 74.9871)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="62.4892" r="1.42021"
+                                                    transform="rotate(180 1.41963 62.4892)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="38.3457" r="1.42021"
+                                                    transform="rotate(180 1.41963 38.3457)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="13.634" r="1.42021"
+                                                    transform="rotate(180 1.41963 13.634)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="50.2754" r="1.42021"
+                                                    transform="rotate(180 1.41963 50.2754)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="26.1319" r="1.42021"
+                                                    transform="rotate(180 1.41963 26.1319)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="1.4202" r="1.42021"
+                                                    transform="rotate(180 1.41963 1.4202)" fill="#3056D3" />
+                                            </svg>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-full px-4 md:w-1/2 lg:w-1/3">
+                                <div
+                                    class="border-green-bg-green-600 shadow-pricing relative z-10 mb-10 overflow-hidden rounded-xl border border-opacity-20 bg-white py-10 px-8 sm:p-12 lg:py-10 lg:px-6 xl:p-12">
+                                    <span class="text-green-bg-green-600 mb-4 block text-lg font-semibold">
+                                        Entreprise
+                                    </span>
+                                    <h2 class="text-dark mb-5 text-[42px] font-bold">
+                                        3500F
+                                        <span class="text-body-color text-base font-medium"> / mois </span>
+                                    </h2>
+                                    <p class="text-body-color mb-8 border-b border-[#F2F2F2] pb-8 text-base">
+                                        La vitesse de recherhe de clients est la plus élevée et vous disposez de la plus
+                                        grande priorité
+                                    </p>
+                                    <div class="mb-7">
+                                        <p class="text-body-color mb-1 text-base leading-loose">
+                                            60 clients maximum par liste
+                                        </p>
+                                        <p class="text-body-color mb-1 text-base leading-loose">
+                                            Plus de 60% de demandes urgentes
+                                        </p>
+                                        <p class="text-body-color mb-1 text-base leading-loose">
+                                            Vitesse de recherche élevée
+                                        </p>
+                                        <p class="text-body-color mb-1 text-base leading-loose">
+                                            Priorité absolue
+                                        </p>
+
+                                    </div>
+                                    <a @click="activeMod(), choice = 'buisness', amount = 3500"
+                                        class="text-green-bg-green-600 hover:bg-green-600 hover:border-green-bg-green-600 block w-full rounded-md border border-[#D4DEFF] bg-transparent p-4 text-center text-base font-semibold transition hover:text-white">
+                                        Choisir cette offre
+                                    </a>
+                                    <div>
+                                        <span class="absolute right-0 top-7 z-[-1]">
+                                            <svg width="77" height="172" viewBox="0 0 77 172" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="86" cy="86" r="86" fill="url(#paint0_linear)" />
+                                                <defs>
+                                                    <linearGradient id="paint0_linear" x1="86" y1="0" x2="86" y2="172"
+                                                        gradientUnits="userSpaceOnUse">
+                                                        <stop stop-color="#3056D3" stop-opacity="0.09" />
+                                                        <stop offset="1" stop-color="#C4C4C4" stop-opacity="0" />
+                                                    </linearGradient>
+                                                </defs>
+                                            </svg>
+                                        </span>
+                                        <span class="absolute right-4 top-4 z-[-1]">
+                                            <svg width="41" height="89" viewBox="0 0 41 89" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="38.9138" cy="87.4849" r="1.42021"
+                                                    transform="rotate(180 38.9138 87.4849)" fill="#3056D3" />
+                                                <circle cx="38.9138" cy="74.9871" r="1.42021"
+                                                    transform="rotate(180 38.9138 74.9871)" fill="#3056D3" />
+                                                <circle cx="38.9138" cy="62.4892" r="1.42021"
+                                                    transform="rotate(180 38.9138 62.4892)" fill="#3056D3" />
+                                                <circle cx="38.9138" cy="38.3457" r="1.42021"
+                                                    transform="rotate(180 38.9138 38.3457)" fill="#3056D3" />
+                                                <circle cx="38.9138" cy="13.634" r="1.42021"
+                                                    transform="rotate(180 38.9138 13.634)" fill="#3056D3" />
+                                                <circle cx="38.9138" cy="50.2754" r="1.42021"
+                                                    transform="rotate(180 38.9138 50.2754)" fill="#3056D3" />
+                                                <circle cx="38.9138" cy="26.1319" r="1.42021"
+                                                    transform="rotate(180 38.9138 26.1319)" fill="#3056D3" />
+                                                <circle cx="38.9138" cy="1.42021" r="1.42021"
+                                                    transform="rotate(180 38.9138 1.42021)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="87.4849" r="1.42021"
+                                                    transform="rotate(180 26.4157 87.4849)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="74.9871" r="1.42021"
+                                                    transform="rotate(180 26.4157 74.9871)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="62.4892" r="1.42021"
+                                                    transform="rotate(180 26.4157 62.4892)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="38.3457" r="1.42021"
+                                                    transform="rotate(180 26.4157 38.3457)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="13.634" r="1.42021"
+                                                    transform="rotate(180 26.4157 13.634)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="50.2754" r="1.42021"
+                                                    transform="rotate(180 26.4157 50.2754)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="26.1319" r="1.42021"
+                                                    transform="rotate(180 26.4157 26.1319)" fill="#3056D3" />
+                                                <circle cx="26.4157" cy="1.4202" r="1.42021"
+                                                    transform="rotate(180 26.4157 1.4202)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="87.4849" r="1.42021"
+                                                    transform="rotate(180 13.9177 87.4849)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="74.9871" r="1.42021"
+                                                    transform="rotate(180 13.9177 74.9871)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="62.4892" r="1.42021"
+                                                    transform="rotate(180 13.9177 62.4892)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="38.3457" r="1.42021"
+                                                    transform="rotate(180 13.9177 38.3457)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="13.634" r="1.42021"
+                                                    transform="rotate(180 13.9177 13.634)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="50.2754" r="1.42021"
+                                                    transform="rotate(180 13.9177 50.2754)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="26.1319" r="1.42021"
+                                                    transform="rotate(180 13.9177 26.1319)" fill="#3056D3" />
+                                                <circle cx="13.9177" cy="1.42019" r="1.42021"
+                                                    transform="rotate(180 13.9177 1.42019)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="87.4849" r="1.42021"
+                                                    transform="rotate(180 1.41963 87.4849)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="74.9871" r="1.42021"
+                                                    transform="rotate(180 1.41963 74.9871)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="62.4892" r="1.42021"
+                                                    transform="rotate(180 1.41963 62.4892)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="38.3457" r="1.42021"
+                                                    transform="rotate(180 1.41963 38.3457)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="13.634" r="1.42021"
+                                                    transform="rotate(180 1.41963 13.634)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="50.2754" r="1.42021"
+                                                    transform="rotate(180 1.41963 50.2754)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="26.1319" r="1.42021"
+                                                    transform="rotate(180 1.41963 26.1319)" fill="#3056D3" />
+                                                <circle cx="1.41963" cy="1.4202" r="1.42021"
+                                                    transform="rotate(180 1.41963 1.4202)" fill="#3056D3" />
+                                            </svg>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- ====== Pricing Section End -->
+
+            </div>
+        </div>
+        <div class="w-full bg-blue-100 text-center pt-4 pb-16">
+            Copyright &copy; 2022 <br>
+            All Right Reserved <a class="text-green-500" href="">Elife Global</a>
+        </div>
+
+        <!-- Modal toggle -->
+        <button style="display: none;" id="myBut"
+            class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            type="button" data-modal-toggle="authentication-modal">
+            Toggle modal
+        </button>
+        <!-- Main modal -->
+        <div id="authentication-modal" tabindex="-1" aria-hidden="true"
+            class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full justify-center items-center">
+            <div class="relative p-4 w-full max-w-md h-full md:h-auto">
+                <!-- Modal content -->
+                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                    <button v-show="transaction == ''" type="button"
+                        class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                        data-modal-toggle="authentication-modal">
+                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                    <div class="py-6 px-6 lg:px-8">
+                        <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white"> Informations du
+                            compte</h3>
+                        <form class="space-y-3" action="" @submit.prevent="pay()">
+                            {% csrf_token %}
+                            <div>
+                                <label for="name"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Nom
+                                    du commerce ou de l'entreprise</label>
+                                <input type="name" name="name" id="name" v-model="name"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                    {% if not seller %} placeholder="nom..." {% else %} value="{{seller.name}}" {% endif %} required>
+                            </div>
+                            <div>
+                                <label for="countries"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Catégorie
+                                    de produits</label>
+                                <select id="countries" required name="category" v-model="cat"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    {% for c in categories %}
+                                    <option {% if c == seller.category %} selected {% endif %} value="{{c.pk}}">
+                                        {{c.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div>
+                                <label for="countries_multiple"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Selectionnez
+                                    les produits
+                                    de catégorie
+                                    disponibles</label>
+                                {% for c in categories %}
+                                <select v-if="cat == '{{c.pk}}'" multiple id="countries_multiple" name="subs[]" required
+                                    v-model="subs"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    {% for s in c.subs.all %}
+                                    <option {% if s in seller.subs.all %} selected {% endif %}>{{s.name}}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                {% endfor %}
+                            </div>
+                            <div class="py-2">
+                                <div v-for="s in subs" :key="s"
+                                    class="inline-block px-2 py-1 mr-1 my-1 text-sm bg-orange-100 text-orange-600 rounded">
+                                    ${s}
+                                </div>
+
+                            </div>
+                            <input v-show="false" :value="transaction" type="text" name="transaction_id" />
+                            <button v-if="transaction == ''" type="submit"
+                                class="w-full text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Confirmer
+                                et payer
+                            </button>
+                            <div v-if="transaction != '' && !done" class="py-2 flex justify-around ">
+                                <div class="flex items-center">
+                                    <div class="mr-3">
+
+                                        <div role="status">
+                                            <svg aria-hidden="true"
+                                                class="mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-green-600"
+                                                viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                                    fill="currentColor"></path>
+                                                <path
+                                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                                    fill="currentFill"></path>
+                                            </svg>
+                                            <span class="sr-only">Loading...</span>
+                                        </div>
+
+                                    </div>
+                                    <div class="font-medium">
+                                        Activation de l'abonnement
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="transaction != '' && done" class="py-2 flex justify-around ">
+                                <div class="flex items-center">
+                                    <div class="mr-3 text-green-700">
+
+                                        <span class="material-icons">
+                                            check_circle
+                                        </span>
+
+                                    </div>
+                                    <div class="font-medium">
+                                        Abonnement mis à jour
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="global_load" style="margin-top: 35vh;">
+        <div class="flex  items-center justify-around mx-auto pb-2">
+            <a href="https://flowbite.com/" class="flex items-center">
+                <img src="{% static 'logo.png' %}" class="mr-3 h-8 sm:h-9" alt="Flowbite Logo">
+                <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Zawadi</span>
+            </a>
+        </div>
+        <div class="py-4 flex justify-around items-center">
+            <div role="status">
+                <svg class="inline mr-2 w-10 h-10 text-gray-200 animate-spin dark:text-gray-600 fill-green-600"
+                    viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                        fill="currentColor" />
+                    <path
+                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                        fill="currentFill" />
+                </svg>
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    <script src="/static/axios.min.js"></script>
+    <script src="{% static 'vue.global.js' %}"></script>
+    <script src="https://cdn.kkiapay.me/k.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyC5tw6eOAoi0vKT3hiyIAPND8ovAFp91Xs",
+      authDomain: "zawadi-fe511.firebaseapp.com",
+      projectId: "zawadi-fe511",
+      storageBucket: "zawadi-fe511.appspot.com",
+      messagingSenderId: "740387796760",
+      appId: "1:740387796760:web:aec758d6918ce20098d06d",
+      measurementId: "G-8X3HR2FPHK"
+    };
+    const firebas_app = firebase.initializeApp(firebaseConfig);
+    const messaging = firebase.messaging();
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker
+          .register("/serviceworker.js")
+          .then(res => {
+            console.log("service worker registered");
+            messaging.useServiceWorker(res);
+          })
+          .catch(err => console.log("service worker not registered", err))
+      })
+    }
+  </script>
+    {% block script %}
+    <script>
+        let baseUR = window.location.host
+        let prot = window.location.protocol
+        axios.defaults.baseURL = prot + "//" + baseUR + "/"
+        const { createApp } = Vue
+        const app = createApp({
+            data() {
+                return {
+                    step: 0,
+                    done: false,
+                    err: '',
+                    total: null,
+                    transaction: '',
+                    name: '{{seller.name}}',
+                    choice: '',
+                    amount: 0,
+                    cat: '{{seller.category.pk}}',
+                    subs: [{% for s in seller.subs.all %} '{{s.name}}', {% endfor %}]
+        }
+            },
+            mounted(){
+                const end_load = () => {
+        document.getElementById('global_load').style.display = 'none'
+        document.getElementById('app').style.display = 'block'
+    }
+    end_load()
+            },
+        methods: {
+            validate(){
+                let th = this
+
+                if (th.step == 0) {
+                    th.err = ''
+                    th.step = 1
+                }
+            },
+            activeMod() {
+                document.getElementById('myBut').click()
+            },
+            pay() {
+                let th = this
+                openKkiapayWidget({
+                    amount: th.amount, position: "right",
+                    data: "",
+                    theme: "green",
+                    key: "{{token}}",
+                })
+                addSuccessListener(response => {
+                    th.transaction = response.transactionId
+                    th.send_data()
+                });
+            },
+            send_data(){
+                let th = this
+                const form = new FormData()
+                form.append('name', th.name)
+                form.append('cat', th.cat)
+                form.append('subs', JSON.stringify(th.subs))
+                form.append('choice', th.choice)
+                form.append('total', th.total)
+                form.append('transaction', th.transaction)
+                axios({
+                    url: 'api/activ_abn/',
+                    method: 'POST',
+                    data: form,
+                    headers: {
+                        "accept": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    },
+                }).then(resp => {
+                    if (resp.data['done']) {
+                        th.done = true
+                        setTimeout(() => {
+                            window.location.href = "/clients/0/"
+                        }, 1000);
+                    }
+                }).catch(err => {
+                    console.log(err);
+                })
+            }
+
+        },
+        compilerOptions: {
+            delimiters: ["${", "}"]
+        }
+        }).mount('#app')
+    </script>
+    {% endblock %}
+    <script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></script>
+</body>
+
+</html>

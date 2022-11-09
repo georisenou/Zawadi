@@ -1,0 +1,283 @@
+{% extends '_base.html' %}
+
+{% block content %}
+<div class="pt-12 px-4 md:px-24 lg:px-60">
+    {% if seller %}
+    <div class=" px-2 flex justify-around ">
+        <div>
+            <div :style="{
+                width: '6rem',
+                height: '6rem',
+                'border-radius': '100%',
+                'background-size': 'cover',
+                'background-position': 'top center',
+                'background-image': `url('{{seller.get_picture}}')`,
+            }"></div>
+            <div @click="actMod()"
+                class="bg-green-600 p-2 text-white w-10 h-10 rounded-full active:bg-gray-100 active:text-gray-700"
+                style="position: relative; bottom: 2.3rem; left: 3.7rem;">
+                <span class="material-icons">
+                    photo_camera
+                </span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <form style="display: none;" action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" accept="image/*" required name="image" id="myBu" />
+        <button type="submit" id="sub">submit</button>
+    </form>
+    {% if seller %}
+    <div class="pb-4 space-y-2 grid grid-cols-2 space-x-2">
+
+        <div class=" p-3 rounded bg-blue-50 shadow">
+            <div class="font-medium ">
+                Abonnement
+            </div>
+            {% if seller.rest  %}
+            <div class="text-green-500 text-lg">
+                 &bull; Active 
+            </div>
+            {% else %}
+            <div class="text-red-500 text-lg">
+                &bull; Terminé
+            </div>
+            {% endif %}
+        </div>
+        <div class="p-3 rounded bg-red-50 shadow">
+            <div class="font-medium">
+                Date d'abonnement
+            </div>
+            <div class="text-lg">
+                ${format_to(last_day)}
+            </div>
+        </div>
+        <div class="p-3 rounded bg-green-50 shadow">
+            <div class="font-medium">
+                Date d'expiration
+            </div>
+            <div class=" text-lg">
+                ${format_to(expired_date)}
+            </div>
+        </div>
+        <div class="p-3 rounded bg-yellow-50 shadow">
+            <div class="font-medium ">
+                Nombre de clients total
+            </div>
+            <div class="text-lg">
+                {{seller.count}}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% if not seller %}
+    <div class="px-4 py-8 flex justify-around ">
+        <img src="/static/img/not.svg" class="lg:w-1/2 w-3/4" />
+    </div>
+    <div class="text-sm text-center px-6 py-4">
+        Vous ne disposez pas encore de compte vendeur. Veuillez en créer un pour afficher toutes les options de cette
+        page.
+    </div>
+    {% endif %}
+    <div id="err">
+        {% for e in err %}
+        <div class="my-2">
+            <div class="flex p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
+                role="alert">
+                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span class="sr-only">Error</span>
+                <div>
+                    {{e|safe}}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <form action="" method="POST" >
+        {% csrf_token %}
+        {% if seller %}
+        <div class="pb-4 ">
+            <div class="text-lg font-semibold py-4 mb-2 ">
+                Compte Vendeur
+            </div>
+            <div class="space-y-2">
+                <div class="relative z-0">
+                    <input type="text" id="floating_standard" required name="name"
+                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                        value="{{seller.name}}" />
+                    <label for="floating_standard"
+                        class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Commerce
+                        ou Entreprise</label>
+                </div>
+                <div>
+                    <label for="countries"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Catégorie
+                        de produit</label>
+                    <select id="countries" required name="category" v-model="cat"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        {% for c in categories %}
+                        <option {% if c == seller.category %} selected {% endif %} value="{{c.pk}}">{{c.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="countries_multiple"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Produits
+                        disponibles</label>
+                    {% for c in categories %}
+                    <select v-if="cat == '{{c.pk}}'" multiple id="countries_multiple" name="subs[]" required
+                        v-model="subs"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        {% for s in c.subs.all %}
+                        <option {% if s in seller.subs.all %} selected {% endif %}>{{s.name}}</option>
+                        {% endfor %}
+                    </select>
+                    {% endfor %}
+                </div>
+                <div class="py-2">
+                    <div v-for="s in subs" :key="s"
+                        class="inline-block px-2 py-1 mr-1 my-1 text-sm bg-green-100 text-green-600 rounded">
+                        ${s}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="pb-4 ">
+            <div class="text-lg font-semibold mb-2 ">
+                Informations personnelles
+            </div>
+            <div class="space-y-2 ">
+                <div class="grid md:grid-cols-2 space-y-2 ">
+                    <div>
+                        <label for="first_name"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Nom</label>
+                        <input type="text" id="first_name" name="first_name"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            value="{{request.user.first_name}}" required>
+                    </div>
+                    <div>
+                        <label for="last_name"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Prénom</label>
+                        <input type="text" id="last_name" name="last_name"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            value="{{request.user.last_name}}" required>
+                    </div>
+                </div>
+                <div>
+                    <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Addresse
+                        Email</label>
+                    <input type="email" id="email" name="email"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        value="{{request.user.email}}" required>
+                </div>
+                <div>
+                    <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Mot de
+                        Passe</label>
+                    <input type="password" id="password" name="password"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="•••••••••" required>
+                </div>
+            </div>
+        </div>
+        <div class="py-4">
+            <button type="submit"
+                class="w-full text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Enregistrer
+                les modifications</button>
+        </div>
+    </form>
+
+</div>
+<div id="myTo" style="position: absolute; top: 8vh; left: 3vw;">
+    {% if has_modif %}
+    <div id="toast-success"
+        class="flex items-center p-4 mb-4 w-full max-w-xs text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
+        role="alert">
+        <div
+            class="inline-flex flex-shrink-0 justify-center items-center w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"></path>
+            </svg>
+            <span class="sr-only">Check icon</span>
+        </div>
+        <div class="ml-3 text-sm font-normal">Vos modifications ont été enregistré avec succes.</div>
+        <button type="button"
+            class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+            data-dismiss-target="#toast-success" aria-label="Close">
+            <span class="sr-only">Close</span>
+            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clip-rule="evenodd"></path>
+            </svg>
+        </button>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    const { createApp } = Vue
+    const app = createApp({
+        data() {
+            return {
+                message: 'Hello Vue!',
+                last_day: '{{seller.last_abn}}',
+                expired_date: '{{seller.expired_date}}',
+                cat: '{{seller.category.pk}}',
+                subs: [{% for s in seller.subs.all %} '{{s.name}}', {% endfor %}]
+    }
+        },
+        mounted(){
+            const end_load = () => {
+        document.getElementById('global_load').style.display = 'none'
+        document.getElementById('app').style.display = 'block'
+    }
+    end_load()
+        },
+    methods: {
+        actMod() {
+            document.getElementById('myBu').click()
+        },
+        format_to_date(utc_str){
+            const date = new Date(utc_str)
+
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+            let month = months[date.getMonth()], years = date.getFullYear(), day = date.getDate();
+            return `${day} ${month} ${years}`
+        },
+        format_to(str){
+            let li = str.split(',').slice(0, 2)
+            return li.join(' ')
+        }
+    },
+    watch: {
+        cat(newcat, oldcat){
+            subs = []
+        }
+    },
+    compilerOptions: {
+        delimiters: ["${", "}"]
+    }
+    }).mount('#app')
+    document.getElementById('myBu').addEventListener('change', (e) => {
+        document.getElementById('sub').click()
+    })
+    setTimeout(() => {
+        document.getElementById('err').style.display = 'none'
+        document.getElementById('myTo').style.display = "none"
+    }, 4500)
+</script>
+{% endblock %}

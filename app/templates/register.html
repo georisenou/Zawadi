@@ -1,0 +1,209 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zawadi | Des clients a tout moment</title>
+    <link rel="manifest" href="/manifest.json" />
+  <!-- ios support -->
+  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-72x72.png" />
+  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-96x96.png" />
+  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-128x128.png" />
+  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-144x144.png" />
+  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-152x152.png" />
+  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-192x192.png" />
+  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-384x384.png" />
+  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-512x512.png" />
+  <meta name="apple-mobile-web-app-status-bar" content="#16a34a" />
+    <meta name="theme-color" content="#16a34a" /> 
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico" >
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="/static/src/3.2.js"></script>
+    <style>
+        .mh-screen {
+            min-height: 100vh;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="app">
+        <section class="bg-gray-50 dark:bg-gray-900 mh-screen ">
+            <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+                <a href="#" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
+                    <img class="w-8 h-8 mr-2" src="{% static 'logo.png' %}" alt="logo">
+                    Zawadi
+                </a>
+                <div
+                    class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                    <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+                        <h1
+                            class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                            Inscription
+                        </h1>
+                        {% for e in err %}
+                        <div class="my-2" id="err">
+                            <div class="flex p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
+                                role="alert">
+                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="sr-only">Error</span>
+                                <div>
+                                    {{e|safe}}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <form class="space-y-4 md:space-y-6" action="" method="POST">
+                            {% csrf_token %}
+                            <div class="grid grid-cols-2">
+                                <div class="mr-2">
+                                    <input type="text" id="first_name" name="first_name"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
+                                        placeholder="Nom" required>
+                                </div>
+                                <div>
+
+                                    <input type="text" id="last_name" name="last_name"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
+                                        placeholder="Prénom" required>
+                                </div>
+                            </div>
+                            <div>
+                                <input type="email" id="email" name="email"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="Email" required>
+                            </div>
+                            <div>
+                                <label for="password" name="password"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Mot de
+                                    Passe</label>
+                                <input type="password" name="password" id="password" placeholder="•••••••••"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    required="">
+                            </div>
+                            <div>
+                                <div class="p-4 my-3 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
+                                    role="alert">
+                                    Veuillez maintenant choisir votre pays et les villes où vous pouvez vendre
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2">
+                                <div class="mr-2">
+                                    <select v-model="country" id="countries" name="country" required
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                        <option value="BJ">Benin</option>
+                                        <option value="TG">Togo</option>
+                                        <option value="CI">Côte D'Ivoire</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <div v-for="c in countries" :key="c">
+                                        <select name="towns[]" v-if="c == country" required multiple
+                                            id="countries_multiple"
+                                            class="bg-gray-50 border border-gray-300 t     ext-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                            <option v-for="t in towns[c]" :value="t"> ${t} </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit"
+                                class="w-full text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Inscription</button>
+                            <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+                                Déjà un compte ? <a href="/login"
+                                    class="font-medium text-green-600 hover:underline dark:text-green-500">Connexion</a>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="w-full bg-blue-100 text-center pt-4 pb-4">
+            Copyright &copy; 2022 <br>
+            All Right Reserved <a class="text-green-500" href="#">Elife Global</a>
+        </div>
+    </div>
+    <script src="{% static 'vue.global.js' %}"></script>
+    {% block script %}
+    <script>
+        const { createApp } = Vue
+        const app = createApp({
+            data() {
+                return {
+                    countries: ['BJ', 'TG', 'CI'],
+                    country: 'BJ',
+                    towns: {
+                        'BJ': [
+                            'Cotonou',
+                            'Porto-Novo',
+                            'Parakou',
+                            'Abomey',
+                            'Djougou',
+                            'Bohicon',
+                            'Kandi',
+                            'Natitingou',
+                            'Ouidah',
+                            'Lokossa',
+                            'Abomey-Calavi'
+                        ],
+                        'TG': [
+                            'Lomé',
+                            'Sokodé',
+                            'Kara',
+                            'Kpalimé',
+                            'Atakpamé',
+                            'Bassar',
+                            'Tsévié',
+                            'Aného',
+                            'Mango',
+                            'Dapaong',
+                            'Tchamba',
+                            'Niamtougou'
+                        ],
+                        'CI': [
+                            'Abidjan',
+                            'Bouaké',
+                            'Daloa',
+                            'Yamoussoukro',
+                            'San-Pédro',
+                            'Divo',
+                            'Korhogo',
+                            'Anyama',
+                            'Abengourou',
+                            'Man',
+                            'Gagnoa',
+                            'Soubré',
+                            'Agboville',
+                            'Dabou',
+                            'Grand-Bassam',
+                            'Bouaflé',
+                            'Issia',
+                            'Sinfra',
+                            'Katiola'
+                        ]
+                    },
+
+                }
+            },
+            compilerOptions: {
+                delimiters: ["${", "}"]
+            }
+        }).mount('#app')
+        setTimeout(() => {
+            document.getElementById('err').style.display = 'none'
+        }, 5000)
+    </script>
+    {% endblock %}
+    <script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></script>
+</body>
+
+</html>
