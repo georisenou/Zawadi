@@ -34,7 +34,7 @@ if os.environ.get('ENV') == "PRODUCTION" :
 else :
     DEBUG = True
 
-ALLOWED_HOSTS = ["*.herokuapp.com", "zawadi.site", "*.zawadi.site"]
+ALLOWED_HOSTS = ["zawadi-proj.herokuapp.com", "zawadi.site", "www.zawadi.site" ,"vendeur.zawadi.site"]
 
 
 # Application definition
