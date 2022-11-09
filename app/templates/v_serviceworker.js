@@ -1,6 +1,6 @@
 const staticDevCoffee = "zawadi-vendeur-v1"
 const assets = [
-  "/offline",
+  "/offline/",
   "/static/off.svg",
   "/static/logo_client.png",
   "/static/logo.png"
