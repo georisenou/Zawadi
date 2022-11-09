@@ -1,7 +1,6 @@
 
 import datetime
 import json
-from turtle import title
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
