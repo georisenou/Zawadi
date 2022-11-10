@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app',
+    'rest_framework',
     'fcm_django',
     'django_hosts',
     'cloudinary',
@@ -94,6 +95,11 @@ TEMPLATES = [
 
 ASGI_APPLICATION = 'MediaProj.asgi.application'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

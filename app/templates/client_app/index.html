@@ -576,7 +576,7 @@
                 th.country = my_info['country']
                 th.whatsapp = my_info['whatsapp']
                 th.number = my_info['number']
-                th.is_registered = my_info['is_registered']
+                th.is_registered = true
             }
         },
         methods: {
@@ -623,8 +623,8 @@
                         th.show_thank = true
                         setTimeout(() => {
                             th.show_thank = false
-                            window.location.href = "/customers"
-                        }, 5000)
+                            window.location.href = "/"
+                        }, 2000)
                     }
                     localStorage.setItem('customers_info', JSON.stringify({
                         first_name: th.first_name,

@@ -84,6 +84,19 @@ def check_week(week):
         week.save()
     return week
 
+def range_to_favor(lis) -> list :
+    sellers = SellerAccount.objects.filter(pk__in = lis)
+    d = []
+    for seller in sellers :
+        d.append({
+            'pk' : seller.pk,
+            'cur' : get_on_week(seller).demandes.count()
+        })
+    k = sorted(d, key=lambda e : e['cur'] )
+    return [
+        e['pk'] for e in k
+    ]
+
 
 def send_client_to_seller(client):
     sellers = SellerAccount.objects.filter(
@@ -101,7 +114,7 @@ def send_client_to_seller(client):
     third_pk = [
         s.pk for s in fsellers if get_on_week(s).get_level() == 'third'
     ]
-    first_pk = first_pk + second_pk + third_pk
+    first_pk = range_to_favor(first_pk) + range_to_favor(second_pk) + range_to_favor(third_pk)
     print(first_pk)
     for pk in first_pk:
         if not client.is_out:
@@ -221,7 +234,6 @@ def login_view(request):
         password = request.POST.get('password')
         try:
             user = authenticate(email=email, password=password)
-            print(user)
             if user:
                 login(request, user)
                 next = request.GET.get('next')
@@ -361,6 +373,8 @@ def compte(request):
 
 
 def customers(request):
+
+    print(request.user)
     zawadi = get_value('zawadi')
     categories = Category.objects.all()
     has_user = request.user.is_authenticated
@@ -437,8 +451,8 @@ def logout_view(request):
     return redirect('/')
 
 
+
 @api_view(["POST"])
-@permission_classes([IsAuthenticated])
 def register_demand(request):
     if not request.user.is_authenticated:
         first_name = request.POST.get('first_name')
@@ -448,20 +462,21 @@ def register_demand(request):
         town = request.POST.get('town')
         number = request.POST.get('number')
         whatsapp = request.POST.get('whatsapp')
-        user = User.objects.get_or_create(
-            first_name=first_name, last_name=last_name, country=country, towns=":".join(json.loads(town)))[0]
-        try:
-            user.email = email
-            user.save()
-        except:
-            try:
-                user.email = first_name + email
-                user.save()
-            except:
-                user.email = last_name + first_name + email
-                user.save()
-        user.set_password(first_name + last_name + number)
-        login(request, user)
+        
+        if  User.objects.filter(email = email).exists():
+            user = User.objects.get(email = email)
+        else:
+            
+            if  User.objects.filter(email = first_name + email).exists():
+                user = User.objects.get(email = first_name + email)
+            elif User.objects.filter(email = last_name + first_name + email).exists() :
+                user = User.objects.get(email = last_name + first_name + email)
+            else :
+                user = User.objects.create_user(email=email, password=first_name + last_name + number, first_name=first_name,
+                                            last_name=last_name, country=country, towns=':'.join(json.loads(town)))
+        
+        
+        login(request, user = user)
         client = Client.objects.get_or_create(
             user=user, phone=number, whatsapp=whatsapp)[0]
     else:
