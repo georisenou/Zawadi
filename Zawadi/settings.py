@@ -35,7 +35,9 @@ if os.environ.get('ENV') == "PRODUCTION" :
 else :
     DEBUG = True
 
+
 ALLOWED_HOSTS = ["jellyfish-app-uw6p4.ondigitalocean.app", "zawadi.site", "www.zawadi.site" ,"vendeur.zawadi.site"]
+
 
 DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
 
