@@ -31,7 +31,7 @@
                 </div>
             </div>
             <div class="pt-8">
-                <button type="button"
+                <button type="button" {% if direct %} href="/register/?from={{from_}}" {% else %} href="/activate" {% endif %}
                     class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg  px-5 py-2.5 text-center mr-2 mb-2">Démarrez
                     aujourd'hui</button>
             </div>
@@ -56,7 +56,7 @@
                 </span> Evitez des pertes de temps avec des clients interessés par vos produits
             </div>
             <div class="pt-4">
-                <a type="button" href="/activate"
+                <a type="button" {% if direct %} href="/register/?from={{from_}}" {% else %} href="/activate" {% endif %}
                     class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg  px-5 py-2.5 text-center mr-2 mb-2 w-full">Démarrez
                     aujourd'hui</a>
             </div>
@@ -170,7 +170,7 @@
         </h2>
         <div class="mt-8 flex lg:mt-0 lg:flex-shrink-0">
             <div class="inline-flex rounded-md shadow">
-                <a href="/activate"
+                <a {% if direct %} href="/register/?from={{from_}}" {% else %} href="/activate" {% endif %}
                     class="inline-flex items-center justify-center rounded-md border border-transparent bg-green-600 px-5 py-3 text-base font-medium text-white hover:bg-green-700">Commencer</a>
             </div>
             <div class="ml-3 inline-flex rounded-md shadow">

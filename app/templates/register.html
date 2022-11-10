@@ -39,6 +39,9 @@
                     <img class="w-8 h-8 mr-2" src="{% static 'logo.png' %}" alt="logo">
                     Zawadi
                 </a>
+                <div class="py-3 px-4 text-center" >
+                    Si vous êtes intéressez, juste 5 secondes pour vous inscrire.
+                </div>
                 <div
                     class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                     <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -46,6 +49,7 @@
                             class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                             Inscription
                         </h1>
+                        
                         {% for e in err %}
                         <div class="my-2" id="err">
                             <div class="flex p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"

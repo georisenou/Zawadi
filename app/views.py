@@ -152,6 +152,9 @@ def check_week_(week):
 
 def index(request):
     source = request.GET.get('source')
+    from_ = request.GET.get('from')
+    if from_ : increment_value(from_)
+    direct_regist = False
     if not source :
         source = 'website'
     increment_value(source)
@@ -166,11 +169,15 @@ def index(request):
             has_submit = True
         except Exception as e:
             print(e)
+    if from_ and (not request.user.is_authenticated) :
+        direct_regist = True
     return render(request, 'index.html', {
         'root': 'home',
         'feeds': feeds[:7],
         'contact': contact,
-        'has_submit': has_submit
+        'has_submit': has_submit,
+        'from_' : from_ ,
+        "direct" : direct_regist
     })
 
 
@@ -260,7 +267,9 @@ def register_view(request):
                 'err': err
             })
         login(request, user)
-        return redirect('index')
+        from_ = request.GET.get('from')
+        if not from_ : return redirect('index')
+        return redirect('activate2')
     return render(request, 'register.html', {
         'err': err
     })
