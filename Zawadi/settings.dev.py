@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'app',
     'fcm_django',
     'django_hosts',
+    'compressor', 
 ]
 
 MIDDLEWARE = [
@@ -93,6 +94,11 @@ DATABASES = {
     }
 }
 
+COMPRESS_ROOT = BASE_DIR / 'app/static'
+
+COMPRESS_ENABLED = True
+
+STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

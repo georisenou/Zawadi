@@ -1,6 +1,5 @@
-
 {% load static %}
-
+{% load compress %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,22 +7,25 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico" >
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <title>Zawadi | Des clients a tout moment</title>
     <link rel="manifest" href="/manifest.json" />
-  <!-- ios support -->
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-72x72.png" />
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-96x96.png" />
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-128x128.png" />
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-144x144.png" />
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-152x152.png" />
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-192x192.png" />
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-384x384.png" />
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-512x512.png" />
-  <meta name="apple-mobile-web-app-status-bar" content="#16a34a" />
-    <meta name="theme-color" content="#16a34a" /> 
+    <!-- ios support -->
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-72x72.png" />
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-96x96.png" />
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-128x128.png" />
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-144x144.png" />
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-152x152.png" />
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-192x192.png" />
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-384x384.png" />
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-512x512.png" />
+    <meta name="apple-mobile-web-app-status-bar" content="#16a34a" />
+    <meta name="theme-color" content="#16a34a" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src="/static/src/3.2.js"></script>
+    <!--<script src="/static/src/3.2.js"></script>-->
+    {% compress css %}
+    <link rel="stylesheet" href="{% static 'src/output.css' %}">
+    {% endcompress %}
     <style>
         .mh-screen {
             min-height: 100vh;
@@ -37,8 +39,7 @@
         <section class="bg-gray-50 dark:bg-gray-900 mh-screen ">
             <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
                 <a href="#" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
-                    <img class="w-8 h-8 mr-2" src="{% static 'logo.png' %}"
-                        alt="logo">
+                    <img class="w-8 h-8 mr-2" src="{% static 'logo.png' %}" alt="logo">
                     Zawadi
                 </a>
                 <div
@@ -77,19 +78,23 @@
                             </div>
                             <div>
                                 <label for="password"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Mot de Passe</label>
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Mot de
+                                    Passe</label>
                                 <input type="password" name="password" id="password" placeholder="•••••••••"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     required>
                             </div>
-                            
+
                             <button type="submit"
                                 class="w-full text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Connexion</button>
                             <p class="text-lg  font-light text-gray-500 dark:text-gray-400">
-                               Pas encore de compte? <a href="/register"
-                                    class="font-medium text-rose-600 hover:underline dark:text-green-500">Inscription</a> ou <a href="{{contact}}?text=J'aimerais proceder a la mise à jour de mon mot de passe Zawadi" >Mot de passe oublié ?</a>
+                                Pas encore de compte? <a href="/register"
+                                    class="font-medium text-rose-600 hover:underline dark:text-green-500">Inscription</a>
+                                ou <a
+                                    href="{{contact}}?text=J'aimerais proceder a la mise à jour de mon mot de passe Zawadi">Mot
+                                    de passe oublié ?</a>
                             </p>
-                            
+
                         </form>
                     </div>
                 </div>

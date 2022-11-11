@@ -3,7 +3,8 @@ const assets = [
   "/offline/",
   "/static/off.svg",
   "/static/logo_client.png",
-  "/static/logo.png"
+  "/static/logo.png",
+  "/static/src/output.css"
 ]
 
 self.addEventListener("install", installEvent => {

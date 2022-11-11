@@ -1,5 +1,5 @@
 <!-- templates/_base.html -->
-
+{% load compress %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -23,7 +23,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Zawadi | Des clients a tout moment</title>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <script src="/static/src/3.2.js"></script>
+  <!--<script src="/static/src/3.2.js"></script>-->
+  {% compress css %}
+  <link rel="stylesheet" href="{% static 'src/output.css' %}">
+  {% endcompress %}
   <style>
     .mh-screen {
       min-height: 100vh;
@@ -222,7 +225,8 @@
                 <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">
                   Installez Zawadi</h3>
                 <div class="mt-2">
-                  <p class="text-sm text-gray-500">Ne manquez plus jamais l'ajout de nouveaux clients et contactez les plus rapidement.</p>
+                  <p class="text-sm text-gray-500">Ne manquez plus jamais l'ajout de nouveaux clients et contactez les
+                    plus rapidement.</p>
                 </div>
               </div>
             </div>

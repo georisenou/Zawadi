@@ -1,5 +1,5 @@
 <!-- templates/_base.html -->
-
+{% load compress %}
 {% load static %}
 
 <!DOCTYPE html>
@@ -7,24 +7,27 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico" >
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="manifest" href="/manifest.json" />
-  <!-- ios support -->
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-72x72.png" />
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-96x96.png" />
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-128x128.png" />
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-144x144.png" />
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-152x152.png" />
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-192x192.png" />
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-384x384.png" />
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-512x512.png" />
-  <meta name="apple-mobile-web-app-status-bar" content="#16a34a" />
-    <meta name="theme-color" content="#16a34a" /> 
-  <title>Zawadi | Des clients a tout moment</title>
+    <!-- ios support -->
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-72x72.png" />
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-96x96.png" />
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-128x128.png" />
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-144x144.png" />
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-152x152.png" />
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-192x192.png" />
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-384x384.png" />
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-512x512.png" />
+    <meta name="apple-mobile-web-app-status-bar" content="#16a34a" />
+    <meta name="theme-color" content="#16a34a" />
+    <title>Zawadi | Des clients a tout moment</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src="/static/src/3.2.js"></script>
+    <!--<script src="/static/src/3.2.js"></script>-->
+    {% compress css %}
+    <link rel="stylesheet" href="{% static 'src/output.css' %}">
+    {% endcompress %}
     <style>
         .mh-screen {
             min-height: 100vh;
@@ -54,7 +57,7 @@
 
 
 <body>
-    <div id="app" style="display: none;" >
+    <div id="app" style="display: none;">
         <nav
             class="bg-white px-2 sm:px-4 py-2.5 dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
             <div class="container flex items-center justify-around mx-auto">
@@ -142,7 +145,8 @@
                                         Nos Offres
                                     </h2>
                                     <p class="text-body-color text-sm">
-                                        Durant la semaine, Profitez d'une <span class="text-orange-500" > réduction de plus de 50% </span> pour avoir encore plus de clients dans vos listes.
+                                        Durant la semaine, Profitez d'une <span class="text-orange-500"> réduction de
+                                            plus de 50% </span> pour avoir encore plus de clients dans vos listes.
                                     </p>
                                 </div>
                             </div>
@@ -155,7 +159,8 @@
                                         Basique
                                     </span>
                                     <h2 class="text-dark mb-5 text-[42px] font-bold">
-                                         <span class="line-through text-2xl text-orange-500 " >1500F</span> <br> <span >650F</span> 
+                                        <span class="line-through text-2xl text-orange-500 ">1500F</span> <br>
+                                        <span>650F</span>
                                         <span class="text-body-color text-base font-medium"> / mois </span>
                                     </h2>
                                     <p class="text-body-color mb-8 border-b border-[#F2F2F2] pb-8 text-base">
@@ -272,7 +277,7 @@
                                         Pro
                                     </span>
                                     <h2 class="text-dark mb-5 text-[42px] font-bold">
-                                        <span class="line-through text-2xl text-orange-500" >3000F</span> <br> 1500F
+                                        <span class="line-through text-2xl text-orange-500">3000F</span> <br> 1500F
                                         <span class="text-body-color text-base font-medium"> / mois </span>
                                     </h2>
                                     <p class="text-body-color mb-8 border-b border-[#F2F2F2] pb-8 text-base">
@@ -387,9 +392,9 @@
                                     class="border-green-bg-green-600 shadow-pricing relative z-10 mb-10 overflow-hidden rounded-xl border border-opacity-20 bg-white py-10 px-8 sm:p-12 lg:py-10 lg:px-6 xl:p-12">
                                     <span class="text-green-bg-green-600 mb-4 block text-lg font-semibold">
                                         Entreprise
-                                    </span> 
+                                    </span>
                                     <h2 class="text-dark mb-5 text-[42px] font-bold">
-                                        <span class="line-through text-2xl text-orange-500" >6000F</span> <br> 3000F
+                                        <span class="line-through text-2xl text-orange-500">6000F</span> <br> 3000F
                                         <span class="text-body-color text-base font-medium"> / mois </span>
                                     </h2>
                                     <p class="text-body-color mb-8 border-b border-[#F2F2F2] pb-8 text-base">
@@ -655,124 +660,124 @@
                 <span class="sr-only">Loading...</span>
             </div>
         </div>
-    <script src="/static/axios.min.js"></script>
-    <script src="{% static 'vue.global.js' %}"></script>
-    <script src="https://cdn.kkiapay.me/k.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyC5tw6eOAoi0vKT3hiyIAPND8ovAFp91Xs",
-      authDomain: "zawadi-fe511.firebaseapp.com",
-      projectId: "zawadi-fe511",
-      storageBucket: "zawadi-fe511.appspot.com",
-      messagingSenderId: "740387796760",
-      appId: "1:740387796760:web:aec758d6918ce20098d06d",
-      measurementId: "G-8X3HR2FPHK"
-    };
-    const firebas_app = firebase.initializeApp(firebaseConfig);
-    const messaging = firebase.messaging();
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", function () {
-        navigator.serviceWorker
-          .register("/serviceworker.js")
-          .then(res => {
-            console.log("service worker registered");
-            messaging.useServiceWorker(res);
-          })
-          .catch(err => console.log("service worker not registered", err))
-      })
-    }
-  </script>
-    {% block script %}
-    <script>
-        let baseUR = window.location.host
-        let prot = window.location.protocol
-        axios.defaults.baseURL = prot + "//" + baseUR + "/"
-        const { createApp } = Vue
-        const app = createApp({
-            data() {
-                return {
-                    step: 0,
-                    done: false,
-                    err: '',
-                    total: null,
-                    transaction: '',
-                    name: '{{seller.name}}',
-                    choice: '',
-                    amount: 0,
-                    cat: '{{seller.category.pk}}',
-                    subs: [{% for s in seller.subs.all %} '{{s.name}}', {% endfor %}]
-        }
+        <script src="/static/axios.min.js"></script>
+        <script src="{% static 'vue.global.js' %}"></script>
+        <script src="https://cdn.kkiapay.me/k.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase.js"></script>
+        <script>
+            const firebaseConfig = {
+                apiKey: "AIzaSyC5tw6eOAoi0vKT3hiyIAPND8ovAFp91Xs",
+                authDomain: "zawadi-fe511.firebaseapp.com",
+                projectId: "zawadi-fe511",
+                storageBucket: "zawadi-fe511.appspot.com",
+                messagingSenderId: "740387796760",
+                appId: "1:740387796760:web:aec758d6918ce20098d06d",
+                measurementId: "G-8X3HR2FPHK"
+            };
+            const firebas_app = firebase.initializeApp(firebaseConfig);
+            const messaging = firebase.messaging();
+            if ("serviceWorker" in navigator) {
+                window.addEventListener("load", function () {
+                    navigator.serviceWorker
+                        .register("/serviceworker.js")
+                        .then(res => {
+                            console.log("service worker registered");
+                            messaging.useServiceWorker(res);
+                        })
+                        .catch(err => console.log("service worker not registered", err))
+                })
+            }
+        </script>
+        {% block script %}
+        <script>
+            let baseUR = window.location.host
+            let prot = window.location.protocol
+            axios.defaults.baseURL = prot + "//" + baseUR + "/"
+            const { createApp } = Vue
+            const app = createApp({
+                data() {
+                    return {
+                        step: 0,
+                        done: false,
+                        err: '',
+                        total: null,
+                        transaction: '',
+                        name: '{{seller.name}}',
+                        choice: '',
+                        amount: 0,
+                        cat: '{{seller.category.pk}}',
+                        subs: [{% for s in seller.subs.all %} '{{s.name}}', {% endfor %}]
+            }
             },
             mounted(){
                 const end_load = () => {
-        document.getElementById('global_load').style.display = 'none'
-        document.getElementById('app').style.display = 'block'
-    }
-    end_load()
-            },
-        methods: {
-            validate(){
-                let th = this
-
-                if (th.step == 0) {
-                    th.err = ''
-                    th.step = 1
+                    document.getElementById('global_load').style.display = 'none'
+                    document.getElementById('app').style.display = 'block'
                 }
+                end_load()
             },
-            activeMod() {
-                document.getElementById('myBut').click()
-            },
-            pay() {
-                let th = this
-                openKkiapayWidget({
-                    amount: th.amount, position: "right",
-                    data: "",
-                    theme: "green",
-                    key: "{{token}}",
-                })
-                addSuccessListener(response => {
-                    th.transaction = response.transactionId
-                    th.send_data()
-                });
-            },
-            send_data(){
-                let th = this
-                const form = new FormData()
-                form.append('name', th.name)
-                form.append('cat', th.cat)
-                form.append('subs', JSON.stringify(th.subs))
-                form.append('choice', th.choice)
-                form.append('total', th.total)
-                form.append('transaction', th.transaction)
-                axios({
-                    url: 'api/activ_abn/',
-                    method: 'POST',
-                    data: form,
-                    headers: {
-                        "accept": "application/json",
-                        "X-CSRFToken": "{{ csrf_token }}",
-                    },
-                }).then(resp => {
-                    if (resp.data['done']) {
-                        th.done = true
-                        setTimeout(() => {
-                            window.location.href = "/clients/0/"
-                        }, 1000);
-                    }
-                }).catch(err => {
-                    console.log(err);
-                })
-            }
+            methods: {
+                validate(){
+                    let th = this
 
-        },
-        compilerOptions: {
-            delimiters: ["${", "}"]
-        }
+                    if (th.step == 0) {
+                        th.err = ''
+                        th.step = 1
+                    }
+                },
+                activeMod() {
+                    document.getElementById('myBut').click()
+                },
+                pay() {
+                    let th = this
+                    openKkiapayWidget({
+                        amount: th.amount, position: "right",
+                        data: "",
+                        theme: "green",
+                        key: "{{token}}",
+                    })
+                    addSuccessListener(response => {
+                        th.transaction = response.transactionId
+                        th.send_data()
+                    });
+                },
+                send_data(){
+                    let th = this
+                    const form = new FormData()
+                    form.append('name', th.name)
+                    form.append('cat', th.cat)
+                    form.append('subs', JSON.stringify(th.subs))
+                    form.append('choice', th.choice)
+                    form.append('total', th.total)
+                    form.append('transaction', th.transaction)
+                    axios({
+                        url: 'api/activ_abn/',
+                        method: 'POST',
+                        data: form,
+                        headers: {
+                            "accept": "application/json",
+                            "X-CSRFToken": "{{ csrf_token }}",
+                        },
+                    }).then(resp => {
+                        if (resp.data['done']) {
+                            th.done = true
+                            setTimeout(() => {
+                                window.location.href = "/clients/0/"
+                            }, 1000);
+                        }
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                }
+
+            },
+            compilerOptions: {
+                delimiters: ["${", "}"]
+            }
         }).mount('#app')
-    </script>
-    {% endblock %}
-    <script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></script>
+        </script>
+        {% endblock %}
+        <script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></script>
 </body>
 
 </html>

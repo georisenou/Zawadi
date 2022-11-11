@@ -1,0 +1,17 @@
+{
+  "name": "zawadi",
+  "version": "1.0.0",
+  "description": "\"Zawadi Proj\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Georis",
+  "license": "ISC",
+  "devDependencies": {
+    "tailwindcss": "^3.2.3"
+  },
+  "dependencies": {
+    "flowbite": "^1.5.3"
+  }
+}

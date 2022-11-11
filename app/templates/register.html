@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load compress %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,20 +9,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zawadi | Des clients a tout moment</title>
     <link rel="manifest" href="/manifest.json" />
-  <!-- ios support -->
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-72x72.png" />
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-96x96.png" />
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-128x128.png" />
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-144x144.png" />
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-152x152.png" />
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-192x192.png" />
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-384x384.png" />
-  <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-512x512.png" />
-  <meta name="apple-mobile-web-app-status-bar" content="#16a34a" />
-    <meta name="theme-color" content="#16a34a" /> 
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico" >
+    <!-- ios support -->
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-72x72.png" />
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-96x96.png" />
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-128x128.png" />
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-144x144.png" />
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-152x152.png" />
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-192x192.png" />
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-384x384.png" />
+    <link rel="apple-touch-icon" href="/static/vendeur/icons/icon-512x512.png" />
+    <meta name="apple-mobile-web-app-status-bar" content="#16a34a" />
+    <meta name="theme-color" content="#16a34a" />
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src="/static/src/3.2.js"></script>
+    <!--<script src="/static/src/3.2.js"></script>-->
+    {% compress css %}
+    <link rel="stylesheet" href="{% static 'src/output.css' %}">
+    {% endcompress %}
     <style>
         .mh-screen {
             min-height: 100vh;
@@ -39,7 +42,7 @@
                     <img class="w-8 h-8 mr-2" src="{% static 'logo.png' %}" alt="logo">
                     Zawadi
                 </a>
-                <div class="py-3 px-4 text-center" >
+                <div class="py-3 px-4 text-center">
                     Si vous êtes intéressez, juste 5 secondes pour vous inscrire.
                 </div>
                 <div
@@ -49,7 +52,7 @@
                             class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                             Inscription
                         </h1>
-                        
+
                         {% for e in err %}
                         <div class="my-2" id="err">
                             <div class="flex p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
