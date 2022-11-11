@@ -174,3 +174,55 @@ class UserGame(models.Model) :
     def __str__(self) -> str:
         return f"{self.day} - {self.user}"
 
+def replace(key, targ, allstring):
+    return allstring.replace(key, targ)
+
+def create_cats(ls ) :
+    old = Label.objects.all()
+    old.delete()
+    for l in ls :
+        name = list(l.keys())[0]
+        label = Label.objects.create(name = name)
+        print('Done --> ', name)
+        for c in l[name] :
+            name = list(c.keys())[0]
+            cat = Category.objects.create(name = name)
+            label.cats.add(cat)
+            print('Done --> ', name)
+            for s in c[name] :
+                sub = SubCategory.objects.create(name = s, box = cat)
+                sub.save()
+                print('Done --> ', s)
+    print('All Done !')
+
+
+def extract_cats() :
+    print('Opening Zawadi Categories file ...')
+    f = open('categorie_zawadi')
+    print('Opened !')
+    l = f.readlines()
+    l = [
+        replace("\n", "", p) for p in l
+    ]
+    ls= []
+    for p in l :
+        ex = {} 
+        if p[0] != "\t" :
+            ex[p] = []
+            ls.append(ex)
+        elif p[0] == "\t" and p[1] != "\t" :
+            n = ls[-1]
+            #n[list(n.keys())[0]].append(replace("\t", "", p))
+            ex = {}
+            ex[replace("\t", "", p)] = []
+            n[list(n.keys())[0]].append(ex)
+        else :
+            n = ls[-1]
+            label = n[list(n.keys())[0]]
+            my = label[-1]
+            myl = my[list(my.keys())[0]].append(replace("\t\t", "", p))
+    create_cats(ls)
+    print('Closing Zawadi Categories file ...')
+    f.close()
+    print('Closed !!')
+
