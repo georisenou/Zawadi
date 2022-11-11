@@ -499,7 +499,7 @@ def register_demand(request):
     pks = []
     for sub in subs:
         demand = ClientDemand.objects.create(
-            client=client, subs=SubCategory.objects.get(name=sub), category = Category.objects.get(pk = int(cat)), emergency=emer)
+            client=client, subs=SubCategory.objects.get(name=sub, box = Category.objects.get(pk = int(cat))), category = Category.objects.get(pk = int(cat)), emergency=emer)
         pks.append(demand.pk)
 
     def send_dem():
