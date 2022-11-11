@@ -1,5 +1,4 @@
 {% load static %}
-{% load compress %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,9 +22,9 @@
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--<script src="/static/src/3.2.js"></script>-->
-    {% compress css %}
+
     <link rel="stylesheet" href="{% static 'src/output.css' %}">
-    {% endcompress %}
+
     <style>
         .mh-screen {
             min-height: 100vh;

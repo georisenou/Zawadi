@@ -56,7 +56,6 @@ INSTALLED_APPS = [
     'django_hosts',
     'cloudinary',
     'cloudinary_storage',
-    'compressor', 
 ]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -142,11 +141,6 @@ REST_FRAMEWORK = {
     ),
 }
 
-COMPRESS_ROOT = BASE_DIR / 'app/static'
-
-COMPRESS_ENABLED = True
-
-STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
 
 
 # Internationalization

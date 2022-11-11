@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     'django_hosts',
     'cloudinary',
     'cloudinary_storage',
-    'compressor', 
 ]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -101,12 +100,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ),
 }
-
-COMPRESS_ROOT = BASE_DIR / 'app/static'
-
-COMPRESS_ENABLED = True
-
-STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
