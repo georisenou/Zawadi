@@ -618,9 +618,13 @@
                                         </div>
 
                                     </div>
-                                    <div class="font-medium">
+                                    <div v-if="transaction != '...'" class="font-medium">
                                         Activation de l'abonnement
                                     </div>
+                                    <div v-else class="font-medium">
+                                        Chargement...
+                                    </div>
+
                                 </div>
                             </div>
                             <div v-if="transaction != '' && done" class="py-2 flex justify-around ">
@@ -734,6 +738,7 @@
                 },
                 pay() {
                     let th = this
+                    th.transaction = "..."
                     openKkiapayWidget({
                         amount: th.amount, position: "right",
                         data: "",
