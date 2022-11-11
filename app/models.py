@@ -154,7 +154,7 @@ class Feedback(models.Model) :
     def __str__(self) -> str:
         return self.seller
     def get_picture(self) :
-        return self.picture.all() if self.picture else ZawadiDetail.objects.get(key = 'default:shop:picture:url').value
+        return self.picture.url if self.picture else ZawadiDetail.objects.get(key = 'default:shop:picture:url').value
 
 class AbnFeature(models.Model) :
     seller = models.ForeignKey(SellerAccount, null=True, blank=True, on_delete=models.CASCADE, related_name="abns")
