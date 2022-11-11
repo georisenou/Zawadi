@@ -44,7 +44,7 @@ def send_notif(seller):
     try:
         device = FCMDevice.objects.get(user=seller.user)
         options = WebpushFCMOptions(
-            link=f"{get_value('site:link')}/mydiscuss/")
+            link=f"{get_value('site:link')}/clients/0/")
         webpush = WebpushConfig(fcm_options=options)
         device.send_message(
             Mss(notification=Notification(title="Zawadi - Nouveau client !",
