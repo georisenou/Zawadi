@@ -46,9 +46,15 @@ class Client(models.Model) :
     def __str__(self) -> str:
         return self.user.email
     
+class Label(models.Model) :
+    name = models.CharField(max_length=150, null=True, blank=True)
+    is_on = models.BooleanField(default=True)
+    def __str__(self) :
+        return self.name
 
 class Category(models.Model) :
     name = models.CharField(null=True, blank=True, max_length=250)
+    label = models.ForeignKey(Label, on_delete=models.CASCADE, null=True, blank=True, related_name="cats")
     is_visible = models.BooleanField(default=True)
     def __str__(self) -> str:
         return self.name

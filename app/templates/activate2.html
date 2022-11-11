@@ -60,8 +60,8 @@
         <nav
             class="bg-white px-2 sm:px-4 py-2.5 dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
             <div class="container flex items-center justify-around mx-auto">
-                <a href="https://flowbite.com/" class="flex items-center">
-                    <img src="{% static 'logo.png' %}" class="mr-3 h-6 sm:h-9" alt="Flowbite Logo">
+                <a href="https://vendeur.zawadi.site/" class="flex items-center">
+                    <img src="{% static 'logo.png' %}" class="mr-3 h-6 sm:h-9" alt="Zawadi Logo">
                     <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Zawadi</span>
                 </a>
                 <div class="hidden md:block">
@@ -559,9 +559,14 @@
                                     de produits</label>
                                 <select id="countries" required name="category" v-model="cat"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                    {% for c in categories %}
-                                    <option {% if c == seller.category %} selected {% endif %} value="{{c.pk}}">
-                                        {{c.name}}</option>
+                                    {% for l in labels %}
+                                    <optgroup label="{{l.name}}">
+                                        {% for c in l.cats.all %}
+                                        <option {% if c == seller.category %} selected {% endif %} value="{{c.pk}}">
+                                            {{c.name}}
+                                        </option>
+                                        {% endfor %}
+                                    </optgroup>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -640,8 +645,8 @@
     </div>
     <div id="global_load" style="margin-top: 35vh;">
         <div class="flex  items-center justify-around mx-auto pb-2">
-            <a href="https://flowbite.com/" class="flex items-center">
-                <img src="{% static 'logo.png' %}" class="mr-3 h-8 sm:h-9" alt="Flowbite Logo">
+            <a href="https://vendeur.zawadi.site/" class="flex items-center">
+                <img src="{% static 'logo.png' %}" class="mr-3 h-8 sm:h-9" alt="Zawadi Logo">
                 <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Zawadi</span>
             </a>
         </div>
@@ -660,7 +665,7 @@
             </div>
         </div>
         <script src="/static/axios.min.js"></script>
-        <script src="{% static 'vue.global.js' %}"></script>
+        <script src="{% static 'vue.global.prod.js' %}"></script>
         <script src="https://cdn.kkiapay.me/k.js"></script>
         <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase.js"></script>
         <script>

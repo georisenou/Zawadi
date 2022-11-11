@@ -35,9 +35,9 @@
             <div class="font-medium ">
                 Abonnement
             </div>
-            {% if seller.rest  %}
+            {% if seller.rest %}
             <div class="text-green-500 text-lg">
-                 &bull; Active 
+                &bull; Active
             </div>
             {% else %}
             <div class="text-red-500 text-lg">
@@ -99,7 +99,7 @@
         </div>
         {% endfor %}
     </div>
-    <form action="" method="POST" >
+    <form action="" method="POST">
         {% csrf_token %}
         {% if seller %}
         <div class="pb-4 ">
@@ -121,8 +121,13 @@
                         de produit</label>
                     <select id="countries" required name="category" v-model="cat"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                        {% for c in categories %}
-                        <option {% if c == seller.category %} selected {% endif %} value="{{c.pk}}">{{c.name}}</option>
+                        {% for l in labels %}
+                        <optgroup label="{{l.name}}">
+                            {% for c in l.cats.all %}
+                            <option {% if c == seller.category %} selected {% endif %} value="{{c.pk}}">{{c.name}}
+                            </option>
+                            {% endfor %}
+                        </optgroup>
                         {% endfor %}
                     </select>
                 </div>
@@ -240,13 +245,13 @@
                 subs: [{% for s in seller.subs.all %} '{{s.name}}', {% endfor %}]
     }
         },
-        mounted(){
-            const end_load = () => {
-        document.getElementById('global_load').style.display = 'none'
-        document.getElementById('app').style.display = 'block'
-    }
-    end_load()
-        },
+    mounted(){
+        const end_load = () => {
+            document.getElementById('global_load').style.display = 'none'
+            document.getElementById('app').style.display = 'block'
+        }
+        end_load()
+    },
     methods: {
         actMod() {
             document.getElementById('myBu').click()

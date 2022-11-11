@@ -4,7 +4,8 @@ const assets = [
   "/static/off.svg",
   "/static/logo_client.png",
   "/static/logo.png",
-  "/static/src/output.css"
+  "/static/src/output.css",
+  "/static/vue.global.prod.js"
 ]
 
 self.addEventListener("install", installEvent => {

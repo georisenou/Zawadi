@@ -10,9 +10,10 @@
         <div class="flex flex-col items-center justify-center px-6 py-6 md:py-0 mx-auto md:h-screen lg:py-0">
             <div
                 class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-                <div v-if="show_thank" class="flex p-4 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800"
+                <div v-if="show_thank"
+                    class="flex p-4 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800"
                     role="alert">
-                    <span class="material-icons " style="position: relative; bottom: 0.2rem; right: 0.1rem;" >
+                    <span class="material-icons " style="position: relative; bottom: 0.2rem; right: 0.1rem;">
                         checklist
                     </span>
                     <span class="sr-only">Info</span>
@@ -30,9 +31,13 @@
                                 catégorie </label>
                             <select id="countries" required name="category"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                {% for c in categories %}
-                                <option {% if forloop.first %} selected {% endif %} value="{{c.pk}}">{{c.name}}
-                                </option>
+                                {% for l in labels %}
+                                <optgroup label="{{l.name}}" >
+                                    {% for c in l.cats.all %}
+                                    <option {% if forloop.first %} selected {% endif %} value="{{c.pk}}">{{c.name}}
+                                    </option>
+                                    {% endfor %}
+                                </optgroup>
                                 {% endfor %}
                             </select>
                         </div>
@@ -138,7 +143,8 @@
 
             </div>
             <div class="py-3 text-sm">
-                C'est simple. Lorsque vous voulez acheter un produit ou un service ou que vous prévoyez juste en acheter (sans disposez
+                C'est simple. Lorsque vous voulez acheter un produit ou un service ou que vous prévoyez juste en acheter
+                (sans disposez
                 de la totalité de l'argent), vous n'avez qu'a remplir
                 le petit formulaire en haut et enregistrer la requête d'achat. Très vite les
                 meilleurs vendeurs de votre localité vont vous contacter (par Whatsapp, appel ou Email) et vous
@@ -436,7 +442,7 @@
 {% block script %}
 <script src="/static/axios.min.js"></script>
 <script>
-   
+
     let baseUR = window.location.host
     let prot = window.location.protocol
     axios.defaults.baseURL = prot + "//" + baseUR + "/"
@@ -555,10 +561,10 @@
         },
         mounted() {
             const end_load = () => {
-        document.getElementById('global_load').style.display = 'none'
-        document.getElementById('app').style.display = 'block'
-    }
-    end_load()
+                document.getElementById('global_load').style.display = 'none'
+                document.getElementById('app').style.display = 'block'
+            }
+            end_load()
             let th = this
             setTimeout(() => {
                 getIp((country) => { th.country = country })
@@ -582,14 +588,14 @@
         methods: {
             activeMod() {
                 let th = this
-               
+
                 if (!th.is_registered && (th.user == 'not')) { document.getElementById('myBut').click() }
                 else { th.send_dem() }
             },
             send_dem() {
                 let th = this
                 th.sending = true
-                if(!th.is_registered && (th.user == 'not')) document.getElementById('closeModUs').click()
+                if (!th.is_registered && (th.user == 'not')) document.getElementById('closeModUs').click()
                 const form = new FormData()
                 form.append('cat', th.cat)
                 form.append('subs', JSON.stringify(th.subs))

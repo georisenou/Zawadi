@@ -4,7 +4,7 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
-from app.models import AbnFeature, Category, ClientDemand, Feedback, SellerAccount, SubCategory, User, UserGame, WeekCustom, ZawadiDetail, Client
+from app.models import AbnFeature, Category, ClientDemand, Feedback, Label, SellerAccount, SubCategory, User, UserGame, WeekCustom, ZawadiDetail, Client
 from django.contrib.auth import login, authenticate, logout
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -291,6 +291,7 @@ def register_view(request):
 def activate(request):
     seller = request.user.accounts.all().first()
     categories = Category.objects.all()
+    labels = Label.objects.all()
     return render(request, 'activate.html', {
         'seller': seller,
         'categories': categories,
@@ -313,10 +314,12 @@ def new_activate(request):
 def very_new_activate(request):
     seller = request.user.accounts.all().first()
     categories = Category.objects.all()
+    labels = Label.objects.all()
     return render(request, 'activate2.html', {
         'seller': seller,
         'categories': categories,
-        'token': ZawadiDetail.objects.get(key='kkiapay_public').value
+        'token': ZawadiDetail.objects.get(key='kkiapay_public').value,
+        'labels' : labels
     })
 
 
@@ -326,7 +329,7 @@ def compte(request):
     categories = Category.objects.all()
     has_modif = False
     err = []
-
+    labels = Label.objects.all()
     if request.method == 'POST':
         image = request.FILES.get('image')
         if image:
@@ -368,7 +371,8 @@ def compte(request):
         'seller': seller,
         'categories': categories,
         'err': err,
-        'has_modif': has_modif
+        'has_modif': has_modif,
+        'labels' : labels
     })
 
 
@@ -380,6 +384,7 @@ def customers(request):
     has_user = request.user.is_authenticated
     cat_first = categories.first().pk
     feeds = Feedback.objects.all().order_by('rank')[:4]
+    labels = Label.objects.all()
     demandes = []
     if has_user:
         demandes = ClientDemand.objects.filter(
@@ -391,6 +396,7 @@ def customers(request):
         'dems': demandes,
         'count': len(demandes),
         'feeds': feeds,
+        "labels" : labels,
         'has_user': has_user and Client.objects.filter(user=request.user).exists()
     })
 
@@ -466,7 +472,6 @@ def register_demand(request):
         if  User.objects.filter(email = email).exists():
             user = User.objects.get(email = email)
         else:
-            
             if  User.objects.filter(email = first_name + email).exists():
                 user = User.objects.get(email = first_name + email)
             elif User.objects.filter(email = last_name + first_name + email).exists() :
