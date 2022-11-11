@@ -27,6 +27,7 @@ Django==3.2.6
 django-appconf==1.0.5
 django-autoslug==1.9.8
 django-cloudinary-storage==0.3.0
+django-compressor==4.1
 django-email==0.1.10
 django-filter==21.1
 django-hosts==5.1
