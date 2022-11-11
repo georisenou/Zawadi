@@ -186,7 +186,7 @@ def index(request):
         direct_regist = True
     return render(request, 'index.html', {
         'root': 'home',
-        'feeds': feeds[:7],
+        'feeds': feeds[:4],
         'contact': contact,
         'has_submit': has_submit,
         'from_' : from_ ,
@@ -383,12 +383,12 @@ def customers(request):
     categories = Category.objects.all()
     has_user = request.user.is_authenticated
     cat_first = categories.first().pk
-    feeds = Feedback.objects.all().order_by('rank')[:4]
+    feeds = Feedback.objects.all().filter(rank__lt = 0).order_by('rank')[:3]
     labels = Label.objects.all()
     demandes = []
     if has_user:
         demandes = ClientDemand.objects.filter(
-            client__user=request.user).order_by('-created_at')[:15]
+            client__user=request.user).order_by('-created_at')[:25]
     return render(request, 'client_app/index.html', {
         'zawadi': zawadi,
         'categories': categories,
