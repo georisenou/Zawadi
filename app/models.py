@@ -3,8 +3,21 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
 from .managers import CustomUserManager
+import string
+import random
+all_characters = string.ascii_letters+string.digits+string.punctuation
+characters = string.ascii_letters+string.digits
+
 
 MONTHS = ['Jan', 'Fev', 'Mars', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sept' ,'Oct', 'Nov', 'Dec']
+
+def ident_generator(min, max):
+    length = random.randrange(min, max+1, 2)
+    ident = []
+    for x in range(length):
+        ident.append(random.choice(characters))
+    last_ident = ''.join(ident)
+    return last_ident
 
 # Create your models here.
 
@@ -27,6 +40,11 @@ class User(AbstractBaseUser, PermissionsMixin) :
     objects = CustomUserManager()
     country = models.CharField(max_length=15, null=True, blank=True)
     towns = models.CharField(max_length=250, null=True, blank=True)
+    def can_freed(self) :
+        sellers = self.accounts.count()
+        return not sellers
+
+
 
 class Client(models.Model) :
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, related_name="clients")
@@ -103,13 +121,17 @@ class SellerAccount(models.Model) :
     type_of = models.CharField(max_length=150, null=True, blank=True)
     speed = models.IntegerField(default=0)
     expired_date = models.DateField(null=True, blank=True)
+    has_freed = models.BooleanField(default=False)
+    def get_last_abn(self) :
+        return self.abns.order_by('-created_at').first()
     def get_week(self) :
         return self.weeks.all().filter(is_on= True).first()
     def __str__(self) -> str:
         return self.name
     def get_picture(self) :
         return self.picture.url if self.picture else ZawadiDetail.objects.get(key = 'default:shop:picture:url').value
-    
+    def is_freeing(self) :
+        return self.get_last_abn().is_freed
 
 
 class WeekCustom(models.Model) :
@@ -129,7 +151,8 @@ class WeekCustom(models.Model) :
     def get_level(self) :
         count = self.demandes.count()
         ls = self.get_steps()
-        if count < ls[0] :
+        last_abn = self.seller.get_last_abn(self)
+        if count < ls[0] or last_abn.is_freed :
             return 'first'
         elif count < ls[1] :
             return 'second'
@@ -156,6 +179,13 @@ class Feedback(models.Model) :
     def get_picture(self) :
         return self.picture.url if self.picture else ZawadiDetail.objects.get(key = 'default:shop:picture:url').value
 
+class AdminToken(models.Model) :
+    name = models.CharField(max_length=150, null=True, blank=True)
+    token = models.TextField(null=True, blank=True)
+    is_checked = models.BooleanField(default=False)
+    def __str__(self) :
+        return self.for_
+
 class AbnFeature(models.Model) :
     seller = models.ForeignKey(SellerAccount, null=True, blank=True, on_delete=models.CASCADE, related_name="abns")
     type_of = models.CharField(null=True, blank=True, max_length=150)
@@ -165,6 +195,9 @@ class AbnFeature(models.Model) :
     transaction_id = models.TextField(null=True, blank=True)
     count = models.IntegerField(default=0)
     expired_date = models.DateField(null=True, blank=True)
+    is_freed = models.BooleanField(default=False)
+
+
 
 class UserGame(models.Model) :
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="games", null=True, blank=True)

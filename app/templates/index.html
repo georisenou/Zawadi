@@ -3,7 +3,7 @@
 {% extends "_base.html" %}
 
 {% block content %}
-<div class=" bg-blue-100 w-full px-4 pb-4" style="min-height: 100vh;">
+<div class=" bg-blue-100 w-full px-4 pb-4" >
     <div class="pt-12 md:hidden text-gray-700 text-center font-semibold " style="font-size: 5vw;">
          Grâce à Zawadi, recevez continuellement de nouveaux <span class="text-green-600">clients</span>
     </div>
@@ -17,7 +17,7 @@
                 <div>
                     <span class="material-icons text-green-600">
                         check
-                    </span> Obtenez jusqu'à 60 clients par semaines
+                    </span> Obtenez des clients par semaines
                 </div>
                 <div>
                     <span class="material-icons text-green-600">
@@ -32,8 +32,7 @@
             </div>
             <div class="pt-8">
                 <button type="button" {% if direct %} href="/register/?from={{from_}}" {% else %} href="/activate" {% endif %}
-                    class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg  px-5 py-2.5 text-center mr-2 mb-2">Démarrez
-                    aujourd'hui</button>
+                    class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg  px-5 py-2.5 text-center mr-2 mb-2">Commencez maintenant mon essai gratuit </button>
             </div>
         </div>
         <div class="flex justify-around   md:w-1/2" style="padding-top: 2vh;">
@@ -43,7 +42,7 @@
             <div>
                 <span class="material-icons text-green-600">
                     check
-                </span> Obtenez jusqu'à 60 clients par semaines
+                </span> Obtenez des clients par semaines
             </div>
             <div>
                 <span class="material-icons text-green-600">
@@ -57,18 +56,17 @@
             </div>
             <div class="pt-4">
                 <a type="button" {% if direct %} href="/register/?from={{from_}}" {% else %} href="/activate" {% endif %}
-                    class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg  px-5 py-2.5 text-center mr-2 mb-2 w-full">Démarrez
-                    aujourd'hui</a>
+                    class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg  px-5 py-2.5 text-center mr-2 mb-2 w-full">Commencez mon essai gratuit</a>
             </div>
         </div>
     </div>
 </div>
-<div class="pt-4 px-4" style="min-height: 100vh;">
-    <div class="uppercase text-center text-sm pt-8 ">
-        Nous fournissons toutes les semaines à nos abonnés des listes de clients intéressés par leur produit ou service. 
+<div class="pt-4 px-4" >
+    <div class="uppercase text-center text-sm pt-4 ">
+        Nous fournissons toutes les semaines à nos abonnés des listes de clients désirant acheter des produits dont ils disposent. 
     </div>
     <div class="pt-8 text-center md:text-3xl text-xl uppercase">
-        Utilisé par <span class="font-bold">plusieurs </span> commercants et entreprises.
+        Utilisé par plusieurs commercants et entreprises.
     </div>
     {% if feeds.count %}
     <div class="pt-8 md:pt-20 flex justify-around px-4 pb-12">
@@ -110,7 +108,7 @@
         class=" w-full text-center text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800">Ajouter
         votre avis</button>
 </div>
-<div class=" px-4 bg-gray-100 mh-screen " id="howto">
+<div class=" px-4 bg-gray-100 " id="howto">
     <div class="py-6 text-2xl text-gray-700 text-center font-semibold">
         Comment ça marche ?
     </div>
@@ -118,31 +116,26 @@
         <div>
             <span class="material-icons text-green-600" style="position: relative; top: 0.4rem;">
                 looks_one
-            </span> Creez votre compte sur Zawadi et chosissez l'offre qui vous convient 
+            </span> Créez votre compte sur Zawadi et démarrez votre essai gratuit
         </div>
         <div>
             <span class="material-icons text-green-600" style="position: relative; top: 0.4rem;">
                 looks_two
-            </span> Choississez les catégories de produits que vous vendez.
+            </span> Renseignez les informations liés à votre commerce et vos produits puis confirmez.
         </div>
         <div>
             <span class="material-icons text-green-600" style="position: relative; top: 0.4rem;">
                 looks_3
-            </span> Lancez la recherche constante de clients et Zawadi mettra a jour au cours de la semaine une
-            liste de clients intéressés par vos produits.
-        </div>
-        <div>
-            <span class="material-icons text-green-600" style="position: relative; top: 0.4rem;">
-                looks_4
             </span> Observez pendant la semaine les clients interessés ajoutés a votre liste et contactez-les.
         </div>
         <div>
             <span class="material-icons text-green-600" style="position: relative; top: 0.4rem;">
-                looks_5
+                looks_4
             </span> Apres ventes ou discussions avec le clients revenez sur la plateforme donner votre appréciation des
             clients.
         </div>
     </div>
+    <!---
     <div class="py-3 text-sm">
         <span class="material-icons text-green-500" style="position: relative; top: 0.39rem;">
             chevron_right
@@ -154,10 +147,11 @@
         <span class="material-icons text-green-500" style="position: relative; top: 0.39rem;">
             chevron_right
         </span> La liste de clients est mis à jour au cours de la semaine jusqu'à atteindre la limite définie par
-        votre offre d'abonnement. Cependant aucune régularité n'est garantit, cela voudrait dire que vous pouvez
+        votre offre. Cependant aucune régularité n'est garantit, cela voudrait dire que vous pouvez
         avoir peu de clients dans la liste les trois premiers jours et voir la liste se remplir rapidement les jours
         suivants.
     </div>
+    -->
     <div class="py-4 text-center underline text-green-600">
         <a href="{{contact.value}}">Ecrivez-nous pour en savoir plus</a>
     </div>

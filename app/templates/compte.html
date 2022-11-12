@@ -35,13 +35,21 @@
             <div class="font-medium ">
                 Abonnement
             </div>
-            {% if seller.rest %}
-            <div class="text-green-500 text-lg">
-                &bull; Active
+            {% if not seller.is_freeing %}
+            <div>
+                {% if seller.rest %}
+                <div class="text-green-500 text-lg">
+                    &bull; Active
+                </div>
+                {% else %}
+                <div class="text-red-500 text-lg">
+                    &bull; Terminé
+                </div>
+                {% endif %}
             </div>
             {% else %}
-            <div class="text-red-500 text-lg">
-                &bull; Terminé
+            <div class="text-lg text-blue-600" >
+                Essai gratuit
             </div>
             {% endif %}
         </div>
@@ -57,9 +65,15 @@
             <div class="font-medium">
                 Date d'expiration
             </div>
+            {% if not seller.is_freeing %}
             <div class=" text-lg">
                 ${format_to(expired_date)}
             </div>
+            {% else %}
+            <div class=" text-lg" >
+                -:-
+            </div>
+            {% endif %}
         </div>
         <div class="p-3 rounded bg-yellow-50 shadow">
             <div class="font-medium ">

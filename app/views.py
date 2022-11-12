@@ -1,10 +1,12 @@
 
 import datetime
 import json
+from lib2to3.pgen2 import token
+from django.forms import models
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
-from app.models import AbnFeature, Category, ClientDemand, Feedback, Label, SellerAccount, SubCategory, User, UserGame, WeekCustom, ZawadiDetail, Client
+from app.models import AbnFeature, AdminToken, Category, ClientDemand, Feedback, Label, SellerAccount, SubCategory, User, UserGame, WeekCustom, ZawadiDetail, Client, ident_generator
 from django.contrib.auth import login, authenticate, logout
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -59,6 +61,11 @@ def merge_list(l1, l2):
         e for e in l1 if e in l2
     ]
 
+def check_token(tok, slug = 'trial') :
+    admin = AdminToken.objects.filter(token = tok, name__icontains = slug, is_checked = False )
+    if admin.exists() :
+        return admin.name.split(':')[0]
+    return 0
 
 def get_on_week(seller):
     weeks = seller.weeks.filter(is_on=True)
@@ -166,6 +173,7 @@ def check_week_(week):
 def index(request):
     source = request.GET.get('source')
     from_ = request.GET.get('from')
+    essai = request.GET.get('essai', '')
     if from_ : increment_value(from_)
     direct_regist = False
     if not source :
@@ -190,7 +198,8 @@ def index(request):
         'contact': contact,
         'has_submit': has_submit,
         'from_' : from_ ,
-        "direct" : direct_regist
+        "direct" : direct_regist,
+        "trial" : check_token(essai) if check_token(essai) else 0
     })
 
 
@@ -280,6 +289,9 @@ def register_view(request):
             })
         login(request, user)
         from_ = request.GET.get('from')
+        next = request.GET.get('next')
+        if next :
+            return redirect(next)
         if not from_ : return redirect('index')
         return redirect('activate2')
     return render(request, 'register.html', {
@@ -310,7 +322,7 @@ def new_activate(request):
     })
 
 
-@login_required(login_url='/login')
+@login_required(login_url='/register')
 def very_new_activate(request):
     seller = request.user.accounts.all().first()
     categories = Category.objects.all()
@@ -319,7 +331,8 @@ def very_new_activate(request):
         'seller': seller,
         'categories': categories,
         'token': ZawadiDetail.objects.get(key='kkiapay_public').value,
-        'labels' : labels
+        'labels' : labels,
+        "can_freed" : request.user.can_freed()
     })
 
 
@@ -412,10 +425,13 @@ def activ_abn(request):
         choice = request.POST.get('choice')
         total = request.POST.get('total')
         transaction = request.POST.get('transaction')
-        k = Kkiapay(get_value('kkiapay_public'), get_value(
-            'kkiapay_private'), get_value('kkiapay_secret'))
-        trans = k.verify_transaction(transaction_id=transaction)
-        if trans.status == "SUCCESS":
+        status = False
+        if not choice == 'free' :
+            k = Kkiapay(get_value('kkiapay_public'), get_value(
+                'kkiapay_private'), get_value('kkiapay_secret'))
+            trans = k.verify_transaction(transaction_id=transaction)
+            status = trans.status == "SUCCESS"
+        if status or choice == 'free':
             seller.name = name
             seller.category = Category.objects.get(pk=int(cat))
             for s in seller.subs.all():
@@ -433,6 +449,11 @@ def activ_abn(request):
                 week = create_week(seller)
             abn = AbnFeature.objects.create(
                 seller=seller, type_of=choice, transaction_id=transaction, expired_date=datetime.date.today() + datetime.timedelta(days=30))
+            if choice == 'free' :
+                seller.has_freed = True
+                abn.is_freed = True
+                abn.save()
+                seller.save()
             return Response({
                 'done': True,
                 'result': abn.pk
@@ -516,23 +537,29 @@ def register_demand(request):
 def daily_task(request):
     mess = "Reussite !! "
     mess2 = " - Reusite"
+    user = request.GET.get('trial')
+    adm_tok = 0
+    if user :
+        token = ident_generator(5, 8)
+        adm_tok = AdminToken.objects.create(name = user + ':trial', token = token)
     try:
         sellers = SellerAccount.objects.all()
         for seller in sellers:
             seller = check_seller(seller)
             for week in seller.weeks.all():
                 week = check_week_(week)
-        
     except Exception as e:
         mess = e
     try :
         demandes = ClientDemand.objects.annotate(weeks = Count('weeks_in')).filter(weeks = 0)
         for dem in demandes :
             send_client_to_seller(dem)
+            
     except Exception as e :
         mess2 = f" - {e}"
     return render(request, 'daily_task.html', {
-        "mess": mess + mess2
+        "mess": mess + mess2,
+        "tok" : adm_tok
     })
 
 def achat_manifest( request) :
