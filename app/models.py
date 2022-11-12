@@ -151,7 +151,7 @@ class WeekCustom(models.Model) :
     def get_level(self) :
         count = self.demandes.count()
         ls = self.get_steps()
-        last_abn = self.seller.get_last_abn(self)
+        last_abn = self.seller.get_last_abn()
         if count < ls[0] or last_abn.is_freed :
             return 'first'
         elif count < ls[1] :
@@ -166,6 +166,8 @@ class WeekCustom(models.Model) :
             return [6, 16, 31]
         elif self.seller.type_of == 'buisness' :
             return [9, 20, 61]
+        elif self.seller.type_of == 'free' :
+            return [10, 25, 60]
 
 
 class Feedback(models.Model) :
