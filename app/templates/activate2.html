@@ -24,8 +24,8 @@
     <meta name="theme-color" content="#16a34a" />
     <title>Zawadi | Des clients a tout moment</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-    <link rel="stylesheet" href="{% static 'src/output.css' %}">
+    <!-- <script src="/static/src/3.2.js"></script> --->
+    <link rel="stylesheet" href="{% static 'src/output.css' %}"> 
 
     <style>
         .mh-screen {
@@ -133,7 +133,7 @@
                     </div>
                 </div>
             </transition>
-            <div v-if="step">
+            <div v-if="step == 1">
                 <!-- ====== Pricing Section Start -->
                 <section class="relative z-20 overflow-hidden bg-white pt-3 pb-12 lg:pt-[120px] lg:pb-[90px]">
                     <div class="container mx-auto">
@@ -157,11 +157,12 @@
                             </div>
                         </div>
                         <div class="-mx-4 flex flex-wrap justify-center">
+                            {% if can_freed %}
                             <div class="w-full px-4 md:w-1/2 lg:w-1/3">
                                 <div
                                     class="border-green-bg-green-600 shadow-pricing relative z-10 mb-10 overflow-hidden rounded-xl border border-opacity-20 bg-white py-10 px-8 sm:p-12 lg:py-10 lg:px-6 xl:p-12">
                                     <span class="text-green-bg-green-600 mb-4 block text-lg font-semibold">
-                                        Essai 
+                                        Essai
                                     </span>
                                     <h2 class="text-dark mb-5 text-[42px] font-bold">
                                         <span>Gratuit</span>
@@ -260,6 +261,7 @@
                                     </div>
                                 </div>
                             </div>
+                            {% endif %}
                             <div class="w-full px-4 md:w-1/2 lg:w-1/3">
                                 <div
                                     class="border-green-bg-green-600 shadow-pricing relative z-10 mb-10 overflow-hidden rounded-xl border border-opacity-20 bg-white py-10 px-8 sm:p-12 lg:py-10 lg:px-6 xl:p-12">
@@ -521,7 +523,7 @@
                                         </p>
 
                                     </div>
-                                    <a @click="activeMod(), choice = 'buisness', amount = 6000"
+                                    <a @click="choice = 'buisness', amount = 6000, activeMod()"
                                         class="text-green-bg-green-600 hover:bg-green-600 hover:border-green-bg-green-600 block w-full rounded-md border border-[#D4DEFF] bg-transparent p-4 text-center text-base font-semibold transition hover:text-white">
                                         Choisir cette offre
                                     </a>
@@ -617,27 +619,39 @@
                 <!-- ====== Pricing Section End -->
 
             </div>
+            <div v-if="step == 2">
+                <div class="py-2 px-3 text-center font-bold text-xl">
+                    Informations du compte
+                </div>
+                <div class="my-3 px-3 py-3 rounded bg-gray-100 shadow">
+                    <form class="space-y-3" action="" @submit.prevent="pay()">
+                        {% csrf_token %}
+                        <div>
+                            <label for="name"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Nom
+                                du commerce ou de l'entreprise</label>
+                            <input type="name" name="name" id="name" v-model="name"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                {% if not seller %} placeholder="nom..." {% else %} value="{{seller.name}}" {% endif %}
+                                required>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
         <div class="w-full bg-blue-100 text-center pt-4 pb-16">
             Copyright &copy; 2022 <br>
             All Right Reserved <a class="text-green-500" href="">Elife Global</a>
         </div>
-
-        <!-- Modal toggle -->
-        <button style="display: none;" id="myBut"
-            class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            type="button" data-modal-toggle="authentication-modal">
-            Toggle modal
-        </button>
-        <!-- Main modal -->
-        <div id="authentication-modal" tabindex="-1" aria-hidden="true"
-            class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full justify-center items-center">
-            <div class="relative p-4 w-full max-w-md h-full md:h-auto">
+        <!-- Product modal -->
+        <div id="product-modal" tabindex="-1" aria-hidden="true"
+            class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 p-4 w-full md:inset-0 h-modal md:h-full">
+            <div class="relative w-full max-w-md h-full md:h-auto">
                 <!-- Modal content -->
-                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                    <button v-show="transaction == ''" type="button"
+                <div style="max-height: 90vh; overflow-y: scroll; " class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                    <button type="button" id="prod-clos"
                         class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
-                        data-modal-toggle="authentication-modal">
+                        data-modal-toggle="product-modal">
                         <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
                             xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd"
@@ -647,18 +661,8 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                     <div class="py-6 px-6 lg:px-8">
-                        <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white"> Informations du
-                            compte</h3>
-                        <form class="space-y-3" action="" @submit.prevent="pay()">
-                            {% csrf_token %}
-                            <div>
-                                <label for="name"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Nom
-                                    du commerce ou de l'entreprise</label>
-                                <input type="name" name="name" id="name" v-model="name"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                                    {% if not seller %} placeholder="nom..." {% else %} value="{{seller.name}}" {% endif %} required>
-                            </div>
+                        <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Produits à ajouter</h3>
+                        <form class="space-y-6" @submit.prevent="add_subs()">
                             <div>
                                 <label for="countries"
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Catégorie
@@ -680,8 +684,7 @@
                                 <label for="countries_multiple"
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Selectionnez
                                     les produits
-                                    de catégorie
-                                    disponibles</label>
+                                    de la catégorie</label>
                                 {% for c in categories %}
                                 <select v-if="cat == '{{c.pk}}'" multiple id="countries_multiple" name="subs[]" required
                                     v-model="subs"
@@ -699,6 +702,109 @@
                                     ${s}
                                 </div>
 
+                            </div>
+                            <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Ajouter aux produits</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal toggle -->
+        <button style="display: none;" id="myBut"
+            class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            type="button" data-modal-toggle="authentication-modal">
+            Toggle modal
+        </button>
+
+        <!-- Main modal -->
+        <div v-show="!temporary_off" id="authentication-modal" tabindex="-1" aria-hidden="true"
+            class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full justify-center items-center">
+            <div class="relative p-4 w-full max-w-md h-full md:h-auto">
+                <!-- Modal content -->
+                <div style="max-height: 90vh; overflow-y: scroll; " class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                    <button v-show="transaction == ''" type="button"
+                        class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                        data-modal-toggle="authentication-modal">
+                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                    <div  class="py-6 px-6 lg:px-8">
+                        <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white"> Informations du
+                            compte</h3>
+                        <form class="space-y-3" action="" @submit.prevent="pay()">
+                            {% csrf_token %}
+                            <div>
+                                <label for="name"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Nom
+                                    du commerce ou de l'entreprise</label>
+                                <input type="name" name="name" id="name" v-model="name"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                    {% if not seller %} placeholder="nom..." {% else %} value="{{seller.name}}" {% endif %} required>
+                            </div>
+                            <div>
+                                <div class="py-2 font-medium ">
+                                    Produits disponibles
+                                </div>
+                                <div  >
+                                    <div v-if="!r_subs.length"
+                                        class="p-4 text-sm text-gray-700 bg-gray-100 rounded-lg dark:bg-gray-700 dark:text-gray-300"
+                                        role="alert">
+                                        Aucun produit ajouté pour le moment
+                                    </div>
+                                    <div v-else>
+                                        <div class="overflow-x-auto relative">
+                                            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                                <thead class="text-xs text-gray-900 uppercase dark:text-gray-400">
+                                                    <tr>
+                                                        <th scope="col" class="py-3 px-6">
+                                                            Nom
+                                                        </th>
+                                                        <th scope="col" class="py-3 px-6">
+                                                            Retirer
+                                                        </th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="s in r_subs" :key="s" class="bg-white dark:bg-gray-800">
+                                                        <th scope="row"
+                                                            class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                            ${s.sub}
+                                                        </th>
+                                                        <td class="py-4 px-6 flex justify-around">
+                                                            <a @click="remove_subs(s)"
+                                                                class="text-red-700 d-block pb-1 px-2 pt-2 text-sm rounded-lg hover:bg-red-100 ">
+                                                                <span class="material-icons">
+                                                                    delete
+                                                                </span>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="mb-4 mt-2 flex justify-around">
+                                    <a data-modal-toggle="product-modal" @click="temporary_off = true"
+                                        class="d-block flex space-x-2 px-3 pb-1 pt-3 bg-blue-100 text-blue-600 hover:bg-blue-200 hover:text-blue-900 rounded">
+                                        <div>
+                                            <span class="material-icons">
+                                                add
+                                            </span>
+                                        </div>
+                                        <div>
+                                            Ajouter des produits
+                                        </div>
+                                    </a>
+                                </div>
                             </div>
                             <input v-show="false" :value="transaction" type="text" name="transaction_id" />
                             <button v-if="transaction == ''" type="submit"
@@ -811,6 +917,7 @@
             const app = createApp({
                 data() {
                     return {
+                        temporary_off: false,
                         step: 0,
                         done: false,
                         err: '',
@@ -820,7 +927,8 @@
                         choice: '',
                         amount: 0,
                         cat: '{{seller.category.pk}}',
-                        subs: [{% for s in seller.subs.all %} '{{s.name}}', {% endfor %}]
+                        subs: [{% for s in seller.subs.all %} '{{s.name}}', {% endfor %}],
+                r_subs: [],
             }
             },
             mounted(){
@@ -831,6 +939,19 @@
                 end_load()
             },
             methods: {
+                add_subs(){
+                    this.temporary_off = false
+                    for (e of this.subs) {
+                        if (!this.r_subs.includes(e)) this.r_subs.push({
+                            cat: this.cat,
+                            sub: e
+                        })
+                    }
+                    document.getElementById("prod-clos").click()
+                },
+                remove_subs(targ){
+                    this.r_subs = this.r_subs.filter(e => e != targ)
+                },
                 validate(){
                     let th = this
 
@@ -865,7 +986,7 @@
                     const form = new FormData()
                     form.append('name', th.name)
                     form.append('cat', th.cat)
-                    form.append('subs', JSON.stringify(th.subs))
+                    form.append('subs', JSON.stringify(th.r_subs))
                     form.append('choice', th.choice)
                     form.append('total', th.total)
                     form.append('transaction', th.transaction)

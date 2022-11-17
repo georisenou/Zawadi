@@ -93,17 +93,19 @@ class ClientDemand(models.Model) :
     emergency = models.CharField(max_length=250, null=True, blank=True)
     point = models.IntegerField(default=0)
     is_out = models.BooleanField(default=False)
+    def sends_num(self) :
+        return self.weeks_in.count()
     def get_duration(self):
         duration = (timezone.now() - self.created_at)
         seconds = duration.total_seconds()
         if seconds < 60:
-            return "a l'instant"
+            return "0 min"
         elif seconds < 3600:
-            return 'il y a ' + str(int(seconds / 60)) + " min"
+            return  str(int(seconds / 60)) + " min"
         elif seconds < 24 * 3600:
-            return 'il y a ' + str(int(seconds / 3600)) + " h"
+            return  str(int(seconds / 3600)) + " h"
         else:
-            return 'il y a ' + str(int(seconds / (24*3600))) + " j"
+            return  str(int(seconds / (24*3600))) + " j"
     def __str__(self) -> str:
         return f'Client{self.pk}'
 
@@ -114,7 +116,7 @@ class SellerAccount(models.Model) :
     abn_count = models.IntegerField(default=0)
     last_abn = models.DateTimeField(null=True, blank=True)
     created_at = models.DateField(auto_now_add= True, null=True, blank=True)
-    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE)
+    category = models.ManyToManyField(Category, null=True, blank=True, related_name="sellers")
     subs = models.ManyToManyField(SubCategory, related_name="sellers", blank=True)
     count = models.BigIntegerField(default=0)
     picture = models.FileField(upload_to='accounts/', null=True, blank=True)

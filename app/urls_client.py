@@ -1,5 +1,6 @@
+
 from django.urls import path
-from .views import achat_manifest, achat_offline, achat_serviceworker, customers, offline, register_demand
+from .views import achat_manifest, achat_offline, achat_serviceworker, customers, delete_demand, get_demands, offline, register_demand
 
 urlpatterns = [
     path('', customers, name="customers_index"),
@@ -7,4 +8,6 @@ urlpatterns = [
     path('offline/', achat_offline, name="offline"),
     path('serviceworker.js', achat_serviceworker, name="achat_serviceworker"),
     path('api/demand/', register_demand, name="register_demand"),
+    path('api/get_demands/', get_demands, name="get_demands"),
+    path('api/delete_demand/<int:pk>/', delete_demand, name="delete_demand")
 ]

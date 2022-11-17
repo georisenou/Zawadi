@@ -6,6 +6,7 @@ from django.forms import models
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
+from django.test import client
 from app.models import AbnFeature, AdminToken, Category, ClientDemand, Feedback, Label, SellerAccount, SubCategory, User, UserGame, WeekCustom, ZawadiDetail, Client, ident_generator
 from django.contrib.auth import login, authenticate, logout
 from rest_framework.decorators import api_view, permission_classes
@@ -15,10 +16,26 @@ from rest_framework.permissions import IsAuthenticated
 from .core import Kkiapay
 from django.db.models import Count, Max, Min
 import threading
+from rest_framework import serializers
 from firebase_admin.messaging import Message as Mss, Notification, AndroidNotification, WebpushConfig, WebpushFCMOptions, AndroidConfig, APNSConfig, APNSPayload, Aps
 from fcm_django.models import FCMDevice
+from django.core.paginator import Paginator
 # Create your views here.
 
+def get_obj_from_paginator(arts, number, p, serializer):
+    paginator = Paginator(arts, number)
+    total = paginator.num_pages
+    if total < int(p):
+        return {
+            "done": False,
+            "result": []
+        }
+    else:
+        page = paginator.page(p)
+        return {
+            "done": True,
+            "result": serializer(page.object_list, many=True).data,
+        }
 
 def increment_value(key) :
     det = ZawadiDetail.objects.get_or_create(key = key)[0]
@@ -107,7 +124,10 @@ def range_to_favor(lis) -> list :
 
 def send_client_to_seller(client):
     sellers = SellerAccount.objects.filter(
-        rest__gt=0, category=client.category)
+        rest__gt=0)
+    sellers = [
+        s for s in sellers if client.category in s.category.all()
+    ]
     seller_pks = [
         seller.pk for seller in sellers if (client.subs in seller.subs.all() and (len(merge_list(seller.user.towns.split(':'), client.client.user.towns.split(':')))))
     ]
@@ -327,6 +347,7 @@ def very_new_activate(request):
     seller = request.user.accounts.all().first()
     categories = Category.objects.all()
     labels = Label.objects.all()
+    print(request.user.can_freed())
     return render(request, 'activate2.html', {
         'seller': seller,
         'categories': categories,
@@ -351,10 +372,18 @@ def compte(request):
         else:
             try:
                 name = request.POST.get('name')
-                category = request.POST.get('category')
-                subs = dict(request.POST)['subs[]']
-                subs = SubCategory.objects.filter(name__in=subs)
-                print(subs)
+                #category = request.POST.get('category')
+                #subs = dict(request.POST)['r_subs[]']
+                #subs = SubCategory.objects.filter(name__in=subs)
+                #print(subs)
+                r_subs = json.loads(request.POST.get('r_subs'))
+                print(r_subs)
+                cats = [
+                    Category.objects.get(pk = int(s['cat'])) for s in r_subs
+                ]
+                subs = [
+                    SubCategory.objects.get(box__pk = int(s['cat']), name = s['sub']) for s in r_subs
+                ]
                 first_name = request.POST.get('first_name')
                 last_name = request.POST.get('last_name')
                 email = request.POST.get('email')
@@ -364,9 +393,11 @@ def compte(request):
                     request.user.last_name = last_name
                     request.user.email = email
                     request.user.save()
-                    cat = Category.objects.get(pk=int(category))
                     seller.name = name
-                    seller.category = cat
+                    for c in seller.category.all() :
+                        seller.category.remove(c)
+                    for c in cats :
+                        seller.category.add(c)
                     seller.save()
                     for sub in seller.subs.all():
                         seller.subs.remove(sub)
@@ -421,7 +452,13 @@ def activ_abn(request):
     if request.method == 'POST':
         name = request.POST.get('name')
         cat = request.POST.get('cat')
-        subs = json.loads(request.POST.get('subs'))
+        r_subs = json.loads(request.POST.get('subs'))
+        subs = [
+            SubCategory.objects.get(box__pk = int(s['cat']), name = s['sub']) for s in r_subs
+        ]
+        cats = [
+            Category.objects.get(pk = int(s['cat'])) for s in r_subs
+        ]
         choice = request.POST.get('choice')
         total = request.POST.get('total')
         transaction = request.POST.get('transaction')
@@ -433,10 +470,13 @@ def activ_abn(request):
             status = trans.status == "SUCCESS"
         if status or choice == 'free':
             seller.name = name
-            seller.category = Category.objects.get(pk=int(cat))
+            for c in seller.category.all() :
+                seller.category.remove(c)
+            for c in cats :
+                seller.category.add(c)
             for s in seller.subs.all():
                 seller.subs.remove(s)
-            for s in SubCategory.objects.filter(name__in=subs):
+            for s in subs:
                 seller.subs.add(s)
             seller.status = True
             seller.last_abn = datetime.date.today()
@@ -671,3 +711,49 @@ def achat_offline(request) :
 
 def offline( request) :
     return render(request, 'offline.html', {})
+
+class DemandSerializer(serializers.ModelSerializer) :
+    subs = serializers.CharField(source="subs.name")
+    class Meta :
+        model = ClientDemand
+        fields = ('id', 'subs', 'get_duration', 'sends_num')
+
+def valid_p(p) :
+    try :
+        p = int(p)
+        return p
+    except : 
+        return 1
+
+@api_view(["GET", "POST"])
+def get_demands(request) :
+    client = request.user.clients.first()
+    demandes = client.demandes.all().order_by('-created_at')
+    
+    obj = get_obj_from_paginator(demandes, 20, valid_p(request.GET.get('p')), DemandSerializer )
+    return Response(obj)
+
+@api_view(["GET", "POST"])
+def delete_demand(request, pk) :
+    action = request.GET.get('action')
+    demand = ClientDemand.objects.get(pk = pk)
+    if request.user == demand.client.user :
+        if action  :
+            user_sold = ZawadiDetail.objects.get_or_create(key = f"{request.user} - {action}")
+            if user_sold[1] :
+                print(json.dumps([]))
+                user_sold[0].value = json.dumps([])
+                user_sold[0].save()
+            user_sold = ZawadiDetail.objects.get_or_create(key = f"{request.user} - {action}")
+            user_sold = user_sold[0]
+            print(user_sold.value)
+            v = json.loads(user_sold.value)
+            v.append(demand.subs.name)
+            user_sold.value = json.dumps(v)
+            user_sold.save()
+        demand.delete()
+        return Response({
+            'done' : True,
+            'result' : pk
+        })
+
