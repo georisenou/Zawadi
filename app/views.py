@@ -757,3 +757,22 @@ def delete_demand(request, pk) :
             'result' : pk
         })
 
+
+def coming_soon(request) :
+    has_regis = False
+    if request.method == "POST" :
+        number = request.POST.get("number")
+        testors = ZawadiDetail.objects.get_or_create(key="testors")
+        if testors[1] :
+            testors[0].value = json.dumps([])
+            testors[0].save()
+        testors = ZawadiDetail.objects.get_or_create(key="testors")[0]
+        v = json.loads(testors.value)
+        if number :
+            v.append(number)
+            testors.value = json.dumps(v)
+            testors.save()
+            has_regis = True
+    return render(request, 'soon.html', {
+        'has_regis' : has_regis
+    })
