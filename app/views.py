@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.test import client
-from app.models import AbnFeature, AdminToken, Category, ClientDemand, Feedback, Label, SellerAccount, SubCategory, User, UserGame, WeekCustom, ZawadiDetail, Client, ident_generator
+from app.models import AbnFeature, AdminToken, Category, ClientDemand, Feedback, Label, MyFiles, SellerAccount, SubCategory, User, UserGame, WeekCustom, ZawadiDetail, Client, ident_generator
 from django.contrib.auth import login, authenticate, logout
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -95,7 +95,6 @@ def get_on_week(seller):
 
 def add_client_to_week(client, week):
     week.demandes.add(client)
-    check_is_out(client)
     check_week(week)
     week.seller.count += 1
     week.seller.save()
@@ -116,6 +115,9 @@ def range_to_favor(lis) -> list :
             'pk' : seller.pk,
             'cur' : get_on_week(seller).demandes.count()
         })
+    return range7(d)
+
+def range7(d) -> list :
     k = sorted(d, key=lambda e : e['cur'] )
     return [
         e['pk'] for e in k
@@ -132,6 +134,9 @@ def send_client_to_seller(client):
         seller.pk for seller in sellers if (client.subs in seller.subs.all() and (len(merge_list(seller.user.towns.split(':'), client.client.user.towns.split(':')))))
     ]
     fsellers = SellerAccount.objects.filter(pk__in=seller_pks)
+    zero_pk = [
+        s.pk for s in fsellers if get_on_week(s).get_level() == 'free'
+    ]
     first_pk = [
         s.pk for s in fsellers if get_on_week(s).get_level() == 'first'
     ]
@@ -141,12 +146,17 @@ def send_client_to_seller(client):
     third_pk = [
         s.pk for s in fsellers if get_on_week(s).get_level() == 'third'
     ]
-    first_pk = range_to_favor(first_pk) + range_to_favor(second_pk) + range_to_favor(third_pk)
+    first_pk = range_to_favor(zero_pk) + range_to_favor(first_pk) + range_to_favor(second_pk) + range_to_favor(third_pk)
     print(first_pk)
+    i = 0
     for pk in first_pk:
-        if not client.is_out:
+        if i < client.num_vend :
             add_client_to_week(client, get_on_week(
                 SellerAccount.objects.get(pk=pk)))
+            i += 1
+        else :
+            client.is_out = True
+    client.save()
 
 
 def get_value(key):
@@ -557,10 +567,28 @@ def register_demand(request):
     cat = request.POST.get('cat')
     subs = json.loads(request.POST.get('subs'))
     emer = request.POST.get('emer')
+    print(request.POST.get('sub_det'))
+    keys = list(request.FILES.keys())
+    sub_det = json.loads(request.POST.get('sub_det'))
     pks = []
     for sub in subs:
+        mysub = SubCategory.objects.get(name=sub, box = Category.objects.get(pk = int(cat)))
         demand = ClientDemand.objects.create(
-            client=client, subs=SubCategory.objects.get(name=sub, box = Category.objects.get(pk = int(cat))), category = Category.objects.get(pk = int(cat)), emergency=emer)
+            client=client, subs= mysub , category = Category.objects.get(pk = int(cat)), emergency=emer)
+        for det in sub_det :
+            if det['id'] == mysub.pk :
+                if det.get('bdg') :
+                    demand.budget = det.get('bdg')
+                if det.get('detail') :
+                    demand.detail = det.get('detail')
+                if det.get('num_prod') :
+                    demand.num = det.get('num_prod')
+                for key in keys :
+                    print(key)
+                    if f"file:{det['id']}:" in key :
+                        myfile = MyFiles.objects.create(name = "demand_"+ key, file = request.FILES.get(key) )
+                        demand.files.add(myfile)
+        demand.save()
         pks.append(demand.pk)
 
     def send_dem():
@@ -597,9 +625,12 @@ def daily_task(request):
             
     except Exception as e :
         mess2 = f" - {e}"
+    num_ = get_value('testors')
+    num = len(json.loads(num_))
     return render(request, 'daily_task.html', {
         "mess": mess + mess2,
-        "tok" : adm_tok
+        "tok" : adm_tok,
+        'num' : num
     })
 
 def achat_manifest( request) :
@@ -716,7 +747,7 @@ class DemandSerializer(serializers.ModelSerializer) :
     subs = serializers.CharField(source="subs.name")
     class Meta :
         model = ClientDemand
-        fields = ('id', 'subs', 'get_duration', 'sends_num')
+        fields = ('id', 'subs', 'get_duration', 'sends_num', 'detail', 'budget', 'num', 'get_files', 'num_vend')
 
 def valid_p(p) :
     try :
@@ -724,6 +755,31 @@ def valid_p(p) :
         return p
     except : 
         return 1
+
+class SubCategorySerializer( serializers.ModelSerializer) :
+    class Meta :
+        model = SubCategory
+        fields = ('id', 'name')
+
+class CategorySerializer(serializers.ModelSerializer) :
+    subs = SubCategorySerializer(many = True)
+    class Meta :
+        model = Category
+        fields = ('id', 'name', 'subs')
+
+class LabelSerializer(serializers.ModelSerializer) :
+    cats = CategorySerializer(many = True)
+    class Meta :
+        model = Label
+        fields = ('id', 'name', 'cats')
+
+@api_view(["GET", "POST"])
+def get_all_cats( request) :
+    labels = Label.objects.all()
+    return Response({
+        'done' : True,
+        'result' : LabelSerializer(labels, many = True).data
+    })
 
 @api_view(["GET", "POST"])
 def get_demands(request) :
@@ -775,4 +831,22 @@ def coming_soon(request) :
             has_regis = True
     return render(request, 'soon.html', {
         'has_regis' : has_regis
+    })
+
+@api_view(["GET", "POST"])
+def set_num_vend(request) :
+    dem = ClientDemand.objects.get(pk = int(request.GET.get('dem')))
+    num_vend = int(request.GET.get('num_vend'))
+    if request.user == dem.client.user :
+        dem.num_vend = num_vend
+        dem.save()
+    def resend_vend() :
+        dem = ClientDemand.objects.get(pk = int(request.GET.get('dem')))
+        weeks = dem.weeks_in.all()
+        for week in weeks :
+            week.demandes.remove(dem)
+        send_client_to_seller(dem)
+    send_by_thread(resend_vend)
+    return Response({
+        'done' : True
     })

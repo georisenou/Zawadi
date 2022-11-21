@@ -1,5 +1,5 @@
 {% extends 'client_app/_base.html' %}
-
+{% load static %}
 {% block content %}
 <div class="pt-14 mh-screen">
     <div class="w-full ah-screen md:h-screen"
@@ -25,39 +25,24 @@
                     <form class="space-y-4 md:space-y-6" {% if True %} @submit.prevent="activeMod()" {% else %}
                         action="" method="POST" {% endif %}>
                         {% csrf_token %}
-                        <div>
-                            <label for="small"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Choisissez la
-                                catégorie </label>
-                            <select id="countries" required name="category"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                {% for l in labels %}
-                                {% with d=forloop %}
-                                <optgroup label="{{l.name}}">
-                                    {% for c in l.cats.all %}
-                                    <option {% if d == 1 %} selected {% endif %} value="{{c.pk}}">{{c.name}}
-                                    </option>
-                                    {% endfor %}
-                                </optgroup>
-                                {% endwith %}
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div>
-                            <label for="countries_multiple"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Sélectionnez les
-                                prooduits que vous désirez</label>
-                            {% for c in categories %}
-                            <select v-if="cat == '{{c.pk}}'" multiple id="countries_multiple" name="subs[]" required
-                                v-model="subs"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                {% for s in c.subs.all %}
-                                <option>{{s.name}}</option>
-                                {% endfor %}
-                            </select>
-                            {% endfor %}
-                        </div>
 
+
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Sélectionnez
+                                les
+                                prooduits que vous désirez</label>
+                            <div style="cursor: pointer;" @click="showcatMod()"
+                                class=" hover:text-rose-500 flex items-center justify-between bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg active:ring-blue-500 active:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:active:ring-blue-500 dark:active:border-blue-500">
+                                <span class="block"> ${subs.length} produit<span v-if="subs.length > 0">s</span>
+                                    choisi<span v-if="subs.length > 0">s</span> </span>
+                                <div>
+                                    <span style="position: relative; top: 0.1rem;" class="material-icons">
+                                        expand_circle_down
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
                         <div>
                             <label for="small"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Choisissez
@@ -78,7 +63,7 @@
                         </div>
                         <div v-if="!sending && !show_thank">
                             <button type="submit"
-                                class="w-full text-white bg-rose-700 hover:bg-rose-800 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-rose-600 dark:hover:bg-rose-700 dark:focus:ring-rose-800">Enregistrer</button>
+                                class="w-full text-white bg-rose-700 hover:bg-rose-800 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-rose-600 dark:hover:bg-rose-700 dark:focus:ring-rose-800">Envoyer</button>
                         </div>
                         <div v-else-if="sending && !show_thank">
                             <button type="button"
@@ -123,7 +108,7 @@
         </div>
         <transition name="down">
             <div v-show="down" class="py-2">
-                <div v-if="demands.length" class="overflow-x-auto relative">
+                <div v-show="demands.length" class="overflow-x-auto relative">
                     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-900 uppercase dark:text-gray-400">
                             <tr>
@@ -136,7 +121,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="dem in demands" :key="dem.id" class=" dark:bg-gray-800" :class="{ 'bg-white' : dem.get_duration != '0 min', 'bg-rose-50' : dem.get_duration == '0 min' }" >
+                            <tr v-for="dem in demands" :key="dem.id" class=" dark:bg-gray-800"
+                                :class="{ 'bg-white' : dem.get_duration != '0 min', 'bg-rose-50' : dem.get_duration == '0 min' }">
                                 <th scope="row"
                                     class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                     ${dem.subs}
@@ -144,17 +130,13 @@
                                 <td class="py-4 px-6">
                                     ${dem.get_duration}
                                 </td>
-                                <td v-if="dem.id != cur_id" class="py-4 px-6 flex space-x-2">
-                                    <a @click="cur_id = dem.id, update_dem('sold')" class="text-green-700 d-block pb-1 px-2 pt-2 rounded-lg hover:bg-green-100 ">
+                                <td v-if="dem.id != cur_id" class="py-4 px-6  space-x-2">
+                                    <button type="button" @click="more_id = dem.id, showmenu()"
+                                        class="text-gray-900 d-block pb-1 px-2 pt-2 rounded-lg hover:bg-gray-100 hover:text-rose-800 ">
                                         <span class="material-icons">
-                                            check_circle
+                                            more_vert
                                         </span>
-                                    </a>
-                                    <a @click="cur_id = dem.id, update_dem('delete')" class="text-red-700 d-block pb-1 px-2 pt-2 text-sm rounded-lg hover:bg-red-100 ">
-                                        <span class="material-icons">
-                                            delete
-                                        </span>
-                                    </a>
+                                    </button>
                                 </td>
                                 <td v-else class="py-4 px-6 flex justify-around space-x-2">
                                     <div>
@@ -173,7 +155,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            
+
                         </tbody>
                     </table>
                     <div v-if="can_load" @click="dem_p++ ,get_demandes()" class="py-2 flex justify-around">
@@ -181,7 +163,7 @@
                             <!-- Previous Button -->
                             <a
                                 class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                                <div v-if="dem_load" class="" >
+                                <div v-if="dem_load" class="">
                                     <div role="status">
                                         <svg class="inline mr-2 w-5 h-5 text-gray-200 animate-spin dark:text-gray-600 fill-rose-600"
                                             viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -201,7 +183,7 @@
                         </div>
                     </div>
                 </div>
-                <div v-else>
+                <div v-show="!demands.length">
                     <div class="py-12 px-12 flex justify-around">
                         <img src="/static/img/empty.svg" />
                     </div>
@@ -291,7 +273,6 @@
                 Comment gagner la <span class="font-semibold">récompense du jour</span> ?
             </div>
             <div class="my-1 w-8 h-1 rounded-full bg-rose-600">
-
             </div>
             <div class="py-3 text-sm">
                 Chaque jour Zawadi accorde au meilleur acheteur du jour une récompense qui peut aller jusqu'à <span
@@ -346,10 +327,154 @@
             Copyright &copy; 2022 <br>
             All Right Reserved <a class="text-rose-500" href="#">Elife Global</a>
         </div>
-
     </div>
-
 </div>
+
+
+<!-- Modal toggle -->
+<button style="display: none;" id="moreButVend"
+    class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+    type="button" data-modal-toggle="vend-modal">
+    Toggle modal
+</button>
+
+<!-- Main modal -->
+<div id="vend-modal" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 p-4 w-full md:inset-0 h-modal md:h-full">
+    <div class="relative w-full max-w-md h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button type="button" @click="showmenu"
+                class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                data-modal-toggle="vend-modal">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="py-6 px-6 lg:px-8">
+                <h3 class="mb-4 text-lg font-medium text-gray-900 dark:text-white">Paramètres de la demande</h3>
+                <div class="">
+
+                    <dl class="max-w-md text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700">
+                        <div class="flex flex-col pb-3">
+                            <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Nombre de vendeurs à envoyer
+                            </dt>
+                            <dd class="text-lg font-semibold">
+                                <div v-if="!param_load">
+                                    
+                                    <select id="num_vend" v-model="num_vend"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+
+                                        <option value="3">3</option>
+                                        <option value="5">5</option>
+                                        <option value="7">7</option>
+                                        <option value="10">10</option>
+                                        <option value="15">15</option>
+                                    </select>
+                                </div>
+                                <div v-else class="py-3">
+                                    <div class="text-center">
+                                        <div role="status">
+                                            <svg class="inline mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                                                viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                                    fill="currentColor" />
+                                                <path
+                                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                                    fill="currentFill" />
+                                            </svg>
+                                            <span class="sr-only">Loading...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </dd>
+                        </div>
+
+                    </dl>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Dem toggle -->
+<button style="display: none;" id="moreButDem"
+    class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+    type="button" data-modal-toggle="moreDem-modal">
+    Toggle modal
+</button>
+
+<!-- Main Dem modal -->
+<div id="moreDem-modal" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 p-4 w-full md:inset-0 h-modal md:h-full">
+    <div class="relative w-full max-w-md h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button type="button"
+                class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                data-modal-toggle="moreDem-modal">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="py-6 px-6 lg:px-8">
+                <h3 class="mb-4 text-lg  text-gray-900 dark:text-white">Précision sur ma demande de
+                    <span class="font-medium">${get_dem.subs}</span>
+                </h3>
+                <div class="py-4 ">
+                    <div class="flex items-center justify-between">
+                        <div class="pb-3"
+                            v-if="!(get_dem.budget || get_dem.num || get_dem.detail || get_dem.get_files.length)">
+                            <div class="p-4 text-sm text-gray-700 bg-gray-100 rounded-lg dark:bg-gray-700 dark:text-gray-300"
+                                role="alert">
+                                Vous n'avez pas ajouté de précisions sur ce produit.
+                            </div>
+                        </div>
+                        <div v-else>
+                            <ul class="space-y-1 max-w-md list-disc list-inside text-gray-500 dark:text-gray-400">
+                                <li v-if="get_dem.budget">
+                                    Vous avez prévu un budget de <span class="font-medium">${get_dem.budget} F</span>
+                                    pour
+                                    ce produit.
+                                </li>
+                                <li v-if="get_dem.num > 1">
+                                    Vous désirez acheter ${get_dem.num} unité de ce produit.
+                                </li>
+                                <li v-if="get_dem.detail">
+                                    Vous avez ajouté une description sur le produit : <span
+                                        v-html="get_dem.detail"></span>
+                                </li>
+                                <li v-if="get_dem.get_files.length">
+                                    Vous avez fourni ${get_dem.get_files.length} fichier<span
+                                        v-if="get_dem.get_files.length > 1">s</span> pour plus de précision sur ce que
+                                    vous désirez.
+                                    <ol class="pl-5 mt-2 space-y-1 list-decimal list-inside">
+                                        <li v-for="file in get_dem.get_files" :key="file"><a
+                                                class="text-blue-500 underline" :href="file">Voir le
+                                                fichier N° ${get_index(file, get_dem.get_files) + 1}</a></li>
+                                    </ol>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- Main AllList -->
 <div id="all_list" tabindex="-1" aria-hidden="true"
@@ -416,6 +541,456 @@
         </div>
     </div>
 </div>
+
+
+<!-- Modal toggle -->
+<button style="display: none;" id="menubtu"
+    class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+    type="button" data-modal-toggle="menu-modal">
+    Toggle modal
+</button>
+
+<!-- Main modal -->
+<div id="menu-modal" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 p-4 w-full md:inset-0 h-modal md:h-full">
+    <div class="relative w-full max-w-md h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button type="button"
+                class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                data-modal-toggle="menu-modal">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="py-6 px-6 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Menu de ma demande</h3>
+                <div>
+
+                    <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
+                        <li @click="showmenu(), show_det()" class="py-3 sm:pb-4 hover:bg-gray-100 ">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    <span style="position: relative; top: 0.2rem;" class="material-icons text-rose-600">
+                                        add_circle
+                                    </span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class=" font-medium text-gray-900 truncate dark:text-white">
+                                        Voir les détails
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                        <li @click="showmenu(), cur_id = more_id, update_dem('sold')"
+                            class="py-3 sm:pb-4 hover:bg-gray-100 ">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    <span style="position: relative; top: 0.2rem;"
+                                        class="material-icons text-green-600">
+                                        check_circle
+                                    </span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class=" font-medium text-gray-900 truncate dark:text-white">
+                                        Marquer comme "acheté"
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                        <li @click="showmenu(), show_params()" class="py-3 sm:pb-4 hover:bg-gray-100 ">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    <span style="position: relative; top: 0.2rem;"
+                                        class="material-icons text-green-600">
+                                        settings
+                                    </span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class=" font-medium text-gray-900 truncate dark:text-white">
+                                        Paramètres
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                        <li @click="showmenu(), cur_id = more_id, update_dem('delete')"
+                            class="py-3 sm:pb-4 hover:bg-gray-100 ">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    <span style="position: relative; top: 0.2rem;" class="material-icons text-red-600">
+                                        delete
+                                    </span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class=" font-medium text-gray-900 truncate dark:text-white">
+                                        Supprimer la demande
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Cat Modal toggle -->
+<button id="myCatMod" style="display: none;"
+    class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+    type="button" data-modal-toggle="myCatMod-modal">
+    Toggle modal
+</button>
+
+<!-- Cat Main modal -->
+<div id="myCatMod-modal" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 p-4 w-full md:inset-0 h-modal md:h-full">
+    <div class="relative w-full max-w-md h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button type="button" id="catclose"
+                class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                data-modal-toggle="myCatMod-modal">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="py-3 px-6 lg:px-8">
+                <h3 class="mb-2 text-xl font-medium text-gray-900 dark:text-white">Choisisssez la Catégorie</h3>
+                <div class="py-2  ">
+                    <div>
+
+
+                        <form class="flex items-center">
+                            <label for="simple-search" class="sr-only">Search</label>
+                            <div class="relative w-full">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                                        fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <input type="text" id="searchcat" @input="e => cat_search = e.target.value"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="Search" required>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+                <div class="py-3" style="max-height: 60vh; overflow-y: scroll;">
+                    <form>
+                        <div class="space-y-3" v-if="cat_search == ''">
+                            <div v-for="label in all_cats" :key="label.id">
+                                <div class="text-lg font-medium pb-3">
+                                    ${label.name}
+                                </div>
+                                <div class="">
+                                    <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
+                                        <li v-for="c in label.cats" :key="c.id"
+                                            class="py-2 px-3 sm:pb-4  hover:bg-gray-50">
+                                            <div class="flex items-center  space-x-4">
+
+                                                <div class="flex-1 min-w-0">
+
+                                                    <label :for="`cat${c.id}`">
+                                                        <p class=" font-medium text-gray-900 truncate dark:text-white">
+                                                            ${c.name}
+                                                        </p>
+                                                    </label>
+                                                </div>
+                                                <div class="flex-shrink-0">
+                                                    <input :id="`cat${c.id}`" type="radio" :value="c.id"
+                                                        name="cat_radio" v-model="cat"
+                                                        class="w-4 h-4 text-rose-600 bg-gray-100 border-gray-300 focus:ring-rose-500 dark:focus:ring-rose-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
+                                <li v-for="c in cat_results" :key="c.id" class="py-2 px-3 sm:pb-4  hover:bg-gray-50">
+                                    <div class="flex items-center  space-x-4">
+
+                                        <div class="flex-1 min-w-0">
+
+                                            <label :for="`cat${c.id}`">
+                                                <p class=" font-medium text-gray-900 truncate dark:text-white">
+                                                    ${c.high}
+                                                </p>
+                                            </label>
+                                        </div>
+                                        <div class="flex-shrink-0">
+                                            <input :id="`cat${c.id}`" type="radio" :value="c.id" name="cat_radio"
+                                                v-model="cat"
+                                                class="w-4 h-4 text-rose-600 bg-gray-100 border-gray-300 focus:ring-rose-500 dark:focus:ring-rose-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+            <div class="px-6 py-4">
+                <button v-if="cat != ''" type="button" @click="go_to_sub()"
+                    class="text-white bg-gradient-to-r from-rose-400 via-rose-500 to-rose-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-rose-300 dark:focus:ring-rose-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 w-full text-center ">Valider</button>
+                <button v-else type="button"
+                    class="text-white text-gray-400 bg-gray-100 focus:outline-none focus:ring-rose-300 dark:focus:ring-rose-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 w-full text-center ">Valider</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Sub Modal toggle -->
+<button id="mySubMod" style="display: none;"
+    class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+    type="button" data-modal-toggle="mySubMod-modal">
+    Toggle modal
+</button>
+
+<!-- Sub Main modal -->
+<div v-show="!cur_sub" id="mySubMod-modal" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 p-4 w-full md:inset-0 h-modal md:h-full">
+    <div class="relative w-full max-w-md h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button @click="r_subs = []" type="button" id="subclose"
+                class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                data-modal-toggle="mySubMod-modal">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="py-3 px-6 lg:px-8">
+                <h3 class="mb-2 text-xl font-medium text-gray-900 dark:text-white">Sélectionnez les produits que vous
+                    voulez</h3>
+                <div class="py-2  ">
+                    <div>
+
+
+                        <form class="flex items-center">
+                            <label for="simple-search" class="sr-only">Search</label>
+                            <button @click="backtocat()" type="button"
+                                class=" mr-2 text-rose-700 border border-rose-700 hover:bg-rose-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center dark:border-rose-500 dark:text-rose-500 dark:hover:text-white dark:focus:ring-rose-800">
+                                <span class="material-icons">
+                                    arrow_back
+                                </span>
+                            </button>
+                            <div class="relative w-full">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                                        fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <input type="text" id="searchsub" @input="e => sub_search = e.target.value"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="Search" required>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+                <div v-if="sub_search == ''" class="py-3" style="max-height: 60vh; overflow-y: scroll;">
+                    <form>
+                        <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
+                            <li class="py-2 px-3 sm:pb-4" v-for="sb in all_subs" :key="sb.id">
+                                <div class="flex items-center space-x-4">
+                                    <div class="flex-shrink-0">
+                                        <input :checked="includes_subs(sb.id)" @click="add_us(sb)" :id="`sub${sb.id}`"
+                                            type="checkbox"
+                                            class="w-4 h-4 text-rose-600 bg-gray-100 rounded border-gray-300 focus:ring-rose-500 dark:focus:ring-rose-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </div>
+                                    <div class="flex-1 min-w-0 hover:bg-gray-50 ">
+                                        <label :for="`sub${sb.id}`">
+                                            <p class="font-medium text-gray-900 truncate dark:text-white">
+                                                ${sb.name}
+                                            </p>
+                                            <div v-if="has_sub_det(sb.id)">
+                                                <p v-if="has_sub_det(sb.id).bdg"
+                                                    class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                    Budget prévu : ${has_sub_det(sb.id).bdg} F
+                                                </p>
+                                                <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                    Nombre voulu : ${has_sub_det(sb.id).num_prod}
+                                                </p>
+                                                <p v-if="has_sub_det(sb.id).detail"
+                                                    class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                    Détail : ${has_sub_det(sb.id).detail}
+                                                </p>
+                                                <p v-if="has_sub_det(sb.id).files"
+                                                    class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                    ${has_sub_det(sb.id).files.length} fichier<span
+                                                        v-html="has_sub_det(sb.id).files.length > 1 ? 's' : '' "></span>
+                                                    ajouté<span
+                                                        v-html="has_sub_det(sb.id).files.length > 1 ? 's' : '' "></span>
+                                                </p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div style="cursor: pointer;" @click="cur_sub = sb.id, setPrev()"
+                                        class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white hover:bg-gray-100 hover:p-2 hover:rounded-lg hover:text-rose-500">
+                                        <span class="material-icons">
+                                            add_circle
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+
+                    </form>
+
+                </div>
+                <div v-else class="py-3" style="max-height: 60vh; overflow-y: scroll;">
+                    <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
+                        <li class="py-2 px-3 sm:pb-4" v-for="sb in sub_results" :key="sb.id">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    <input @click="add_us(sb)" :checked="includes_subs(sb.id)" :id="`sub${sb.id}`"
+                                        type="checkbox"
+                                        class="w-4 h-4 text-rose-600 bg-gray-100 rounded border-gray-300 focus:ring-rose-500 dark:focus:ring-rose-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                </div>
+                                <div class="flex-1 min-w-0 hover:bg-gray-50 ">
+                                    <label :for="`sub${sb.id}`">
+                                        <p class="font-medium text-gray-900 truncate dark:text-white">
+                                            ${sb.high}
+                                        </p>
+                                        <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                            ${sb.cat}
+                                        </p>
+                                        <div v-if="has_sub_det(sb.id)">
+                                            <p v-if="has_sub_det(sb.id).bdg"
+                                                class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                Budget prévu : ${has_sub_det(sb.id).bdg} F
+                                            </p>
+                                            <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                Nombre voulu : ${has_sub_det(sb.id).num_prod}
+                                            </p>
+                                            <p v-if="has_sub_det(sb.id).detail"
+                                                class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                Détail : ${has_sub_det(sb.id).detail}
+                                            </p>
+                                            <p v-if="has_sub_det(sb.id).files"
+                                                class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                ${has_sub_det(sb.id).files.length} fichier<span
+                                                    v-html="has_sub_det(sb.id).files.length > 1 ? 's' : '' "></span>
+                                                ajouté<span
+                                                    v-html="has_sub_det(sb.id).files.length > 1 ? 's' : '' "></span>
+                                            </p>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div style="cursor: pointer;" @click=" cur_sub = sb.id, setPrev()"
+                                    class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white hover:bg-gray-100 hover:p-2 hover:rounded-lg hover:text-rose-500">
+                                    <span class="material-icons">
+                                        add_circle
+                                    </span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="px-6 py-4">
+                <button v-if="r_subs.length" @click="showsubMod()" type="button"
+                    class="text-white bg-gradient-to-r from-rose-400 via-rose-500 to-rose-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-rose-300 dark:focus:ring-rose-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 w-full text-center ">Enregistrer</button>
+                <button v-else type="button"
+                    class="text-white text-gray-400 bg-gray-100 focus:outline-none focus:ring-rose-300 dark:focus:ring-rose-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 w-full text-center ">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- More modal -->
+<div id="more-modal" v-if="cur_sub" tabindex="-1"
+    class=" overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 p-4 w-full md:inset-0 h-modal md:h-full">
+    <div class="relative w-full max-w-md h-full md:h-auto">
+        <!-- More Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button @click="cur_sub = 0" type="button"
+                class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                data-modal-toggle="more-modal">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="py-6 px-6 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Plus de précisions aux vendeurs</h3>
+                <form class="space-y-3" action="#">
+                    <div>
+                        <label for="bdg" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Budget
+                            prévu</label>
+                        <input type="number" name="bdg" id="bdg" v-model="bdg"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-rose-500 focus:border-rose-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                            placeholder="Somme que vous prévoyez utiliser" required>
+                    </div>
+                    <div>
+                        <label for="num_prod"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre désiré</label>
+                        <input type="number" name="num_prod" id="num_prod" v-model="num_prod"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-rose-500 focus:border-rose-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                            placeholder="Nombre de produit désiré" required>
+                    </div>
+                    <div>
+                        <label for="message"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ajoutez des détails
+                        </label>
+                        <textarea id="message" rows="4" v-model="detail"
+                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-rose-500 focus:border-rose-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-rose-500 dark:focus:border-rose-500"
+                            placeholder="donnez plus de détails( marque, taille, performance...)"></textarea>
+                    </div>
+                    <div>
+
+                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                            for="multiple_files">Des Images pour plus de précision</label>
+                        <input @change="setFiles"
+                            class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                            id="multiple_files" type="file" multiple>
+
+                    </div>
+                    <button type="submit" @click="build_sub_det()"
+                        class="w-full text-white bg-rose-700 hover:bg-rose-800 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-rose-600 dark:hover:bg-rose-700 dark:focus:ring-rose-800">Enregistrer</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- Modal User -->
 <button style="display: none;" id="myBut"
@@ -547,6 +1122,7 @@
 
 {% block script %}
 <script src="/static/axios.min.js"></script>
+<script src="/static/fuzzysort.js"></script>
 <script>
 
     let baseUR = window.location.host
@@ -592,6 +1168,7 @@
             });
 
             return {
+                def_cat: "Cliquez pour choisir",
                 user: '{% if not has_user %}not{% endif %}',
                 phoneInput: 0,
                 is_what: true,
@@ -600,8 +1177,8 @@
                 can_show_valid: true,
                 country: 'bj',
                 numb: "",
-                cat: "{{f}}",
-                subs: [],
+                cat: "",
+                r_subs: [],
                 emer: "Urgent",
                 is_registered: false,
                 first_name: "",
@@ -666,24 +1243,46 @@
                         'Katiola'
                     ]
                 },
-                dem_load : false,
-                dem_p : 1,
-                can_load : true
+                dem_load: false,
+                dem_p: 1,
+                can_load: true,
+                all_cats: [],
+                cur_sub: 0,
+                bdg: null,
+                detail: null,
+                num_prod: 1,
+                files: [],
+                sub_det: [],
+                target_sub: 0,
+                cat_search: "",
+                sub_search: "",
+                more_id: 0,
+                num_vend: "0",
+                param_load: false,
+                not_real : false
             }
         },
         mounted() {
+            let th = this
             const end_load = () => {
                 document.getElementById('global_load').style.display = 'none'
                 document.getElementById('app').style.display = 'block'
             }
-            end_load()
-            let th = this
+            axios({
+                url: '/api/get_all_cats/',
+                method: 'GET'
+            }).then(resp => {
+                if (resp.data['done']) {
+                    th.all_cats = resp.data['result']
+
+                    end_load()
+                }
+            }).catch(err => {
+                console.log(err);
+            })
             setTimeout(() => {
                 getIp((country) => { th.country = country })
             }, 500)
-            document.getElementById('countries').addEventListener('change', (e) => {
-                th.cat = e.target.value
-            })
             const customers_info = localStorage.getItem('customers_info')
             if (customers_info) {
                 let my_info = JSON.parse(customers_info)
@@ -698,37 +1297,271 @@
             }
             th.get_demandes()
         },
-        methods: {
-            get_demandes(){
+        watch: {
+            cat(newc, oldc) {
+                this.r_subs = []
+                this.clean_sub_search()
+            },
+            num_vend(newn, oldn){
                 let th = this
-                th.dem_load = true
-                axios({
-                    url : `api/get_demands/?p=${th.dem_p}`,
+                if(!th.not_real) this.param_load = true
+                if(!th.not_real) axios({
+                    url : `api/set_num_vend/?dem=${th.more_id}&num_vend=${newn}`,
                     method : 'GET'
-                }).then( resp => {
-                    th.dem_load = false
-                    th.can_load =resp.data['result'].length != 0
-                    if(resp.data['done']){
-                        
-                        th.demands = th.demands.concat(resp.data['result'])
-                    }
-                }).catch( err => {
+                }).then(resp => {
+                    th.param_load = false
+                    
+                }).catch(err => {
                     console.log(err);
                 })
             },
-            update_dem(action){
+            more_id(newm, oldm){
+                this.not_real = true
+                this.num_vend = `${this.get_dem.num_vend}`
+                setTimeout(() =>  {this.not_real = false}, 50)
+            }
+        },
+        computed: {
+            get_dem() {
+                let dems = {
+                    'subs': '',
+                    'bdg': null,
+                    'detail': null,
+                    'num': null,
+                    'get_files': []
+                }
+                for (dem of this.demands) {
+                    if (dem.id == this.more_id) {
+                        return dem
+                    }
+                }
+                return dems
+            },
+            cat_results() {
+                let l = []
+                for (label of this.all_cats) {
+                    for (cat of label.cats) {
+                        let ct = {}
+                        ct['id'] = cat.id
+                        const result = this.accentsTidy(cat.name).search(this.accentsTidy(this.cat_search))
+                        ct['score'] = result
+                        ct['high'] = cat.name
+                        for (sub of cat.subs) {
+                            const sresult = this.accentsTidy(sub.name).search(this.accentsTidy(this.cat_search))
+                            if (sresult >= 0 && result >= 0) {
+                                if (sresult < result) ct['score'] = sresult
+                            } else if (sresult >= 0 && result < 0) {
+                                ct['score'] = sresult
+                            }
+                        }
+                        if (ct['score'] >= 0) l.push(ct)
+                    }
+                }
+                return l.sort((e1, e2) => {
+                    return e1['score'] - e2['score']
+                })
+            },
+            sub_results() {
+                let l = []
+
+                for (sub of this.all_subs) {
+                    let sb = {}
+                    sb['id'] = sub.id
+                    sb['high'] = sub.name
+                    sb['cat'] = cat.name
+                    const result = this.accentsTidy(sub.name).search(this.accentsTidy(this.sub_search))
+                    sb['score'] = result
+                    if (result >= 0) l.push(sb)
+                }
+
+                return l.sort((e1, e2) => {
+                    return e1['score'] - e2['score']
+                })
+            },
+            subs() {
+                let mul = []
+                for (sb of this.r_subs) {
+                    mul.push(sb.name)
+                }
+                return mul
+            },
+            aler() {
+                console.log(this.files);
+            },
+            all_subs() {
+                if (this.cat == "") {
+                    return []
+                }
+                for (label of this.all_cats) {
+                    for (cat of label.cats) {
+                        if (cat.id.toString() == this.cat) {
+                            return cat.subs
+                        }
+                    }
+                }
+            }
+        },
+        methods: {
+            show_params() {
+                document.getElementById('moreButVend').click()
+            },
+            get_index(el, lis) {
+                for (let i = 0; i < lis.length; i++) {
+                    if (lis[i] == el) {
+                        return i
+                    }
+                }
+                return -1
+            },
+            show_det() {
+                document.getElementById('moreButDem').click()
+            },
+            showmenu() {
+                document.getElementById('menubtu').click()
+
+            },
+            clean_sub_search() {
+                this.sub_search = ""
+                document.getElementById('searchsub').value = ""
+            },
+            clean_cat_search() {
+                this.cat_search = ""
+                document.getElementById('searchcat').value = ""
+            },
+            accentsTidy: function (s) {
+                var r = s.toLowerCase();
+                r = r.replace(new RegExp("\\s", 'g'), "");
+                r = r.replace(new RegExp("[àáâãäå]", 'g'), "a");
+                r = r.replace(new RegExp("æ", 'g'), "ae");
+                r = r.replace(new RegExp("ç", 'g'), "c");
+                r = r.replace(new RegExp("[èéêë]", 'g'), "e");
+                r = r.replace(new RegExp("[ìíîï]", 'g'), "i");
+                r = r.replace(new RegExp("ñ", 'g'), "n");
+                r = r.replace(new RegExp("[òóôõö]", 'g'), "o");
+                r = r.replace(new RegExp("œ", 'g'), "oe");
+                r = r.replace(new RegExp("[ùúûü]", 'g'), "u");
+                r = r.replace(new RegExp("[ýÿ]", 'g'), "y");
+                r = r.replace(new RegExp("\\W", 'g'), "");
+                return r;
+            },
+            closesubMod() {
+                document.getElementById('subclose').click()
+            },
+            backtocat() {
+                this.r_subs = []
+                document.getElementById('subclose').click()
+                this.showcatMod()
+            },
+            add_us(elt) {
+                if (this.includes_subs(elt.id)) {
+                    this.r_subs = this.r_subs.filter(e => e['id'] != elt.id)
+                } else {
+                    this.r_subs.push(elt)
+                }
+            },
+            includes_subs(id) {
+                return this.r_subs.filter(e => e['id'] == id).length > 0
+            },
+            has_sub_det(id) {
+                for (el of this.sub_det) {
+                    if (el['id'] == id) {
+                        return el
+                    }
+                }
+                return 0
+            },
+            setPrev() {
+                for (e of this.sub_det) {
+                    if (e['id'] == this.cur_sub) {
+                        this.bdg = e.bdg
+                        this.num_prod = e.num_prod
+                        this.detail = e.detail
+                    }
+                }
+            },
+            get_sub(id) {
+                for (sub of this.all_subs) {
+                    if (sub.id == id) return sub
+                }
+            },
+            build_sub_det() {
+                if (!this.cur_sub) {
+                    return;
+                }
+                console.log(this.sub_det.filter(e => e['id'] != this.cur_sub));
+                this.sub_det = this.sub_det.filter(e => e['id'] != this.cur_sub)
+                let det = { 'id': this.cur_sub }
+                if (this.bdg) {
+                    det['bdg'] = this.bdg
+                }
+                if (this.detail) {
+                    det['detail'] = this.detail
+                }
+                if (this.num_prod) {
+                    det['num_prod'] = this.num_prod
+                }
+                if (this.files.length) {
+                    det['files'] = this.files
+                }
+                this.sub_det.push(det)
+                if (!this.includes_subs(this.cur_sub)) {
+                    this.r_subs.push(this.get_sub(this.cur_sub))
+                }
+                this.cur_sub = 0
+                this.bdg = null
+                this.detail = null
+                this.num_prod = 1
+                this.files = []
+                console.log(this.sub_det);
+            },
+            setFiles(e) {
+                this.files = []
+                let myFiles = e.target.files
+                for (f of myFiles) {
+                    this.files.push(f)
+                }
+            },
+            go_to_sub() {
+                document.getElementById('catclose').click()
+                this.showsubMod()
+            },
+            showsubMod() {
+                document.getElementById('mySubMod').click()
+            },
+            showcatMod() {
+                this.clean_cat_search()
+                document.getElementById('myCatMod').click()
+            },
+            get_demandes() {
+                let th = this
+                th.dem_load = true
+                axios({
+                    url: `api/get_demands/?p=${th.dem_p}`,
+                    method: 'GET'
+                }).then(resp => {
+                    th.dem_load = false
+                    th.can_load = resp.data['result'].length != 0
+                    if (resp.data['done']) {
+
+                        th.demands = th.demands.concat(resp.data['result'])
+                    }
+                }).catch(err => {
+                    console.log(err);
+                })
+            },
+            update_dem(action) {
                 let th = this
 
                 axios({
-                    url : `api/delete_demand/${th.cur_id}/?action=${action}`,
-                    method : 'GET'
+                    url: `api/delete_demand/${th.cur_id}/?action=${action}`,
+                    method: 'GET'
                 }).then(resp => {
-                    if(resp.data['done']){
+                    if (resp.data['done']) {
                         th.cur_id = 0
                         th.demands = th.demands.filter(e => e['id'] != resp.data['result'])
 
                     }
-                }).catch( err => {
+                }).catch(err => {
                     console.log(err);
                 })
             },
@@ -739,6 +1572,10 @@
                 else { th.send_dem() }
             },
             send_dem() {
+                if (!this.r_subs.length) {
+                    alert('Veuillez choisir au moins un produit pour envoyer votre demande.')
+                    return;
+                }
                 let th = this
                 th.sending = true
                 if (!th.is_registered && (th.user == 'not')) document.getElementById('closeModUs').click()
@@ -746,6 +1583,15 @@
                 form.append('cat', th.cat)
                 form.append('subs', JSON.stringify(th.subs))
                 form.append('emer', th.emer)
+                for (det of this.sub_det) {
+                    if ('files' in det) {
+                        for (let i = 0; i < det['files'].length; i++) {
+
+                            form.append(`file:${det.id}:${i}`, det.files[i])
+                        }
+                    }
+                }
+                form.append('sub_det', JSON.stringify(this.sub_det))
                 if (th.user == 'not') {
                     th.checkNumber()
                     if (!th.is_what) {
@@ -767,6 +1613,7 @@
                     data: form,
                     headers: {
                         "accept": "application/json",
+                        "Content-Type": "multipart/form-data",
                         "X-CSRFToken": "{{ csrf_token }}",
                     },
                 }).then(resp => {
@@ -775,7 +1622,7 @@
                         th.show_thank = true
                         th.dem_p = 1
                         th.demands = []
-                        th.subs = []
+                        th.r_subs = []
                         th.get_demandes()
                         setTimeout(() => {
                             th.show_thank = false

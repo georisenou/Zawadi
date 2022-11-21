@@ -21,6 +21,13 @@ def ident_generator(min, max):
 
 # Create your models here.
 
+class MyFiles(models.Model) :
+    name = models.CharField(max_length=150, null=True, blank=True)
+    file = models.FileField(upload_to='demandes/', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    def __str__( self) :
+        return self.name
+
 class ZawadiDetail(models.Model) :
     key = models.CharField(max_length=250, null=True, blank=True)
     value = models.TextField(null=True, blank=True)
@@ -91,8 +98,17 @@ class ClientDemand(models.Model) :
     category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE, related_name="demandes")
     subs = models.ForeignKey(SubCategory, null=True, blank=True, on_delete=models.CASCADE, related_name="demandes")
     emergency = models.CharField(max_length=250, null=True, blank=True)
+    budget = models.CharField(max_length=150, null=True, blank=True)
+    detail = models.TextField(null=True, blank=True)
     point = models.IntegerField(default=0)
     is_out = models.BooleanField(default=False)
+    num = models.IntegerField(null=True, blank=True)
+    files = models.ManyToManyField(MyFiles, blank=True)
+    num_vend = models.IntegerField(default=5)
+    def get_files(self) :
+        return [
+            file.file.url for file in self.files.all()
+        ]
     def sends_num(self) :
         return self.weeks_in.count()
     def get_duration(self):
@@ -154,7 +170,9 @@ class WeekCustom(models.Model) :
         count = self.demandes.count()
         ls = self.get_steps()
         last_abn = self.seller.get_last_abn()
-        if count < ls[0] or last_abn.is_freed :
+        if last_abn.is_freed and count < ls[0] :
+            return 'free'
+        if count < ls[0]  :
             return 'first'
         elif count < ls[1] :
             return 'second'
