@@ -617,7 +617,7 @@ def daily_task(request):
             for week in seller.weeks.all():
                 week = check_week_(week)
     except Exception as e:
-        mess = e
+        mess = str(e)
     try :
         demandes = ClientDemand.objects.annotate(weeks = Count('weeks_in')).filter(weeks = 0)
         for dem in demandes :
