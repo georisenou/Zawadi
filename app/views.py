@@ -20,6 +20,7 @@ from rest_framework import serializers
 from firebase_admin.messaging import Message as Mss, Notification, AndroidNotification, WebpushConfig, WebpushFCMOptions, AndroidConfig, APNSConfig, APNSPayload, Aps
 from fcm_django.models import FCMDevice
 from django.core.paginator import Paginator
+from .algorithm import *
 # Create your views here.
 
 def get_obj_from_paginator(arts, number, p, serializer):
@@ -147,7 +148,6 @@ def send_client_to_seller(client):
         s.pk for s in fsellers if get_on_week(s).get_level() == 'third'
     ]
     first_pk = range_to_favor(zero_pk) + range_to_favor(first_pk) + range_to_favor(second_pk) + range_to_favor(third_pk)
-    print(first_pk)
     i = 0
     for pk in first_pk:
         if i < client.num_vend :
@@ -167,11 +167,11 @@ def create_week(seller):
     for week in seller.weeks.all():
         week.is_on = False
         week.save()
-
     week = WeekCustom.objects.create(seller=seller)
     week.begun = datetime.date.today()
     week.end = datetime.date.today() + datetime.timedelta(days=7)
-    last_week = seller.weeks.exclude(pk=week.pk).order_by('-end')
+    week.save()
+    last_week = seller.weeks.exclude(pk=week.pk).order_by('-end').first()
     if last_week:
         last_week.next = week.pk
         last_week.save()
@@ -186,6 +186,9 @@ def create_week(seller):
 def check_seller(seller):
     if seller.expired_date < datetime.date.today():
         seller.rest = 0
+        if seller.get_week() :
+            seller.get_week().is_on = False
+            seller.get_week().save()
         seller.status = False
         seller.save()
     return seller
@@ -301,8 +304,8 @@ def register_view(request):
         email = post['email'][0]
         password = post['password'][0]
         country = post['country'][0]
-        towns = post['towns[]']
         users = User.objects.filter(email=email)
+        quart = post['quart'][0]
         if users.exists():
             err.append('Cet email a déjà été utilisé.')
             return render(request, 'register.html', {
@@ -310,7 +313,7 @@ def register_view(request):
             })
         try:
             user = User.objects.create_user(email=email, password=password, first_name=first_name,
-                                            last_name=last_name, country=country, towns=':'.join(towns))
+                                            last_name=last_name, country=country,  quart = quart)
         except:
             err.append(
                 'Une erreur est survenue. Veuillez vérifier vos identifiants.')
@@ -357,7 +360,6 @@ def very_new_activate(request):
     seller = request.user.accounts.all().first()
     categories = Category.objects.all()
     labels = Label.objects.all()
-    print(request.user.can_freed())
     return render(request, 'activate2.html', {
         'seller': seller,
         'categories': categories,
@@ -387,7 +389,6 @@ def compte(request):
                 #subs = SubCategory.objects.filter(name__in=subs)
                 #print(subs)
                 r_subs = json.loads(request.POST.get('r_subs'))
-                print(r_subs)
                 cats = [
                     Category.objects.get(pk = int(s['cat'])) for s in r_subs
                 ]
@@ -536,12 +537,13 @@ def register_demand(request):
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
         country = request.POST.get('country')
-        town = request.POST.get('town')
         number = request.POST.get('number')
         whatsapp = request.POST.get('whatsapp')
-        
+        quart = request.POST.get('quart')
         if  User.objects.filter(email = email).exists():
             user = User.objects.get(email = email)
+            user.quart = quart
+            user.save()
         else:
             if  User.objects.filter(email = first_name + email).exists():
                 user = User.objects.get(email = first_name + email)
@@ -549,9 +551,7 @@ def register_demand(request):
                 user = User.objects.get(email = last_name + first_name + email)
             else :
                 user = User.objects.create_user(email=email, password=first_name + last_name + number, first_name=first_name,
-                                            last_name=last_name, country=country, towns=':'.join(json.loads(town)))
-        
-        
+                                            last_name=last_name, country=country, quart = quart)
         login(request, user = user)
         client = Client.objects.get_or_create(
             user=user, phone=number, whatsapp=whatsapp)[0]
@@ -567,14 +567,14 @@ def register_demand(request):
     cat = request.POST.get('cat')
     subs = json.loads(request.POST.get('subs'))
     emer = request.POST.get('emer')
-    print(request.POST.get('sub_det'))
     keys = list(request.FILES.keys())
     sub_det = json.loads(request.POST.get('sub_det'))
     pks = []
+    unique_slug = f"client:{client.pk}__{ident_generator(100, 250)}"
     for sub in subs:
         mysub = SubCategory.objects.get(name=sub, box = Category.objects.get(pk = int(cat)))
         demand = ClientDemand.objects.create(
-            client=client, subs= mysub , category = Category.objects.get(pk = int(cat)), emergency=emer)
+            client=client, subs= mysub , category = Category.objects.get(pk = int(cat)), emergency=emer, quart = request.user.quart, slug = unique_slug)
         for det in sub_det :
             if det['id'] == mysub.pk :
                 if det.get('bdg') :
@@ -584,17 +584,13 @@ def register_demand(request):
                 if det.get('num_prod') :
                     demand.num = det.get('num_prod')
                 for key in keys :
-                    print(key)
                     if f"file:{det['id']}:" in key :
                         myfile = MyFiles.objects.create(name = "demand_"+ key, file = request.FILES.get(key) )
                         demand.files.add(myfile)
         demand.save()
         pks.append(demand.pk)
-
     def send_dem():
-        dems = ClientDemand.objects.filter(pk__in=pks)
-        for dem in dems:
-            send_client_to_seller(dem)
+        main(unique_slug)
     send_by_thread(send_dem)
     return Response({
         'done': True,
@@ -619,10 +615,12 @@ def daily_task(request):
     except Exception as e:
         mess = str(e)
     try :
-        demandes = ClientDemand.objects.annotate(weeks = Count('weeks_in')).filter(weeks = 0)
-        for dem in demandes :
-            send_client_to_seller(dem)
-            
+        dems = ClientDemand.objects.filter(is_out = False)
+        slugs = []
+        for dem in dems : 
+            if not dem.slug in slugs : slugs.append(dem.slug)
+        for slug in slugs :
+            main(slug)
     except Exception as e :
         mess2 = f" - {e}"
     num_ = get_value('testors')
@@ -797,12 +795,10 @@ def delete_demand(request, pk) :
         if action  :
             user_sold = ZawadiDetail.objects.get_or_create(key = f"{request.user} - {action}")
             if user_sold[1] :
-                print(json.dumps([]))
                 user_sold[0].value = json.dumps([])
                 user_sold[0].save()
             user_sold = ZawadiDetail.objects.get_or_create(key = f"{request.user} - {action}")
             user_sold = user_sold[0]
-            print(user_sold.value)
             v = json.loads(user_sold.value)
             v.append(demand.subs.name)
             user_sold.value = json.dumps(v)
@@ -845,6 +841,8 @@ def set_num_vend(request) :
         weeks = dem.weeks_in.all()
         for week in weeks :
             week.demandes.remove(dem)
+        dem.is_out = False
+        dem.save()
         send_client_to_seller(dem)
     send_by_thread(resend_vend)
     return Response({

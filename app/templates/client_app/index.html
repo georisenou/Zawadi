@@ -55,6 +55,7 @@
                                 <option value="Urgent">Urgent</option>
                             </select>
                         </div>
+                        
                         <div v-if="subs.length">
                             <div v-for="s in subs" :key="s"
                                 class="inline-block px-2 py-1 mr-1 my-1 text-sm bg-rose-100 text-rose-600 rounded">
@@ -225,6 +226,7 @@
                 qui vous convient est totalement éliminé.
             </div>
         </div>
+        
         <div class="py-4 px-5">
             <div class="text-2xl ">
                 Comment <span class="font-semibold">acheter</span> alors grâce à Zawadi ?
@@ -233,9 +235,7 @@
 
             </div>
             <div class="py-3 text-sm">
-                C'est simple. Lorsque vous voulez acheter un produit ou un service ou que vous prévoyez juste en acheter
-                (sans disposez
-                de la totalité de l'argent), vous n'avez qu'a remplir
+                C'est simple. Lorsque vous prévoyez un produit qu'il soit urgent ou pas, vous n'avez qu'à remplir
                 le petit formulaire en haut et enregistrer la requête d'achat. Très vite les
                 meilleurs vendeurs de votre localité vont vous contacter (par Whatsapp, appel ou Email) et vous
                 présenter des produits de qualité. Il ne vous reste qu'à choisir.
@@ -243,21 +243,31 @@
         </div>
         <div class="py-4 px-5">
             <div class="text-2xl ">
-                Puis-je enregistrer des requêtes <span class="font-semibold">d'autres personnes</span> ?
+                Comment Zawadi trouve-t-il des <span class="font-semibold">vendeurs</span> pour ma demande ?
             </div>
             <div class="my-1 w-8 h-1 rounded-full bg-rose-600">
 
             </div>
             <div class="py-3 text-sm">
-                Oui, vous pouvez enregistrer les requetes d'autres personnes que vous sur Zawadi, la récompense est
-                toujours prise en compte pour vous. Cependant assurez vous de rediriger le vendeur vers la personne
+                Imaginez un roi qui dit à ses serviteurs qu'il aurait besoin de certains produits. Et donc pour répondre aux besoins de leur roi, les serviteurs fouillent toutes les régions et selectionnent parmi les marchands disposant des produits demandés par le roi ceux qui sont les plus proches, qui sont connus pour la qualité de leurs produits et qui ont une bonne relation avec leur client. Ils envoient ensuite ces marchands présentés leurs produits au roi afin qu'il puisssent aisement faire son choix parmi les meilleurs produits. Ici vous représentez le roi et les serviteurs représentent Zawadi.  
+            </div>
+        </div>
+        <div class="py-4 px-5">
+            <div class="text-2xl ">
+                Puis-je enregistrer des demandes <span class="font-semibold">d'autres personnes</span> ?
+            </div>
+            <div class="my-1 w-8 h-1 rounded-full bg-rose-600">
+
+            </div>
+            <div class="py-3 text-sm">
+                Oui, vous pouvez enregistrer les demandes d'autres personnes que vous sur Zawadi. Cependant assurez vous de rediriger le vendeur vers la personne
                 concernée.
             </div>
         </div>
         <div class="py-4 px-5">
             <div class="text-xl ">
                 Dois-je nécéssairement avoir la <span class="font-semibold"> totalité de l'argent</span> du produit
-                avant d'enregistrer une requete ?
+                avant d'enregistrer une demande ?
             </div>
             <div class="my-1 w-8 h-1 rounded-full bg-rose-600">
 
@@ -365,7 +375,7 @@
                             </dt>
                             <dd class="text-lg font-semibold">
                                 <div v-if="!param_load">
-                                    
+
                                     <select id="num_vend" v-model="num_vend"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
 
@@ -991,6 +1001,128 @@
     </div>
 </div>
 
+<button id="quartMod" style="display: none;"
+    class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+    type="button" data-modal-toggle="quartMod-modal">
+    Toggle modal
+</button>
+
+<!-- Quart Main modal -->
+<div id="quartMod-modal" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 p-4 w-full md:inset-0 h-modal md:h-full">
+    <div class="relative w-full max-w-md h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button type="button" id="quartclose" @click="activeMod()"
+                class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                data-modal-toggle="quartMod-modal">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="py-3 px-6 lg:px-8">
+                <h3 class="mb-2 text-xl font-medium text-gray-900 dark:text-white">Entrez le nom de votre quartier</h3>
+                <div class="py-2  ">
+                    <div>
+
+
+                        <form class="flex items-center">
+                            <label for="simple-search" class="sr-only">entrez...</label>
+                            <div class="relative w-full">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                                        fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <input type="text" id="searchcat" @input="e => quarti = e.target.value"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="entrez..." required>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+                <div class="py-3" style="max-height: 60vh; overflow-y: scroll;">
+                    <div v-if="quart.name == '' && !quarts.length && quarti == ''">
+                        <div class="p-4 flex justify-around">
+                            <img class="w-full" src="{% static 'img/city.svg' %}" />
+                        </div>
+                        <div class="text-center">
+                            Veuillez entrer le nom de votre quartier et choisissez le resultat le plus proche de chez vous
+                        </div>
+                    </div>
+                    <div v-if="quarts.length">
+
+                        <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
+                            <li class="p-3 sm:pb-4 hover:bg-gray-100" v-for="quar in quarts" :key="slugify(quar)">
+                                <div class="flex items-center space-x-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="material-icons">place</i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <label :for="slugify(quar)">
+                                            <p class=" font-medium text-gray-900 truncate dark:text-white">
+                                                ${quar.name}
+                                            </p>
+                                        </label>
+                                    </div>
+                                    <div
+                                        class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                                        <input
+                                            :checked="quart.name == quar.name && quart.lat == quar.lat && quart.lng == quar.lng"
+                                            :id="slugify(quar)" type="radio" name="quar_radio" @click="quart = quar"
+                                            class="w-4 h-4 text-rose-600 bg-gray-100 border-gray-300 focus:ring-rose-500 dark:focus:ring-rose-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+
+                    </div>
+                    <div v-if="!quarts.length && quarti != '' && !isTyping">
+                        <div class="p-4 flex justify-around">
+                            <img class="w-full" src="{% static 'img/r_city.svg' %}" />
+                        </div>
+                        <div class="text-center">
+                            Nous ne trouvons pas de lieu correspondant
+                        </div>
+                    </div>
+                    <div v-if="!quarts.length && quarti != '' && isTyping">
+                        <div class="p-6 flex justify-around">
+                            <div role="status">
+                                <svg aria-hidden="true"
+                                    class="mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-rose-600"
+                                    viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                        fill="currentColor" />
+                                    <path
+                                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                        fill="currentFill" />
+                                </svg>
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="px-6 py-4">
+                <button @click="activeMod(), f_quart = quart, showquartMod(), quarti = ''" v-if="quart.name != ''" type="button" 
+                    class="text-white bg-gradient-to-r from-rose-400 via-rose-500 to-rose-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-rose-300 dark:focus:ring-rose-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 w-full text-center ">Valider</button>
+                <button v-else type="button"
+                    class="text-white text-gray-400 bg-gray-100 focus:outline-none focus:ring-rose-300 dark:focus:ring-rose-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 w-full text-center ">Valider</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Modal User -->
 <button style="display: none;" id="myBut"
@@ -1039,30 +1171,7 @@
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             placeholder="Email" required>
                     </div>
-                    <div>
-                        <div class="mb-1">
-                            Pays et villes fréquentés
-                        </div>
-                        <div class="grid grid-cols-2">
-                            <div class="mr-2">
-                                <select id="coutries" name="coutry" required v-model="country"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                    <option value="bj">Benin</option>
-                                    <option value="tg">Togo</option>
-                                    <option value="ci">Côte D'Ivoire</option>
-                                </select>
-                            </div>
-                            <div>
-                                <div v-for="c in countries" :key="c">
-                                    <select name="towns[]" v-if="c == country" required multiple id="coutries_multiple"
-                                        v-model="town"
-                                        class="bg-gray-50 border border-gray-300 t     ext-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                        <option v-for="t in towns[c]" :value="t"> ${t} </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
                     <div class="relative z-0">
                         <input id="phone" type="tel" name="phone" v-model="numb"
                             class="block py-3 px-0 mb-2 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-purple-500 focus:outline-none focus:ring-0 focus:border-purple-600 peer" />
@@ -1082,6 +1191,44 @@
                                 class="block py-3 px-0 mb-2 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-purple-500 focus:outline-none focus:ring-0 focus:border-purple-600 peer" />
                         </div>
                     </div>
+                    <div>
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">
+                                Entrez le nom de votre quartier</label>
+                            <div style="cursor: pointer;" @click="showquartMod(), activeMod()"
+                                class=" hover:text-rose-500 flex items-center justify-between bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg active:ring-blue-500 active:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:active:ring-blue-500 dark:active:border-blue-500">
+                                <span class="block text-gray-500" v-if="f_quart.name == ''">Aucun nom entré</span> <span
+                                    class="block" v-else>${f_quart.name}</span>
+                                <div>
+                                    <span style="position: relative; top: 0.1rem;" class="material-icons">
+                                        place
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!---
+                        <div class="grid grid-cols-2">
+                            <div class="mr-2">
+                                <select id="coutries" name="coutry" required v-model="country"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <option value="bj">Benin</option>
+                                    <option value="tg">Togo</option>
+                                    <option value="ci">Côte D'Ivoire</option>
+                                </select>
+                            </div>
+                            <div>
+                                <div v-for="c in countries" :key="c">
+                                    <select name="towns[]" v-if="c == country" required multiple id="coutries_multiple"
+                                        v-model="town"
+                                        class="bg-gray-50 border border-gray-300 t     ext-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                        <option v-for="t in towns[c]" :value="t"> ${t} </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        -->
+                    </div>
                     <button type="submit"
                         class="w-full text-white bg-rose-700 hover:bg-rose-800 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-rose-600 dark:hover:bg-rose-700 dark:focus:ring-rose-800">Confirmer</button>
 
@@ -1089,6 +1236,9 @@
             </div>
         </div>
     </div>
+</div>
+<div id="map" style="display: none;">
+
 </div>
 <div id="myTo" v-if="false" style="position: absolute; top: 8vh; left: 3vw;">
     <div id="toast-success"
@@ -1123,8 +1273,32 @@
 {% block script %}
 <script src="/static/axios.min.js"></script>
 <script src="/static/fuzzysort.js"></script>
+<script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNoBJJXRj_p5miy5gSPGazRa4Mr-95D18&libraries=places&callback=initMap">
+    </script>
 <script>
+    var map;
+    var service;
+    var infowindow;
 
+    function initMap() {
+        var sydney = new google.maps.LatLng(-33.867, 151.195);
+
+        infowindow = new google.maps.InfoWindow();
+
+        map = new google.maps.Map(
+            document.getElementById('map'), { center: sydney, zoom: 15 });
+        var service = new google.maps.places.PlacesService(map);
+        window.serviceMaps = service
+        //service.findPlaceFromQuery(request, function (results, status) {
+        //    if (status === google.maps.places.PlacesServiceStatus.OK) {
+        //        for (var i = 0; i < results.length; i++) {
+        //            createMarker(results[i]);
+        //        }
+        //        map.setCenter(results[0].geometry.location);
+        //    }
+        //});
+    }
     let baseUR = window.location.host
     let prot = window.location.protocol
     axios.defaults.baseURL = prot + "//" + baseUR + "/"
@@ -1259,7 +1433,20 @@
                 more_id: 0,
                 num_vend: "0",
                 param_load: false,
-                not_real : false
+                not_real: false,
+                quarti: "",
+                quart: {
+                    name: "",
+                    lat: 0,
+                    lng: 0
+                },
+                f_quart: {
+                    name: "",
+                    lat: 0,
+                    lng: 0
+                },
+                quarts: [],
+                isTyping: false
             }
         },
         mounted() {
@@ -1293,32 +1480,59 @@
                 th.country = my_info['country']
                 th.whatsapp = my_info['whatsapp']
                 th.number = my_info['number']
+                if(my_info['quart']) th.f_quart = my_info['quart']
                 th.is_registered = true
             }
             th.get_demandes()
         },
         watch: {
+            quarti(newq, oldq) {
+                var request = {
+                    query: newq,
+                    fields: ['name', 'geometry'],
+                };
+                this.isTyping = true
+                this.quarts = []
+                this.quart = {
+                    name: "",
+                    lat: 0,
+                    lng: 0
+                }
+                let th = this
+                window.serviceMaps.findPlaceFromQuery(request, function (results, status) {
+                    if (status === google.maps.places.PlacesServiceStatus.OK) {
+                        for (elt of results) {
+                             th.quarts.push({
+                                name: elt.name,
+                                lat: elt.geometry.location.lat(),
+                                lng: elt.geometry.location.lng()
+                            })
+                        }
+                    }
+                    th.isTyping = false
+                })
+            },
             cat(newc, oldc) {
                 this.r_subs = []
                 this.clean_sub_search()
             },
-            num_vend(newn, oldn){
+            num_vend(newn, oldn) {
                 let th = this
-                if(!th.not_real) this.param_load = true
-                if(!th.not_real) axios({
-                    url : `api/set_num_vend/?dem=${th.more_id}&num_vend=${newn}`,
-                    method : 'GET'
+                if (!th.not_real) this.param_load = true
+                if (!th.not_real) axios({
+                    url: `api/set_num_vend/?dem=${th.more_id}&num_vend=${newn}`,
+                    method: 'GET'
                 }).then(resp => {
                     th.param_load = false
-                    
+
                 }).catch(err => {
                     console.log(err);
                 })
             },
-            more_id(newm, oldm){
+            more_id(newm, oldm) {
                 this.not_real = true
                 this.num_vend = `${this.get_dem.num_vend}`
-                setTimeout(() =>  {this.not_real = false}, 50)
+                setTimeout(() => { this.not_real = false }, 50)
             }
         },
         computed: {
@@ -1402,6 +1616,20 @@
             }
         },
         methods: {
+            quart_include(quar){
+                for(q of this.quarts){
+                    if(q.name == quar.name && q.lat == quar.lat && q.lng == quar.lng){
+                        return true
+                    }
+                }
+                return false
+            },
+            slugify(quart) {
+                return `${quart.name}:${quart.lat}:${quart.lng}`
+            },
+            showquartMod() {
+                document.getElementById('quartMod').click()
+            },
             show_params() {
                 document.getElementById('moreButVend').click()
             },
@@ -1606,6 +1834,7 @@
                     form.append('town', JSON.stringify(th.town))
                     form.append('number', th.number)
                     form.append('whatsapp', th.whatsapp)
+                    form.append('quart' , JSON.stringify(th.f_quart))
                 }
                 axios({
                     url: 'api/demand/',
@@ -1635,7 +1864,8 @@
                         country: th.country,
                         town: th.town,
                         number: th.number,
-                        whatsapp: th.whatsapp
+                        whatsapp: th.whatsapp,
+                        quart : th.f_quart
                     }))
                 }).catch(err => {
                     console.log(err);

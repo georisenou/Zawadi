@@ -1,13 +1,23 @@
 
+import json
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
 from .managers import CustomUserManager
 import string
 import random
+from haversine import haversine, Unit
 all_characters = string.ascii_letters+string.digits+string.punctuation
 characters = string.ascii_letters+string.digits
 
+PRICE_PER = 80
+
+PRIORITY_REDUCTION = {
+    'free' : 0.25,
+    'first' : 0.20,
+    'second' : 0.10,
+    'third' :  0.5
+}
 
 MONTHS = ['Jan', 'Fev', 'Mars', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sept' ,'Oct', 'Nov', 'Dec']
 
@@ -42,6 +52,7 @@ class User(AbstractBaseUser, PermissionsMixin) :
     date_joined = models.DateTimeField(default=timezone.now)
     first_name = models.CharField(max_length=150, null=True, blank=True)
     last_name = models.CharField(max_length=150, null=True, blank=True)
+    quart = models.TextField(null=True, blank=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     objects = CustomUserManager()
@@ -88,6 +99,7 @@ class SubCategory( models.Model) :
     name = models.CharField(max_length=250, null=True, blank=True)
     is_visible = models.BooleanField(default=True)
     box = models.ForeignKey( Category,on_delete=models.CASCADE, null=True, blank=True, related_name="subs")
+    default_price = models.IntegerField(null=True, blank=True, default=2500)
     def __str__(self) -> str:
         return self.name
 
@@ -105,6 +117,10 @@ class ClientDemand(models.Model) :
     num = models.IntegerField(null=True, blank=True)
     files = models.ManyToManyField(MyFiles, blank=True)
     num_vend = models.IntegerField(default=5)
+    quart = models.TextField(null=True, blank=True)
+    slug = models.TextField(null=True, blank=True)
+    def get_quart(self) :
+        return json.loads(self.quart)
     def get_files(self) :
         return [
             file.file.url for file in self.files.all()
@@ -140,6 +156,8 @@ class SellerAccount(models.Model) :
     speed = models.IntegerField(default=0)
     expired_date = models.DateField(null=True, blank=True)
     has_freed = models.BooleanField(default=False)
+    def contains_sub(self ,sub) :
+        return sub in self.subs.all()
     def get_last_abn(self) :
         return self.abns.order_by('-created_at').first()
     def get_week(self) :
@@ -150,6 +168,21 @@ class SellerAccount(models.Model) :
         return self.picture.url if self.picture else ZawadiDetail.objects.get(key = 'default:shop:picture:url').value
     def is_freeing(self) :
         return self.get_last_abn().is_freed
+    def get_latlng(self) :
+        quart = json.loads(self.user.quart)
+        return quart
+    def add_dem(self, dem) :
+        if not dem in self.get_week().demandes.all() : self.get_week().demandes.add(dem)
+        if dem.weeks_in.count() >= dem.num_vend and (not dem.is_out) :
+            dem.is_out = True
+            dem.save()
+    def get_distance(self, quart) :
+        me = self.get_latlng()['lat'], self.get_latlng()['lng']
+        dem = quart['lat'], quart['lng']
+        return haversine(me, dem)
+    
+    def r_price(self, price) :
+        return price - price * PRIORITY_REDUCTION[self.get_week().get_level()]
 
 
 class WeekCustom(models.Model) :
@@ -162,6 +195,7 @@ class WeekCustom(models.Model) :
     next = models.IntegerField(default=0) 
     max = models.IntegerField(default=0)
     max_urg = models.IntegerField(default=0)
+
     def get_title(self) :
         return f"{self.begun.day} {MONTHS[self.begun.month - 1]} - {self.end.day} {MONTHS[self.end.month - 1]} {self.end.year}"
     def __str__(self) -> str:

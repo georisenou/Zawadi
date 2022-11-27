@@ -296,8 +296,8 @@
                             <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Description du client</dt>
                             <dd class="text-lg font-semibold">${curent.detail}</dd>
                         </div>
-                        <div class="flex flex-col pt-3" v-if="curent.get_files != []">
-                            <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Fichiers ajouté pour plus de précision
+                        <div class="flex flex-col pt-3" v-if="curent.get_files.length">
+                            <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Fichiers ajoutés pour plus de précision
                             </dt>
                             <div class="text-lg font-semibold">
                                 <ol class="pl-5 mt-2 space-y-1 list-decimal list-inside">
@@ -409,7 +409,7 @@
             return {
                 message: 'Hello Vue!',
                 detail_load: false,
-                curent: {},
+                curent: {'get_files' : []},
                 notifying: false,
                 messaging: null,
                 can_notif: '{% if not can_notif %}not{% endif %}'
