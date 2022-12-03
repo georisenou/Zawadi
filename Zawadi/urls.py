@@ -20,7 +20,7 @@ from django.urls import path
 from django.conf.urls.static import static
 from django.urls.conf import include
 from django.conf import settings
-from app.views import activ_abn, activate, clients, compte, create_devices, customers, daily_task, index, login_view, logout_view, new_activate, offline, register_demand, register_view, vendeur_manifest, vendeur_serviceworker, very_new_activate
+from app.views import activ_abn, activate, backup, clients, coming_soon, compte, create_devices, customers, daily_task, get_all_cats, index, login_view, logout_view, new_activate, offline, register_demand, register_view, vendeur_manifest, vendeur_serviceworker, very_new_activate
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -36,10 +36,12 @@ urlpatterns = [
     path('devices/', create_devices, name="create_devices"),
     path('api/demand/', register_demand, name="register_demand"),
     path('activate/', very_new_activate, name="activate2"),
-    path('api/get_all_cats/', get_all_cats, name = "get_all_cats"),
     path('logout/', logout_view, name="logout"),
+    path('api/get_all_cats/', get_all_cats, name = "get_all_cats"),
     path('manifest.json/', vendeur_manifest, name="vendeur_manifest" ),
     path('daily_task/', daily_task, name="daily_task"),
     path('offline/', offline, name="offline"),
-    path('serviceworker.js', vendeur_serviceworker, name="vendeur_serviceworker")
+    path('serviceworker.js', vendeur_serviceworker, name="vendeur_serviceworker"),
+    path('beta/', coming_soon, name="coming_soon"),
+    path('testback/', backup, name="backup")
 ]+static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT )

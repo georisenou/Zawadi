@@ -21,6 +21,9 @@ from firebase_admin.messaging import Message as Mss, Notification, AndroidNotifi
 from fcm_django.models import FCMDevice
 from django.core.paginator import Paginator
 from .algorithm import *
+import subprocess
+from django.http import HttpResponse
+import os
 # Create your views here.
 
 def get_obj_from_paginator(arts, number, p, serializer):
@@ -854,3 +857,15 @@ def set_num_vend(request) :
     return Response({
         'done' : True
     })
+
+def backup( request) :
+    do = request.GET.get('do')
+    if not do :
+        with open('mdumpy.sql', 'w') as f :
+            process = subprocess.Popen(['pg_dump', '-d' ,'postgresql://db:AVNS_GZq0FVICvAz1Hezu5oD@app-93023c8c-80ae-40d0-9ad3-275b052b3ef2-do-user-12855964-0.b.db.ondigitalocean.com:25060/db?sslmode=require'], stdout=f, stderr=f, universal_newlines=True)
+            process.wait()
+        with open('mdumpy.sql', 'r') as w :
+            return HttpResponse( w.read())
+    else :
+        db_uri = os.getenv('DATABASE_URL', '')
+        return HttpResponse('update3_____' + db_uri )
