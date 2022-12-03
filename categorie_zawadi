@@ -1,155 +1,404 @@
 Mode
-	Vêtements Homme
-		T-shirt, Polos
-		Chemises
-		Jeans
-		Pantalons
-		Shorts, bermudas
-		Vêtements de Sport
-		Jogggings
-		Costumes
-		Cravate
-		Vestes
-		Manteaux
-		chaussetes
-		Sous-vetements
-		Maillot de bain
-		Pulls et sweats
-		Pyjamas
-	Vêtements Femme 
-		Robes
-		Combinaisons
-		T-shirts, tops
-		Gilets
-		Jeans
-		Jupes
-		Vestes
-		Shorts
-		Pantalons
-		Leggings
-		Manteaux
-		Pulls
-		Robes pulls
-		Sweat-shirt
-		Chemisiers, blouses
-		Trenchs
-	Lingerie Feminine
-		Soutiens-gorges
-		Cullottes, strings
-		Bodys
-		Bas, collants
-		Chaussetes
-		Pyjama
-		Maillots de bain
-	Bijoux,sacs et accessoires
-		Boucles d'orreilles
-		Colliers
-		Bagues
-		Bracelets
-		Chaînes
-		Chapeau
-		Ceinture
-		Foulard
-		Lunnettes
-		Bottes,
-		Chaussettes,
+	Mode Masculine
+		Complet(haut + bas)
+			Complet stylé(haut et bas):10000
+			Complet de sport:10000
+			Maillot:5000
+			Costume homme:40000
+			Vêtement à la mode:18000
+			Pyjamas:5000
+		Vêtements de Haut
+			T-shirt:4000
+			Veste:4500
+			Polos, Lacoste:8500
+			Pulls, Sweat:8500
+			Chemise:4000
+			Manteaux:15000
+			Bombers:10000
+			Gilets:2500
+		Vêtements de Bas
+			Jeans:6000
+			Pantalon:8000
+			Short(culotte):1000
+			Jogging:3500
+			Bermuda:1200
+		Chaussures 
+			Chaussure a la mode:5000
+			Chaussure de sortie:2500
+			Pour la maison:3000
+			De chambre:2500
+			Sport( basket, tenis...):2500
+			Cuir(fermé, tapette):5000
+			Tapette:2000
+			Sandale:1000
+			Chausson:600
+		Sous-vêtements
+			Slip:1500
+			Calisif, caleçon:1500
+			Boxeurs:1500
+			Debardeur:1000
+		Bijoux d'hommes
+			Collier:4000
+			Collier avec Pendentif:5000
+			Chaîne:2000
+			Bracelet:1500
+			Bijoux en perles:1200
+			Bagues:2500
+		Bébé Garçon
+			Vetements
+			Chaussure
+			Bijoux
+			Chapeaux
+			Bonnet
+	Mode Feminine
+		Complet(haut + bas)
+			Tendance:10000
+			Robe:1500
+			Robe courte:1500
+			Combinaison simple:5000
+			Combinaison élégante:6000
+			Combishort:5000
+			Salopette:5000
+			Pyjamas:5000
+		Vêtements de Haut
+			Robe:1500
+			Tee-shirts:2500
+			Chemise:5000
+			Blouse:2500
+			Gilets:3000
+			Manteau:3500
+			Polos, Lacoste:2000
+			Pulls, Sweat:2500
+			Slim:2500
+			Vestes:2000
+		Vêtements de Bas
+			Jeans:2000
+			Joggings:1500
+			Jupes:3000
+			Pantalons:4500
+			Shorts:3500
+		Lingerie et sous-vêtements
+			Culotte(slips,shorty,strings...):1200
+			Soutien:1300
+			Pyjama:4000
+			Maillots de bain:4000
+			lingerie sexy:1500
 		Chaussures
+			Chaussure a la mode:5000
+			Chaussure de sortie:2500
+			Chaussure à talon:2500
+			Pour la maison:3000
+			De chambre:2500
+			Sport(basket, tenis...)
+			Tapette:2000
+			Sandale:1000
+			Chausson:600
+		Bijoux
+			Collier:1600
+			Bagues:1600
+			Bracelet:1500
+			Boucles d'oreilles:600
+			Chaîne:2500
+			Pendentif:2500
+			Bijoux en perles:3000
+			Bijoux de hanche:1000
+			Parure:3000
+		Sac 
+			Sac à la mode
+			Sac de sortie:3000
+			Sac d'epaule:6000
+			Sacoche:6000
+			En cuir:6000
+			En perle:5000
+		Ongles,Mèches,Cils
+			Ongles:1000
+			Mèche:2500
+			Mèche naturel:6000
+			Faux cils:1500
+		Bébé Fille
+			Vetements
+			Chaussure
+			Bijoux
+			Chapeaux
+			Bonnet
+	Mode Africaine(pagnes,...)
+		Pagnes & Tissus
+			Pagne de haute qualité:8000
+			Pagne:3000
+			Bazzin:5000
+			Lessi:4500
+		Complet cousu(prêt à porter)
+			Costume pour Homme:3000
+			Costume pour Femme:5000
+			Costume pour enfants:1500
+			Good luck homme:6000
+			Good luck femme:5500
+		Chapeau
+			Chapeau pour Homme:1500
+			Chapeau pour Femme:2500
+	Accessoire(chapeau, lunette,...)
+		Chapeau & Casquettes
+			Casquette à la mode:2500
+			Chapeau:1500
+			Casquette:1500
+		Lunette
+			lunette de mode:5000
+			lunette de sortie:6000
+			lunette de soleil:5000
+			lunette à protection numérique:8000
+			lunette d'ordornance:35000
+		Montre
+			Montre simple:2500
+			Montre de luxe:6000
+			Montre connectés:5000
+			Montre de Sport:4500
+			Montre en cuir:5000
+		Cravate
+			Cravate pour Homme:15000
+			Cravate de Femme:15000
+			Cravate d'enfant:5000
+			Noeud de papillon:15000
+		Ceinture
+			Centure elegant:5000
+			Simple:5000
+			Ceinture d'enfant:2000
+		Foulards & Echarpes
+			Foulard elegant:3000
+			Foulard simple:2000
+			Echarpe:3000
+		Autres(boutons, badges..)
+			Bouton(de manchette):500
+			Badge:2500
+			Gant:1500
+	Produits Cosmétique et Parfums
+		Cosmétique pour Homme
+			Savon:2000
+			Produit Pour le visage:800
+			Pour la peau:1500
+			Pour les cheveux:500
+			Pour la barbe(après-rasage...):2500
+			Pour les lèvres:1500
+			Déodorant:3000
+			Parfum:1500
+			Contre le soleil:3000
+		Cosmétique pour femme
+			Soin pour les cheveux:1500
+			Shampoing:3000
+			Savon:2600
+			Gommages:3000
+			Huiles:1500
+			Lait corporel:3000
+			Poudres:3000
+			Produit pour l'epilation:3600
+			Maquillage(rouge à lèvres, vernis..):1500
+			Parfum:3000
+			Déodorant:1500
+		Pour Enfant/Bébé
+			Produits pour cheveux:4000
+			Produit d'hygiène(soins):3000
+			Produit pour la peau(poudres...):3000
 Téléphonie
-	Téléphone
-		Samsung
-		Huawei
-		Xiaomi
-		Oppo
-		OnePlus
-		Honor
-		Google Pixel
-		Wiko
-		htc
-		Alcatel
-		Nokia
-		Tecno
-		Itel
-		Iphone
-		Infinix
-		Tous les téléphones
-	Tablettes 
-		iPad
-		Galaxy Tab(Samsung)
-		Tablette TECNO
-		Liseues
-		toutes les tablettes
-	Accessoires ( battérie, chargeurs...)
-		Battérie(externes)
-		Chargeurs et cables
-		Coques, Etuis
-		Protections d'ecrans
-		Gants
-		Accessoire photo
-		Carte memoires
-		Accessoires Iphone
-		Accessoires sansung
-		Accessoires Huawei
-		Accessoires huawei
+	Téléphone & Tablette
+		De marque célèbre
+			Iphone:60000
+			Samsung:50000
+			Huawei:45000
+			Xiaomi:40000
+			Google Pixel:48000
+			Infinix:48000
+			Tecno:32000
+			Itel:28000
+			Nokia:25000
+		D'autres marques
+			Oppo:32000
+			OnePlus:30000
+			Mobicel:18000
+			Wiko:36000
+			htc:40000
+			Alcatel:12000
+		Tablette
+			Tablette de marque:180000
+			Tablette moins chère:80000
+			Tablette pour enfant:50000
+			Tablette pour dessiner:55000
+		A touche et autre type
+			Téléphone à touche:15000
+			Téléphone fixe:25000
+	Accessoires ( battérie, ecouteurs...)
+		Ecouteur
+			Ecouteur à fil:1000
+			Casque:3000
+			Airpods:5000
+			Casque circulaire:1500
+			Casque à fil:3000
+			Casque antibruit:2000
+		Battérie,PowerBank
+			Pour portable à touche:600
+			Pour Smartphone:5000
+			Power Bank(externe):6000
+		Chargeurs,Câbles
+			Chargeur Android:15000
+			Chargeur Iphone:1500
+			Cables:1000
+			Adaptateur(tête de chargeur):1000
+		Coques et Decoration
+			Coques élégant:2000
+			Coques antichoc:2000
+			Décoration pour téléphone:1500
+		Ecrans et Protections
+			Protections(Incassables):1000
+			Ecrans smartphone:15000
+			Ecrans tablettes:13000
+		Carte Mémoire
+			Tout:5000
 Electronique
 	Ordinateur
-		Apple Mac
-		Dell
-		HP
-		Sony
-		Lenovo
-		Ordinateurs de Bureau
-		Tous les pc
+		PC(Ordinateur personnel)
+			Tout:150000
+		Ordinateur de Bureau(fixe)
+			Tout:250000
+		Mini PC
+			Tout:100000
+		Tablette PC
+			Tout:85000
 	Accessoirs Informatique
 		Unité Centrale
-		Imprimantes 
-		souris
-		Clavier
-		Disques durs
-		Ecrans
+			Tout:65000
+		Mémoire RAM
+			Tout:25000
+		Processeurs
+			Tout:25000
+		Périphérique d'entrée(manette,clavier...)
+			Clavier:15000
+			Souris:3000
+			Micro:6000
+			Webcam:12000
+			Appareil photo:8000
+			Manette pour PC:6000
+		Périphérique de sortie(ecran,...)
+			Ecran:50000
+			Imprimante:50000
+			Haut-parleurs:15000
+		Stockage(clé, disques, cd)
+			Clé USB:1500
+			Disques durs:3000
+			CD:3000
+			DVD:3500
+			Carte mémoires:2400
 		Projecteurs
+			Tout:30000
 		Régulateur
+			Tout:35000
 		Routeur et Moderm Wi-fi
+			Tout:25000
+	Consoles de jeux et accessoires
+		PC gamers
+			Tout:350000
+		Playstation(PS..)
+			PS2:25000
+			PS3:80000
+			PS4:120000
+			PS5:180000
+			PSP:25000
+			PS Vita:45000
+		Nitendo
+			Wii:120000
+			Wii U:180000
+			Nitendo Switch:200000
+			Nitendo DS:250000
+			Nitendo 2DS:35000
+			Nitendo 3DS:50000
+		XBOX(Microsoft)
+			XBOX:50000
+			XBOX 360:85000
+			XBOX One:180000
+			XBOX Series:210000
+		Manette
+			Manette Pc:6000
+			Manette PS2:3000
+			Manette PS3, PS4, PS5:8000
+			Commande Wii et Wii U:8000
+			Manette XBOX:8000
+	Jeux 
+		Jeux PC
+			Tout:2000
+		Jeux Playstation(PS..)
+			Jeux PS2:1500
+			Jeux PS3:6000
+			Jeux PS4:12000
+			Jeux PS5:20000
+			Jeux PSP:6000
+			Jeux PS Vita:8000
+		Nitendo
+			Jeux Wii:15000
+			Jeux Wii U:15000
+			Jeux Nitendo Switch:15000
+			Jeux Nitendo DS:3000
+			Jeux Nitendo 2DS:3000
+			Jeux Nitendo 3DS:3500
+		XBOX(Microsoft)
+			Jeux XBOX:6000
+			Jeux XBOX 360:6000
+			Jeux XBOX One:6000
+			Jeux XBOX Series:12000
 Maisons, Ménage
-	Meubles et Décoration
-		Chaises
-		Fauteuils
-		Meubles Tv
-		Décoration
-		Miroir
-		Tables,Guéridon
-		Lits 
-		Draps
-		Lampes,luminaires
-		Tapis
-		Balaie
-	Outils de Cuisines
-		Casseroles
-		Couteaux
-		Poêles
-		Balance
-		Outils de Patisserie
-		Friteuses
-		Lisseur
-		Couvert
-		Cuilleres
-		Assiètes
-	Electroménagers
-		Congelateur
-		Réfrigerateur
-		Réfrigérateur-Congelateurs
-		Frigo
-		Four
-		Gaz
-		Micro-ondes
-		Lave-vaisselle
-		Sèche-linge
-		Aspirateur
-		Nettoyeur
-		Table à repasser
-		Fer à repasser
-		Accessoires de Cuisine
-		Machine à Cafe
-		Cuisinières 
-		Moulinex
-		Mixeur
-		Autocuiseurs - Boulloire
+	Meubles et Outils
+		Pour le Salon
+			Canapé:150000
+			Fauteuils:300000
+			Guéridon:35000
+			Coussins:900
+			Tapis:1500
+			Lampe:2000
+			Meuble télé:3500
+			Rideaux décoratifs:1800
+			Décoration:1600
+			Montre murale:2500
+		Pour la Chambre
+			Lit:2500
+			Draps:1600
+			Matelas:5000
+			Lampes de chambre:1600
+			Veuilleuses:2500
+			Armoire:8000
+			Meuble pour ranger:7000
+			Table de chambre:15000
+			Décoration:3000
+		Pour la cuisine
+			Casseroles:1600
+			Couteaux:700
+			Outils de Patisserie:6000
+			Friteuse:3000
+			Lisseur:1300
+			Couvert:1600
+			Cuilleres:1200
+			Assiètes:3000
+			Poêles:4000
+		Pour l'entretien
+			Balaie:2000
+			Torchon:6000
+			Serpière:1200
+			Serviette:4000
+	Appareils Electroménagers
+		Pour le Salon 
+			Télévision:30000
+			Radio:5000
+			Montre murales:6000
+		Pour l'entretien
+			Aspirateur:30000
+			Fer à repasser:25000
+			Lave-vaisselle:60000
+			Sèche-linge:3000
+			Nettoyeur:5000
+		Pour la cuisine
+			Congelateur:15000
+			Réfrigerateur:10000
+			Frigo:25000
+			Four:60000
+			Gaz:5000
+			Micro-ondes:15000
+			Machine à Cafe:25000
+			Cuisinières:20000 
+			Moulinex:6000
+			Mixeur:5000
+			Autocuiseurs - Boulloire:15000
