@@ -1,5 +1,7 @@
 
+from cProfile import label
 import json
+from xmlrpc.client import Boolean
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
@@ -99,9 +101,14 @@ class SubCategory( models.Model) :
     name = models.CharField(max_length=250, null=True, blank=True)
     is_visible = models.BooleanField(default=True)
     box = models.ForeignKey( Category,on_delete=models.CASCADE, null=True, blank=True, related_name="subs")
+    sub_box = models.ForeignKey("SubCategory", null=True, blank=True, related_name="subs", on_delete=models.CASCADE)
     default_price = models.IntegerField(null=True, blank=True, default=2500)
     def __str__(self) -> str:
         return self.name
+    def get_subs(self) :
+        return self.subs.all()
+    def is_subs(self) :
+        return Boolean(self.sub_box)
 
 class ClientDemand(models.Model) :
     client = models.ForeignKey(Client, null=True, blank=True, on_delete=models.CASCADE, related_name="demandes")
@@ -119,6 +126,7 @@ class ClientDemand(models.Model) :
     num_vend = models.IntegerField(default=5)
     quart = models.TextField(null=True, blank=True)
     slug = models.TextField(null=True, blank=True)
+    state = models.CharField(max_length=100, null=True, blank=True)
     def get_quart(self) :
         return json.loads(self.quart)
     def get_files(self) :
@@ -279,7 +287,10 @@ def create_cats(ls ) :
             label.cats.add(cat)
             print('Done --> ', name)
             for s in c[name] :
-                sub = SubCategory.objects.create(name = s, box = cat)
+                names = s.split(':')
+                sub = SubCategory.objects.create(name = names[0], box = cat)
+                if len(names) == 2 :
+                    sub.default_price = int(names[1])
                 sub.save()
                 print('Done --> ', s)
     print('All Done !')
@@ -315,3 +326,50 @@ def extract_cats() :
     f.close()
     print('Closed !!')
 
+def get_lis(name) :
+    return name.split(":")
+
+def install_all_cats(is_real = False) :
+    if is_real : 
+        print("Deleting all cats ",Category.objects.all().delete())
+        print("Deleting all labels ", Label.objects.all().delete())
+        print("Deleting all subs ", SubCategory.objects.all().delete())
+    print('Opening Zawadi Categories file ...')
+    f = open('categorie_zawadi')
+    print('Opened !')
+    lines = [
+        replace("\n", "", p) for p in f.readlines()
+    ]
+    cur_label = 0
+    cur_cat = 0
+    cur_sub = 0
+    for line in lines :
+        if "\t\t\t" in line :
+            name = line[3:]
+            subsub = SubCategory.objects.create(name = get_lis(name)[0], sub_box= SubCategory.objects.get(pk = cur_sub))
+            if len(get_lis(name)) > 1 :
+                subsub.default_price = int(get_lis(name)[1])
+                subsub.save()
+            print(f'\t\t\tDone SubSub --> {subsub.name}')
+        elif "\t\t" in line :
+            name = line[2:]
+            sub = SubCategory.objects.create(name = get_lis(name)[0], box = Category.objects.get(pk = cur_cat))
+            if len(get_lis(name)) > 1 :
+                sub.default_price = int(get_lis(name)[1])
+                sub.save()
+            cur_sub = sub.pk
+            print(f'\t\tDone Sub --> {sub.name}')
+        elif "\t" in line :
+            name = line[1:]
+            cat = Category.objects.create(name = name, label = Label.objects.get(pk = cur_label))
+            cur_cat = cat.pk
+            print(f'\tDone Cat --> {cat.name}')
+        else :
+            name = line
+            label = Label.objects.create(name = name)
+            cur_label = label.pk
+            print(f'Done Label --> {label.name}')
+    f.close()
+    print('Files closed')
+    
+    

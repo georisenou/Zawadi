@@ -36,6 +36,7 @@ urlpatterns = [
     path('devices/', create_devices, name="create_devices"),
     path('api/demand/', register_demand, name="register_demand"),
     path('activate/', very_new_activate, name="activate2"),
+    path('api/get_all_cats/', get_all_cats, name = "get_all_cats"),
     path('logout/', logout_view, name="logout"),
     path('manifest.json/', vendeur_manifest, name="vendeur_manifest" ),
     path('daily_task/', daily_task, name="daily_task"),

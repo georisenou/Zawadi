@@ -354,7 +354,6 @@ def new_activate(request):
         'token': ZawadiDetail.objects.get(key='kkiapay_public').value
     })
 
-
 @login_required(login_url='/register')
 def very_new_activate(request):
     seller = request.user.accounts.all().first()
@@ -393,7 +392,7 @@ def compte(request):
                     Category.objects.get(pk = int(s['cat'])) for s in r_subs
                 ]
                 subs = [
-                    SubCategory.objects.get(box__pk = int(s['cat']), name = s['sub']) for s in r_subs
+                    SubCategory.objects.get(pk = int(s['id'])) for s in r_subs
                 ]
                 first_name = request.POST.get('first_name')
                 last_name = request.POST.get('last_name')
@@ -465,7 +464,7 @@ def activ_abn(request):
         cat = request.POST.get('cat')
         r_subs = json.loads(request.POST.get('subs'))
         subs = [
-            SubCategory.objects.get(box__pk = int(s['cat']), name = s['sub']) for s in r_subs
+            SubCategory.objects.get(pk = int(s['id'])) for s in r_subs
         ]
         cats = [
             Category.objects.get(pk = int(s['cat'])) for s in r_subs
@@ -567,14 +566,15 @@ def register_demand(request):
     cat = request.POST.get('cat')
     subs = json.loads(request.POST.get('subs'))
     emer = request.POST.get('emer')
+    state = request.POST.get('state')
     keys = list(request.FILES.keys())
     sub_det = json.loads(request.POST.get('sub_det'))
     pks = []
     unique_slug = f"client:{client.pk}__{ident_generator(100, 250)}"
     for sub in subs:
-        mysub = SubCategory.objects.get(name=sub, box = Category.objects.get(pk = int(cat)))
+        mysub = SubCategory.objects.get(pk = int(sub['id']))
         demand = ClientDemand.objects.create(
-            client=client, subs= mysub , category = Category.objects.get(pk = int(cat)), emergency=emer, quart = request.user.quart, slug = unique_slug)
+            client=client, subs= mysub , category = Category.objects.get(pk = int(cat)), emergency=emer, quart = request.user.quart, slug = unique_slug, state = state)
         for det in sub_det :
             if det['id'] == mysub.pk :
                 if det.get('bdg') :
@@ -748,16 +748,22 @@ class DemandSerializer(serializers.ModelSerializer) :
         fields = ('id', 'subs', 'get_duration', 'sends_num', 'detail', 'budget', 'num', 'get_files', 'num_vend')
 
 def valid_p(p) :
-    try :
+    try : 
         p = int(p)
         return p
     except : 
         return 1
 
-class SubCategorySerializer( serializers.ModelSerializer) :
+class SubSubCategorySerializer( serializers.ModelSerializer) :
     class Meta :
         model = SubCategory
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'is_subs' )
+
+class SubCategorySerializer( serializers.ModelSerializer) :
+    get_subs = SubSubCategorySerializer(many = True)
+    class Meta :
+        model = SubCategory
+        fields = ('id', 'name', 'get_subs','is_subs')
 
 class CategorySerializer(serializers.ModelSerializer) :
     subs = SubCategorySerializer(many = True)

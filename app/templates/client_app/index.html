@@ -45,6 +45,17 @@
                         </div>
                         <div>
                             <label for="small"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Etat du produit</label>
+                            <select id="sstate" v-model="state" required name="state"
+                                class="block p-2 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-rose-500 focus:border-rose-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-rose-500 dark:focus:border-rose-500">
+
+                                <option value="Neuf">Neuf</option>
+                                <option value="Occasion">Occasion</option>
+                                <option value="Reconditionné">Reconditionné</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="small"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Choisissez
                                 l'urgence du besoin</label>
                             <select id="small" v-model="emer" required name="emer"
@@ -55,7 +66,7 @@
                                 <option value="Urgent">Urgent</option>
                             </select>
                         </div>
-                        
+
                         <div v-if="subs.length">
                             <div v-for="s in subs" :key="s"
                                 class="inline-block px-2 py-1 mr-1 my-1 text-sm bg-rose-100 text-rose-600 rounded">
@@ -118,6 +129,9 @@
                                 </th>
                                 <th scope="col" class="py-3 px-6">
                                     il y a
+                                </th>
+                                <th scope="col" class="py-3 px-6">
+                                    Menu
                                 </th>
                             </tr>
                         </thead>
@@ -226,7 +240,7 @@
                 qui vous convient est totalement éliminé.
             </div>
         </div>
-        
+
         <div class="py-4 px-5">
             <div class="text-2xl ">
                 Comment <span class="font-semibold">acheter</span> alors grâce à Zawadi ?
@@ -249,7 +263,25 @@
 
             </div>
             <div class="py-3 text-sm">
-                Imaginez un roi qui dit à ses serviteurs qu'il aurait besoin de certains produits. Et donc pour répondre aux besoins de leur roi, les serviteurs fouillent toutes les régions et selectionnent parmi les marchands disposant des produits demandés par le roi ceux qui sont les plus proches, qui sont connus pour la qualité de leurs produits et qui ont une bonne relation avec leur client. Ils envoient ensuite ces marchands présentés leurs produits au roi afin qu'il puisssent aisement faire son choix parmi les meilleurs produits. Ici vous représentez le roi et les serviteurs représentent Zawadi.  
+                Imaginez un roi qui dit à ses serviteurs qu'il aurait besoin de certains produits. Et donc pour répondre
+                aux besoins de leur roi, les serviteurs fouillent toutes les régions et selectionnent parmi les
+                marchands disposant des produits demandés par le roi ceux qui sont les plus proches, qui sont connus
+                pour la qualité de leurs produits et qui ont une bonne relation avec leur client. Ils envoient ensuite
+                ces marchands présentés leurs produits au roi afin qu'il puisssent aisement faire son choix parmi les
+                meilleurs produits. Ici vous représentez le roi et les serviteurs représentent Zawadi.
+            </div>
+        </div>
+        <div class="py-4 px-5">
+            <div class="text-2xl ">
+                Devons-nous faire <span class="font-semibold">confiance</span> aux vendeurs envoyés par Zawadi ?
+            </div>
+            <div class="my-1 w-8 h-1 rounded-full bg-rose-600">
+
+            </div>
+            <div class="py-3 text-sm">
+                Oui absolement car nous vons envoyons uniquement des vendeurs sérieux. De plus nous offrons une garantie
+                à tous les vendeurs inscrits sur notre plateforme, ce qui implique que nous allons automatiquement vous
+                rembourser en cas d'imprévus.
             </div>
         </div>
         <div class="py-4 px-5">
@@ -260,7 +292,8 @@
 
             </div>
             <div class="py-3 text-sm">
-                Oui, vous pouvez enregistrer les demandes d'autres personnes que vous sur Zawadi. Cependant assurez vous de rediriger le vendeur vers la personne
+                Oui, vous pouvez enregistrer les demandes d'autres personnes que vous sur Zawadi. Cependant assurez vous
+                de rediriger le vendeur vers la personne
                 concernée.
             </div>
         </div>
@@ -676,7 +709,7 @@
                 </svg>
                 <span class="sr-only">Close modal</span>
             </button>
-            <div class="py-3 px-6 lg:px-8">
+            <div class="pt-3 pb-5 px-6 lg:px-8">
                 <h3 class="mb-2 text-xl font-medium text-gray-900 dark:text-white">Choisisssez la Catégorie</h3>
                 <div class="py-2  ">
                     <div>
@@ -694,7 +727,7 @@
                                     </svg>
                                 </div>
                                 <input type="text" id="searchcat" @input="e => cat_search = e.target.value"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-rose-500 focus:border-rose-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-rose-500 dark:focus:border-blue-500"
                                     placeholder="Search" required>
                             </div>
 
@@ -702,7 +735,7 @@
 
                     </div>
                 </div>
-                <div class="py-3" style="max-height: 60vh; overflow-y: scroll;">
+                <div class="py-3" style="max-height: 75vh; overflow-y: scroll;">
                     <form>
                         <div class="space-y-3" v-if="cat_search == ''">
                             <div v-for="label in all_cats" :key="label.id">
@@ -712,9 +745,13 @@
                                 <div class="">
                                     <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
                                         <li v-for="c in label.cats" :key="c.id"
-                                            class="py-2 px-3 sm:pb-4  hover:bg-gray-50">
+                                            class="py-3 px-3 sm:pb-4  hover:bg-gray-50">
                                             <div class="flex items-center  space-x-4">
-
+                                                <div class="flex-shrink-0">
+                                                    <input :id="`cat${c.id}`" type="radio" :value="c.id"
+                                                        @click="from_cat_to_sub(c.id)" name="cat_radio" v-model="cat"
+                                                        class="w-4 h-4 text-rose-600 bg-gray-100 border-gray-300 focus:ring-rose-500 dark:focus:ring-rose-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                                </div>
                                                 <div class="flex-1 min-w-0">
 
                                                     <label :for="`cat${c.id}`">
@@ -723,10 +760,10 @@
                                                         </p>
                                                     </label>
                                                 </div>
-                                                <div class="flex-shrink-0">
-                                                    <input :id="`cat${c.id}`" type="radio" :value="c.id"
-                                                        name="cat_radio" v-model="cat"
-                                                        class="w-4 h-4 text-rose-600 bg-gray-100 border-gray-300 focus:ring-rose-500 dark:focus:ring-rose-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                                <div :class="{'text-rose-600' : c.id == cat }" class="flex-shrink-0">
+                                                    <span class="material-icons">
+                                                        arrow_circle_right
+                                                    </span>
                                                 </div>
                                             </div>
                                         </li>
@@ -739,6 +776,11 @@
                                 <li v-for="c in cat_results" :key="c.id" class="py-2 px-3 sm:pb-4  hover:bg-gray-50">
                                     <div class="flex items-center  space-x-4">
 
+                                        <div class="flex-shrink-0">
+                                            <input :id="`cat${c.id}`" type="radio" :value="c.id" name="cat_radio"
+                                                v-model="cat"
+                                                class="w-4 h-4 text-rose-600 bg-gray-100 border-gray-300 focus:ring-rose-500 dark:focus:ring-rose-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                        </div>
                                         <div class="flex-1 min-w-0">
 
                                             <label :for="`cat${c.id}`">
@@ -748,9 +790,9 @@
                                             </label>
                                         </div>
                                         <div class="flex-shrink-0">
-                                            <input :id="`cat${c.id}`" type="radio" :value="c.id" name="cat_radio"
-                                                v-model="cat"
-                                                class="w-4 h-4 text-rose-600 bg-gray-100 border-gray-300 focus:ring-rose-500 dark:focus:ring-rose-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                            <span class="material-icons">
+                                                arrow_circle_right
+                                            </span>
                                         </div>
                                     </div>
                                 </li>
@@ -761,7 +803,7 @@
                 </div>
             </div>
 
-            <div class="px-6 py-4">
+            <div class="px-6 py-4" v-if="false">
                 <button v-if="cat != ''" type="button" @click="go_to_sub()"
                     class="text-white bg-gradient-to-r from-rose-400 via-rose-500 to-rose-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-rose-300 dark:focus:ring-rose-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 w-full text-center ">Valider</button>
                 <button v-else type="button"
@@ -797,12 +839,9 @@
                 <span class="sr-only">Close modal</span>
             </button>
             <div class="py-3 px-6 lg:px-8">
-                <h3 class="mb-2 text-xl font-medium text-gray-900 dark:text-white">Sélectionnez les produits que vous
-                    voulez</h3>
+                <h3 class="mb-2 text-xl font-medium text-gray-900 dark:text-white">Sélectionnez ce que vous voulez</h3>
                 <div class="py-2  ">
                     <div>
-
-
                         <form class="flex items-center">
                             <label for="simple-search" class="sr-only">Search</label>
                             <button @click="backtocat()" type="button"
@@ -829,14 +868,190 @@
 
                     </div>
                 </div>
-                <div v-if="sub_search == ''" class="py-3" style="max-height: 60vh; overflow-y: scroll;">
+                <div v-if="sub_search == ''" class="py-3" style="max-height: 62vh; overflow-y: scroll;">
                     <form>
                         <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
-                            <li class="py-2 px-3 sm:pb-4" v-for="sb in all_subs" :key="sb.id">
+                            <li class="py-3 px-3 sm:pb-4" v-for="sb in all_subs" :key="sb.id">
                                 <div class="flex items-center space-x-4">
                                     <div class="flex-shrink-0">
-                                        <input :checked="includes_subs(sb.id)" @click="add_us(sb)" :id="`sub${sb.id}`"
-                                            type="checkbox"
+                                        <input :value="sb.id" name="sub_radio" :checked="includes_subs(sb.id)"
+                                            :id="`sub${sb.id}`" type="radio"
+                                            @click="cur_ssub = sb.id, from_sub_to_ssub(sb)"
+                                            class="w-4 h-4 text-rose-600 bg-gray-100 border-gray-300 focus:ring-rose-500 dark:focus:ring-rose-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                    </div>
+                                    <div class="flex-1 min-w-0 hover:bg-gray-50 ">
+                                        <label :for="`sub${sb.id}`">
+                                            <p class="font-medium text-gray-900 truncate dark:text-white">
+                                                ${sb.name}
+                                            </p>
+                                            <div v-if="has_sub_det(sb.id)">
+                                                <p v-if="has_sub_det(sb.id).bdg"
+                                                    class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                    Budget prévu : ${has_sub_det(sb.id).bdg} F
+                                                </p>
+                                                <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                    Nombre voulu : ${has_sub_det(sb.id).num_prod}
+                                                </p>
+                                                <p v-if="has_sub_det(sb.id).detail"
+                                                    class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                    Détail : ${has_sub_det(sb.id).detail}
+                                                </p>
+                                                <p v-if="has_sub_det(sb.id).files"
+                                                    class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                    ${has_sub_det(sb.id).files.length} fichier<span
+                                                        v-html="has_sub_det(sb.id).files.length > 1 ? 's' : '' "></span>
+                                                    ajouté<span
+                                                        v-html="has_sub_det(sb.id).files.length > 1 ? 's' : '' "></span>
+                                                </p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div v-if="sb.get_subs.length == 1" style="cursor: pointer;"
+                                        @click="cur_sub = sb.id, setPrev()"
+                                        class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white hover:bg-gray-100 hover:p-2 hover:rounded-lg hover:text-rose-500">
+                                        <span class="material-icons">
+                                            add_circle
+                                        </span>
+                                    </div>
+                                    <div v-else :class="{'text-rose-600' : sb.id == cur_ssub }" class="flex-shrink-0">
+                                        <span class="material-icons">
+                                            arrow_circle_right
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+
+                    </form>
+
+                </div>
+                <div v-else class="py-3" style="max-height: 60vh; overflow-y: scroll;">
+                    <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
+                        <li class="py-3 px-3 sm:pb-4" v-for="sb in sub_results" :key="sb.id">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    <input :value="sb.id" name="sub_radio" v-model="cur_ssub" :id="`sub${sb.id}`"
+                                        type="radio" @click="from_sub_to_ssub(sb)"
+                                        class="w-4 h-4 text-rose-600 bg-gray-100 border-gray-300 focus:ring-rose-500 dark:focus:ring-rose-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                </div>
+                                <div class="flex-1 min-w-0 hover:bg-gray-50 ">
+                                    <label :for="`sub${sb.id}`">
+                                        <p class="font-medium text-gray-900 truncate dark:text-white">
+                                            ${sb.name}
+                                        </p>
+                                        <div v-if="has_sub_det(sb.id)">
+                                            <p v-if="has_sub_det(sb.id).bdg"
+                                                class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                Budget prévu : ${has_sub_det(sb.id).bdg} F
+                                            </p>
+                                            <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                Nombre voulu : ${has_sub_det(sb.id).num_prod}
+                                            </p>
+                                            <p v-if="has_sub_det(sb.id).detail"
+                                                class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                Détail : ${has_sub_det(sb.id).detail}
+                                            </p>
+                                            <p v-if="has_sub_det(sb.id).files"
+                                                class="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                ${has_sub_det(sb.id).files.length} fichier<span
+                                                    v-html="has_sub_det(sb.id).files.length > 1 ? 's' : '' "></span>
+                                                ajouté<span
+                                                    v-html="has_sub_det(sb.id).files.length > 1 ? 's' : '' "></span>
+                                            </p>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div v-if="sb.get_subs.length > 1" style="cursor: pointer;"
+                                    @click="cur_sub = sb.id, setPrev()"
+                                    class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white hover:bg-gray-100 hover:p-2 hover:rounded-lg hover:text-rose-500">
+                                    <span class="material-icons">
+                                        add_circle
+                                    </span>
+                                </div>
+                                <div v-else :class="{'text-rose-600' : c.id == cur_ssub }" class="flex-shrink-0">
+                                    <span class="material-icons">
+                                        arrow_circle_right
+                                    </span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="px-6 py-4">
+                <button v-if="r_subs.length" @click="showsubMod()" type="button"
+                    class="text-white bg-gradient-to-r from-rose-400 via-rose-500 to-rose-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-rose-300 dark:focus:ring-rose-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 w-full text-center ">Enregistrer</button>
+                <button v-else type="button"
+                    class="text-white text-gray-400 bg-gray-100 focus:outline-none focus:ring-rose-300 dark:focus:ring-rose-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 w-full text-center ">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SubSub Modal toggle -->
+<button id="mySubSubMod" style="display: none;"
+    class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+    type="button" data-modal-toggle="mySubSubMod-modal">
+    Toggle modal
+</button>
+
+<!-- SubSub Main modal -->
+<div v-show="!cur_sub" id="mySubSubMod-modal" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 p-4 w-full md:inset-0 h-modal md:h-full">
+    <div class="relative w-full max-w-md h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button @click="r_subs = []" type="button" id="subclose"
+                class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                data-modal-toggle="mySubSubMod-modal">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="py-3 px-6 lg:px-8">
+                <h3 class="mb-2 text-xl font-medium text-gray-900 dark:text-white">Sélectionnez les produits que vous désirez</h3>
+                <div class="py-2  " >
+                    <div>
+                        <form class="flex items-center">
+                            <label for="simple-search" class="sr-only">Search</label>
+                            <button @click="r_subs = [], showsubsubMod()" type="button"
+                                class=" mr-2 text-rose-700 border border-rose-700 hover:bg-rose-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center dark:border-rose-500 dark:text-rose-500 dark:hover:text-white dark:focus:ring-rose-800">
+                                <span class="material-icons">
+                                    arrow_back
+                                </span>
+                            </button>
+                            <div  v-if="false" class="relative w-full">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                                        fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <input type="text" id="searchsub" @input="e => ssub_search = e.target.value"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="Search" required>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+                <div  class="py-3" style="max-height: 62vh; overflow-y: scroll;">
+                    <form>
+                        <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
+                            <li class="py-3 px-3 sm:pb-4" v-for="sb in all_subssubs" :key="sb.id">
+                                <div class="flex items-center space-x-4">
+                                    <div class="flex-shrink-0">
+                                        <input :value="sb.id" name="sub_radio" :checked="includes_subs(sb.id)"
+                                            :id="`sub${sb.id}`" type="checkbox"
+                                            @click="add_us(sb)"
                                             class="w-4 h-4 text-rose-600 bg-gray-100 rounded border-gray-300 focus:ring-rose-500 dark:focus:ring-rose-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                     </div>
                                     <div class="flex-1 min-w-0 hover:bg-gray-50 ">
@@ -866,7 +1081,8 @@
                                             </div>
                                         </label>
                                     </div>
-                                    <div style="cursor: pointer;" @click="cur_sub = sb.id, setPrev()"
+                                    <div style="cursor: pointer;"
+                                        @click="cur_sub = sb.id, setPrev()"
                                         class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white hover:bg-gray-100 hover:p-2 hover:rounded-lg hover:text-rose-500">
                                         <span class="material-icons">
                                             add_circle
@@ -879,59 +1095,10 @@
                     </form>
 
                 </div>
-                <div v-else class="py-3" style="max-height: 60vh; overflow-y: scroll;">
-                    <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
-                        <li class="py-2 px-3 sm:pb-4" v-for="sb in sub_results" :key="sb.id">
-                            <div class="flex items-center space-x-4">
-                                <div class="flex-shrink-0">
-                                    <input @click="add_us(sb)" :checked="includes_subs(sb.id)" :id="`sub${sb.id}`"
-                                        type="checkbox"
-                                        class="w-4 h-4 text-rose-600 bg-gray-100 rounded border-gray-300 focus:ring-rose-500 dark:focus:ring-rose-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                </div>
-                                <div class="flex-1 min-w-0 hover:bg-gray-50 ">
-                                    <label :for="`sub${sb.id}`">
-                                        <p class="font-medium text-gray-900 truncate dark:text-white">
-                                            ${sb.high}
-                                        </p>
-                                        <p class="text-sm text-gray-500 truncate dark:text-gray-400">
-                                            ${sb.cat}
-                                        </p>
-                                        <div v-if="has_sub_det(sb.id)">
-                                            <p v-if="has_sub_det(sb.id).bdg"
-                                                class="text-sm text-gray-500 truncate dark:text-gray-400">
-                                                Budget prévu : ${has_sub_det(sb.id).bdg} F
-                                            </p>
-                                            <p class="text-sm text-gray-500 truncate dark:text-gray-400">
-                                                Nombre voulu : ${has_sub_det(sb.id).num_prod}
-                                            </p>
-                                            <p v-if="has_sub_det(sb.id).detail"
-                                                class="text-sm text-gray-500 truncate dark:text-gray-400">
-                                                Détail : ${has_sub_det(sb.id).detail}
-                                            </p>
-                                            <p v-if="has_sub_det(sb.id).files"
-                                                class="text-sm text-gray-500 truncate dark:text-gray-400">
-                                                ${has_sub_det(sb.id).files.length} fichier<span
-                                                    v-html="has_sub_det(sb.id).files.length > 1 ? 's' : '' "></span>
-                                                ajouté<span
-                                                    v-html="has_sub_det(sb.id).files.length > 1 ? 's' : '' "></span>
-                                            </p>
-                                        </div>
-                                    </label>
-                                </div>
-                                <div style="cursor: pointer;" @click=" cur_sub = sb.id, setPrev()"
-                                    class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white hover:bg-gray-100 hover:p-2 hover:rounded-lg hover:text-rose-500">
-                                    <span class="material-icons">
-                                        add_circle
-                                    </span>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
             </div>
 
             <div class="px-6 py-4">
-                <button v-if="r_subs.length" @click="showsubMod()" type="button"
+                <button v-if="r_subs.length" @click="showsubsubMod(false)" type="button"
                     class="text-white bg-gradient-to-r from-rose-400 via-rose-500 to-rose-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-rose-300 dark:focus:ring-rose-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 w-full text-center ">Enregistrer</button>
                 <button v-else type="button"
                     class="text-white text-gray-400 bg-gray-100 focus:outline-none focus:ring-rose-300 dark:focus:ring-rose-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 w-full text-center ">Enregistrer</button>
@@ -1056,7 +1223,8 @@
                             <img class="w-full" src="{% static 'img/city.svg' %}" />
                         </div>
                         <div class="text-center">
-                            Veuillez entrer le nom de votre quartier et choisissez le resultat le plus proche de chez vous
+                            Veuillez entrer le nom de votre quartier et choisissez le resultat le plus proche de chez
+                            vous
                         </div>
                     </div>
                     <div v-if="quarts.length">
@@ -1115,7 +1283,8 @@
             </div>
 
             <div class="px-6 py-4">
-                <button @click="activeMod(), f_quart = quart, showquartMod(), quarti = ''" v-if="quart.name != ''" type="button" 
+                <button @click="activeMod(), f_quart = quart, showquartMod(), quarti = ''" v-if="quart.name != ''"
+                    type="button"
                     class="text-white bg-gradient-to-r from-rose-400 via-rose-500 to-rose-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-rose-300 dark:focus:ring-rose-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 w-full text-center ">Valider</button>
                 <button v-else type="button"
                     class="text-white text-gray-400 bg-gray-100 focus:outline-none focus:ring-rose-300 dark:focus:ring-rose-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 w-full text-center ">Valider</button>
@@ -1446,7 +1615,9 @@
                     lng: 0
                 },
                 quarts: [],
-                isTyping: false
+                isTyping: false,
+                cur_ssub: 0,
+                state: "Neuf"
             }
         },
         mounted() {
@@ -1461,8 +1632,7 @@
             }).then(resp => {
                 if (resp.data['done']) {
                     th.all_cats = resp.data['result']
-
-                    end_load()
+                    end_load();
                 }
             }).catch(err => {
                 console.log(err);
@@ -1480,7 +1650,7 @@
                 th.country = my_info['country']
                 th.whatsapp = my_info['whatsapp']
                 th.number = my_info['number']
-                if(my_info['quart']) th.f_quart = my_info['quart']
+                if (my_info['quart']) th.f_quart = my_info['quart']
                 th.is_registered = true
             }
             th.get_demandes()
@@ -1502,7 +1672,7 @@
                 window.serviceMaps.findPlaceFromQuery(request, function (results, status) {
                     if (status === google.maps.places.PlacesServiceStatus.OK) {
                         for (elt of results) {
-                             th.quarts.push({
+                            th.quarts.push({
                                 name: elt.name,
                                 lat: elt.geometry.location.lat(),
                                 lng: elt.geometry.location.lng()
@@ -1613,12 +1783,36 @@
                         }
                     }
                 }
+            },
+            all_subssubs() {
+                for (sub of this.all_subs) {
+                    if (sub.id.toString() == this.cur_ssub) {
+                        return sub.get_subs
+                    }
+                }
             }
         },
         methods: {
-            quart_include(quar){
-                for(q of this.quarts){
-                    if(q.name == quar.name && q.lat == quar.lat && q.lng == quar.lng){
+            from_sub_to_ssub(sub) {
+
+                setTimeout(() => {
+                    if (sub.get_subs.length != 1) {
+                        this.showsubsubMod()
+                    } else {
+                        this.add_us(sub)
+                        
+                    }
+                }, 150)
+            },
+            from_cat_to_sub(id) {
+                setTimeout(() => {
+                    this.cat = id
+                    this.go_to_sub()
+                }, 150)
+            },
+            quart_include(quar) {
+                for (q of this.quarts) {
+                    if (q.name == quar.name && q.lat == quar.lat && q.lng == quar.lng) {
                         return true
                     }
                 }
@@ -1709,7 +1903,11 @@
             },
             get_sub(id) {
                 for (sub of this.all_subs) {
+                    for(sb of sub.get_subs){
+                        if (sb.id == id) return sb
+                    }
                     if (sub.id == id) return sub
+
                 }
             },
             build_sub_det() {
@@ -1748,6 +1946,11 @@
                 for (f of myFiles) {
                     this.files.push(f)
                 }
+            },
+            showsubsubMod(is_dir = true) {
+
+                if(is_dir) this.showsubMod();
+                document.getElementById('mySubSubMod').click()
             },
             go_to_sub() {
                 document.getElementById('catclose').click()
@@ -1809,7 +2012,7 @@
                 if (!th.is_registered && (th.user == 'not')) document.getElementById('closeModUs').click()
                 const form = new FormData()
                 form.append('cat', th.cat)
-                form.append('subs', JSON.stringify(th.subs))
+                form.append('subs', JSON.stringify(th.r_subs))
                 form.append('emer', th.emer)
                 for (det of this.sub_det) {
                     if ('files' in det) {
@@ -1820,6 +2023,7 @@
                     }
                 }
                 form.append('sub_det', JSON.stringify(this.sub_det))
+                form.append('state', th.state)
                 if (th.user == 'not') {
                     th.checkNumber()
                     if (!th.is_what) {
@@ -1834,7 +2038,7 @@
                     form.append('town', JSON.stringify(th.town))
                     form.append('number', th.number)
                     form.append('whatsapp', th.whatsapp)
-                    form.append('quart' , JSON.stringify(th.f_quart))
+                    form.append('quart', JSON.stringify(th.f_quart))
                 }
                 axios({
                     url: 'api/demand/',
@@ -1865,7 +2069,7 @@
                         town: th.town,
                         number: th.number,
                         whatsapp: th.whatsapp,
-                        quart : th.f_quart
+                        quart: th.f_quart
                     }))
                 }).catch(err => {
                     console.log(err);
@@ -1893,7 +2097,7 @@
                     this.number = num
                 }
             },
-            checkNumber_w() {
+            checkNumber_w(){
                 this.can_show_valid = true
                 this.num_err = []
                 if (!window.phoneInput_w.isValidNumber()) {

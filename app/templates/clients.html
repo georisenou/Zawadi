@@ -61,7 +61,7 @@
                 {% endif %}
             </div>
             <div class="text-center text-lg py-3 font-medium text-gray-900">
-                Liste de clients de la semaine
+                Liste de demandes de la semaine
             </div>
             <div class="my-2 px-4 flex justify-between items-center">
                 <a {% if week.prev %} href="/clients/{{week.prev}}/" {% endif %}
@@ -102,7 +102,7 @@
                                         Produit
                                     </th>
                                     <th scope="col" class="py-3 px-6">
-                                        Nom
+                                        Etat
                                     </th>
                                     <th scope="col" class="py-3 px-6">
                                         Urgence
@@ -120,7 +120,7 @@
                                         {{dem.subs.name}}
                                     </th>
                                     <td class="py-4 px-6">
-                                        {{dem.client.get_complete_name}}
+                                        {{dem.state}}
                                     </td>
                                     <td class="py-4 px-6">
                                         <div class="flex items-center">
@@ -134,7 +134,7 @@
                                     </td>
                                     <td class="py-4 px-6">
                                         <a class="font-medium text-blue-600 dark:text-green-500 hover:underline"
-                                            @click="showMod({whatsapp: '{{dem.client.get_whatsapp}}', phone: '{{dem.client.get_phone}}', email : '{{dem.client.get_email}}', dem : '{{dem.subs.name}}', emer : '{{dem.emergency}}', dem_pk : '{{dem.pk}}', point : '{{dem.point}}', budget : '{{dem.budget}}', detail : '{{dem.detail}}', num : '{{dem.num}}', get_files : {{dem.get_files}} })">Contacter</a>
+                                            @click="showMod({whatsapp: '{{dem.client.get_whatsapp}}', phone: '{{dem.client.get_phone}}', email : '{{dem.client.get_email}}', dem : '{{dem.subs.name}}', emer : '{{dem.emergency}}', dem_pk : '{{dem.pk}}', point : '{{dem.point}}', budget : '{{dem.budget}}', detail : '{{dem.detail}}', num : '{{dem.num}}', get_files : {{dem.get_files}}, user : '{{dem.client.get_complete_name}}' })">Contacter</a>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -258,7 +258,11 @@
                 <span class="sr-only">Close modal</span>
             </button>
             <div class="py-6 px-6 lg:px-8">
-                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Tobias Lukte</h3>
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white"> <div class=" inline  " style="position: relative; top: 0.1rem;" >
+                    <span class="material-icons">
+                        person
+                    </span>
+                </div> ${curent.user}</h3>
                 <div class="flex justify-between items-center py-3">
                     <div class="flex items-center">
                         <div class="px-4 pb-2 pt-4 mr-2  bg-green-100 text-green-500 rounded-full  ">
