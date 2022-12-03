@@ -36,7 +36,7 @@ else :
     DEBUG = True
 
 
-ALLOWED_HOSTS = ["jellyfish-app-uw6p4.ondigitalocean.app", "zawadi.site", "www.zawadi.site" ,"vendeur.zawadi.site"]
+ALLOWED_HOSTS = ["zawadi.herokuapp.com", "zawadi.site", "www.zawadi.site" ,"vendeur.zawadi.site"]
 
 
 DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
