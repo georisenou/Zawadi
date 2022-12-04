@@ -998,7 +998,7 @@ class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 
             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full justify-center items-center">
             <div class="relative p-4 w-full max-w-md h-full md:h-auto">
                 <!-- Modal content -->
-                <div style="max-height: 90vh; overflow-y: scroll; "
+                <div
                     class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                     <button v-show="transaction == ''" type="button"
                         class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
@@ -1028,7 +1028,7 @@ class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 
                                 <div class="py-2 font-medium ">
                                     Produits disponibles
                                 </div>
-                                <div>
+                                <div  style="max-height: 65vh; overflow-y: scroll; " >
                                     <div v-if="!r_subs.length"
                                         class="p-4 text-sm text-gray-700 bg-gray-100 rounded-lg dark:bg-gray-700 dark:text-gray-300"
                                         role="alert">
