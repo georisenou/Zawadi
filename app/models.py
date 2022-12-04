@@ -164,6 +164,11 @@ class SellerAccount(models.Model) :
     speed = models.IntegerField(default=0)
     expired_date = models.DateField(null=True, blank=True)
     has_freed = models.BooleanField(default=False)
+    def get_total_client(self) -> int :
+        weeks = self.weeks.all()
+        num = 0
+        for w in weeks : num += w.demandes.count()
+        return num
     def contains_sub(self ,sub) :
         return sub in self.subs.all()
     def get_last_abn(self) :
