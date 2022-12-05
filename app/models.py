@@ -11,6 +11,24 @@ import random
 from haversine import haversine, Unit
 all_characters = string.ascii_letters+string.digits+string.punctuation
 characters = string.ascii_letters+string.digits
+from firebase_admin.messaging import Message as Mss, Notification, AndroidNotification, WebpushConfig, WebpushFCMOptions, AndroidConfig, APNSConfig, APNSPayload, Aps
+from fcm_django.models import FCMDevice
+
+def get_value(key):
+    return ZawadiDetail.objects.get(key=key).value
+
+def send_notif(seller):
+    try:
+        device = FCMDevice.objects.get(user=seller.user)
+        options = WebpushFCMOptions(
+            link=f"{get_value('site:link')}/clients/0/")
+        webpush = WebpushConfig(fcm_options=options)
+        device.send_message(
+            Mss(notification=Notification(title="Zawadi - Nouveau client !",
+                body="Un nouveau client vient d'être ajouté à votre liste de la semaine."), webpush=webpush)
+        )
+    except Exception as e:
+        print('FCM Error ===> ', e)
 
 PRICE_PER = 80
 
@@ -185,7 +203,9 @@ class SellerAccount(models.Model) :
         quart = json.loads(self.user.quart)
         return quart
     def add_dem(self, dem) :
-        if not dem in self.get_week().demandes.all() : self.get_week().demandes.add(dem)
+        if not dem in self.get_week().demandes.all() :
+            self.get_week().demandes.add(dem)
+            send_notif(self)
         if dem.weeks_in.count() >= dem.num_vend and (not dem.is_out) :
             dem.is_out = True
             dem.save()
