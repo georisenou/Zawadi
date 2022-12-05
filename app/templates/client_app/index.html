@@ -757,7 +757,7 @@
                                                 <div class="flex-1 min-w-0">
 
                                                     <label :for="`cat${c.id}`">
-                                                        <p class=" font-medium text-gray-900 truncate dark:text-white">
+                                                        <p class=" font-medium text-gray-900 dark:text-white">
                                                             ${c.name}
                                                         </p>
                                                     </label>
@@ -883,7 +883,7 @@
                                     </div>
                                     <div class="flex-1 min-w-0 hover:bg-gray-50 ">
                                         <label :for="`sub${sb.id}`">
-                                            <p class="font-medium text-gray-900 truncate dark:text-white">
+                                            <p class="font-medium text-gray-900  dark:text-white">
                                                 ${sb.name}
                                             </p>
                                             <div v-if="has_sub_det(sb.id)">
@@ -1058,7 +1058,7 @@
                                     </div>
                                     <div class="flex-1 min-w-0 hover:bg-gray-50 ">
                                         <label :for="`sub${sb.id}`">
-                                            <p class="font-medium text-gray-900 truncate dark:text-white">
+                                            <p class="font-medium text-gray-900  dark:text-white">
                                                 ${sb.name}
                                             </p>
                                             <div v-if="has_sub_det(sb.id)">
@@ -1194,7 +1194,8 @@
                 <span class="sr-only">Close modal</span>
             </button>
             <div class="py-3 px-6 lg:px-8">
-                <h3 class="mb-2 text-xl font-medium text-gray-900 dark:text-white">Entrez le nom de votre quartier</h3>
+                <h3 class="mb-2 mr-3 text-xl font-medium text-gray-900 dark:text-white">Entrez le nom de votre
+                    quartier ou d'un lieu connu proche de chez vous</h3>
                 <div class="py-2  ">
                     <div>
 
@@ -1239,7 +1240,7 @@
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <label :for="slugify(quar)">
-                                            <p class=" font-medium text-gray-900 truncate dark:text-white">
+                                            <p class=" font-medium text-gray-900 dark:text-white">
                                                 ${quar.name}
                                             </p>
                                         </label>
@@ -1365,7 +1366,8 @@
                     <div>
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">
-                                Entrez le nom de votre quartier</label>
+                                Entrez le nom de votre
+                            quartier ou d'un lieu connu proche de chez vous</label>
                             <div style="cursor: pointer;" @click="showquartMod(), activeMod()"
                                 class=" hover:text-rose-500 flex items-center justify-between bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg active:ring-blue-500 active:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:active:ring-blue-500 dark:active:border-blue-500">
                                 <span class="block text-gray-500" v-if="f_quart.name == ''">Aucun nom entré</span> <span
