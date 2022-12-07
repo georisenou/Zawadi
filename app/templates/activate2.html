@@ -1287,6 +1287,9 @@ class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 
                 backtocat() {
                     this.rr_subs = []
                     document.getElementById('subclose').click()
+                    setTimeout(() => {
+                        this.temporary_off = true
+                    },100)
                     this.showcatMod()
                 },
                 from_cat_to_sub(id) {
