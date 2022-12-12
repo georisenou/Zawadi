@@ -3,7 +3,7 @@
 {% block content %}
 <div class="md:grid md:grid-cols-2 pt-12">
     <div class="mh-screen">
-        {% if not seller %}
+        {% if not has_abn  %}
         <div class=" pt-4">
             <div class="text-center text-lg font-medium text-gray-500">
                 Liste de clients vide
@@ -20,7 +20,6 @@
                         class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Activer
                         ma liste de clients &RightArrow; </a>
                 </div>
-
             </div>
             <div class="pt-3 flex justify-around">
                 <div>
@@ -403,6 +402,11 @@
 {% block script %}
 <script src="/static/axios.min.js"></script>
 <script>
+    {% if not seller.whatsapp %}
+        setTimeout(() => {
+            window.location.href = '/for_sellers/?seller={{seller.pk}}'
+        }, 250)
+    {% endif %}
     let baseUR = window.location.host
     let prot = window.location.protocol
     axios.defaults.baseURL = prot + "//" + baseUR + "/"
@@ -416,6 +420,7 @@
                 curent: {'get_files' : []},
                 notifying: false,
                 messaging: null,
+                is_what: '{% if seller.whatsapp %}yes{% else %}no{% endif %}',
                 can_notif: '{% if not can_notif %}not{% endif %}'
             }
         },
@@ -460,9 +465,8 @@
                 return -1
             },
             showMod(cur) {
-                this.curent = cur
-                console.log(cur);
-                document.getElementById("myBut").click()
+                this.curent = cur;
+                document.getElementById("myBut").click();
             },
             go_to(link) {
                 window.location.href = link
@@ -506,6 +510,7 @@
                 // Let's check if the browser supports notifications
                 if (!("Notification" in window)) {
                     alert("Votre navigateur ne supporte pas les notifications");
+                    th.notifying = false
                 }
 
                 // Let's check whether notification permissions have already been granted

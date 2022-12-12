@@ -1,5 +1,4 @@
 
-from cProfile import label
 import json
 from xmlrpc.client import Boolean
 from django.db import models
@@ -182,6 +181,7 @@ class SellerAccount(models.Model) :
     speed = models.IntegerField(default=0)
     expired_date = models.DateField(null=True, blank=True)
     has_freed = models.BooleanField(default=False)
+    whatsapp = models.CharField(max_length=150, null=True, blank=True)
     def get_total_client(self) -> int :
         weeks = self.weeks.all()
         num = 0

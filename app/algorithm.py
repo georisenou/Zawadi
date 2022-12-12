@@ -1,4 +1,22 @@
-from .models import PRICE_PER, ClientDemand, SellerAccount
+from .models import PRICE_PER, ClientDemand, SellerAccount, ZawadiDetail
+from firebase_admin.messaging import Message as Mss, Notification, AndroidNotification, WebpushConfig, WebpushFCMOptions, AndroidConfig, APNSConfig, APNSPayload, Aps
+from fcm_django.models import FCMDevice
+
+def get_value(key):
+    return ZawadiDetail.objects.get(key=key).value
+
+def send_notif(seller):
+    try:
+        device = FCMDevice.objects.get(user=seller.user)
+        options = WebpushFCMOptions(
+            link=f"{get_value('site:link')}/clients/0/")
+        webpush = WebpushConfig(fcm_options=options)
+        device.send_message(
+            Mss(notification=Notification(title="Zawadi - Nouveau client !",
+                body="Un nouveau client vient d'être ajouté à votre liste de la semaine."), webpush=webpush)
+        )
+    except Exception as e:
+        print('FCM Error ===> ', e)
 
 def get_all_dems(slug_dem) :
     print('First pass ==> ', ClientDemand.objects.filter(slug = slug_dem))

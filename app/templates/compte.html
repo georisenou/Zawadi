@@ -48,9 +48,15 @@
                 {% endif %}
             </div>
             {% else %}
+            {% if seller.rest %}
             <div class="text-lg text-blue-600">
                 Essai gratuit
             </div>
+            {% else %}
+                <div class="text-red-500 text-lg">
+                    &bull; Essai Terminé
+                </div>
+                {% endif %}
             {% endif %}
         </div>
         <div class="p-3 rounded bg-red-50 shadow">

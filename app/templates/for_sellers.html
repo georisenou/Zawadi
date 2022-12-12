@@ -1,0 +1,41 @@
+{% extends '_base.html' %}
+
+{% block content %}
+<div class="mh-screen bg-gray-50 ">
+    <div class="text-center font-bold text-xl px-6 pt-12 pb-3 ">
+        Conseils pour vendre plus
+    </div>
+    <div class="py-3 px-6" >
+        <ul class="space-y-3 max-w-md list-disc list-inside text-gray-800 dark:text-gray-400">
+            <li>
+                <span class="text-lg" >Envoyez tous les images des produits dont le client a besoin </span>
+            </li>
+            <li>
+                <span class="text-lg" >Ne pas trop insister et toujours attendre la réponse du client</span>
+            </li>
+            <li>
+                <span class="text-lg" >Être toujours convivial avec le client</span>
+            </li>
+            
+        </ul>
+
+    </div>
+    <div class="px-4" >
+        <form method="POST" action="" class="py-3" >
+            {% csrf_token %}
+            <div>
+                <label for="first_name" class=" text-center block mb-2 text-lg font-medium text-gray-900 dark:text-white">Entrez votre numéro whatsapp</label>
+                <input type="text" id="first_name" name="whatsapp" class="bg-gray-50 border border-gray-300 text-gray-900  rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500" placeholder="numero whatsapp..." required>
+            </div>
+            <div class="pt-3 flex justify-around" >
+                <div >
+                    <button type="submit" class="py-3 px-4  font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Ok, j'ai compris!</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="flex justify-around pt-8">
+        <img src="/static/img/like2.svg" class="" />
+    </div>
+</div>
+{% endblock %}

@@ -241,7 +241,10 @@ def index(request):
 
 @login_required(login_url='/login')
 def clients(request, pk):
+    has_abn = False
     seller = request.user.accounts.all().first()
+    if seller :
+        has_abn = True and seller.rest > 0
     cur_week = 0
     if seller :
         cur_week = seller.get_week()
@@ -267,13 +270,16 @@ def clients(request, pk):
         'week': myweek,
         'has_rank': has_rank,
         'contact': contact,
-        'can_notif': can_notif
+        'can_notif': can_notif,
+        'has_abn' : has_abn
     })
 
 
 def login_view(request):
     err = []
     contact = ZawadiDetail.objects.get(key='contact:home')
+    next = request.GET.get('next')
+    print(next)
     if request.method == "POST":
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -281,9 +287,8 @@ def login_view(request):
             user = authenticate(email=email, password=password)
             if user:
                 login(request, user)
-                next = request.GET.get('next')
                 if next:
-                    redirect(next)
+                    return redirect(next)
                 return redirect('index')
             else:
                 err.append(
@@ -869,3 +874,15 @@ def backup( request) :
     else :
         db_uri = os.getenv('DATABASE_URL', '')
         return HttpResponse('update3_____' + db_uri )
+
+def for_sellers(request) :
+    pk = request.GET.get('seller')
+    seller = SellerAccount.objects.get(pk = int(pk))
+    if request.method == "POST" :
+        whtasapp = request.POST.get('whatsapp')
+        seller.whatsapp = whtasapp
+        seller.save()
+        return redirect('/clients/0/')
+    return render(request, 'for_sellers.html', {
+        'seller' : seller
+    })
