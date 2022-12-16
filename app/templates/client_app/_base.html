@@ -21,12 +21,12 @@
     <link rel="apple-touch-icon" href="/static/achat/icons/icon-512x512.png" />
     <meta name="apple-mobile-web-app-status-bar" content="#cb0e40" />
     <meta name="theme-color" content="#cb0e40" />
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/static/favicon_client.ico">
     <title>Zawadi | Trouvez d'avance votre produit</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!--<script src="/static/src/3.2.js"></script>-->
+    <script src="/static/src/3.2.js"></script>
 
-    <link rel="stylesheet" href="{% static 'src/output.css' %}">
+    <!--<link rel="stylesheet" href="{% static 'src/output.css' %}">-->
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
@@ -56,12 +56,12 @@
             <div class="container ">
                 <div class="flex  items-center justify-around mx-auto pb-2">
                     <a href="https://zawadi.site/" class="flex items-center">
-                        <img src="{% static 'logo_client.png' %}" class="mr-3 h-6 sm:h-9" alt="Zawadi Logo">
+                        <img src="{% static 'logo_client.png' %}" class="mr-3 rounded h-6 sm:h-9" alt="Zawadi Logo">
                         <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Zawadi</span>
                     </a>
                 </div>
-                <hr />
-                <div class="pt-1 pb-1 flex justify-between text-sm">
+                <hr class="hidden" />
+                <div class=" hidden pt-1 pb-1 flex justify-between text-sm">
                     <div class="font-medium">
                         Récompense du jour
                     </div>
@@ -133,7 +133,7 @@
     <div id="global_load" style="margin-top: 35vh;">
         <div class="flex  items-center justify-around mx-auto pb-2">
             <a href="https://zawadi.site/" class="flex items-center">
-                <img src="{% static 'logo_client.png' %}" class="mr-3 h-8 sm:h-9" alt="Zawadi Logo">
+                <img src="{% static 'logo_client.png' %}" class="mr-3 h-8 rounded sm:h-9" alt="Zawadi Logo">
                 <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Zawadi</span>
             </a>
         </div>

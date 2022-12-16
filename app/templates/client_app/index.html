@@ -1,11 +1,19 @@
 {% extends 'client_app/_base.html' %}
 {% load static %}
 {% block content %}
-<div class="pt-14 mh-screen">
+<div class="pt-8 mh-screen">
     <div class="w-full ah-screen md:h-screen"
         style=" background-size: cover; background-position: top center; background-image: url('/static/img/backe.jpg'); ">
-        <div class="py-4 px-2 text-2xl text-white text-center font-semibold md:text-3xl ">
-            Dites-nous ce que vous prévoyez acheter et nous vous enverrons les meilleurs vendeurs
+        <div class="py-4 flex justify-center px-2 text-lg  text-center font-semibold md:text-3xl ">
+            <div class="flex items-center justify-center" >
+                <div class="mr-3" >
+                    <img class="w-16 shadow rounded-lg" src="/static/logo_client.png" />
+                </div>
+                <div class="px-3 py-3 bg-gray-100 " style="border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; border-top-right-radius: 15px;" >
+                     Que prévoyez-vous acheter ?
+                </div>
+            </div>
+            <!---Dites-nous ce que vous prévoyez acheter et nous vous enverrons les meilleurs vendeurs--->
         </div>
         <div class="flex flex-col items-center justify-center px-6 py-6 md:py-0 mx-auto md:h-screen lg:py-0">
             <div
@@ -228,7 +236,17 @@
 
             </button>
         </div>
+        <div class="py-4 px-5">
+            <div class="text-2xl ">
+                Pourquoi <span class="font-semibold">Zawadi</span> ?
+            </div>
+            <div class="my-1 w-8 h-1 rounded-full bg-rose-600">
 
+            </div>
+            <div class="py-3 text-sm">
+                Parce que nous pensons que votre temps est précieux. Aussi parce que nous croyons qu'un bonne relation entre le vendeur et un acheteur augmente la valeur du produit acheté.
+            </div>
+        </div>
         <div class="py-4 px-5">
             <div class="text-2xl ">
                 A quoi sert <span class="font-semibold">Zawadi</span> ?
@@ -238,7 +256,7 @@
             </div>
             <div class="py-3 text-sm">
                 Zawadi a été conçu pour réduire totalement les tracas de recherche de produits ou services que ce soit
-                en présentiel avec les vendeurs ou sur un site de vente. Grâce à Zawadi l'effort pour trouver le produit
+                en présentiel avec les vendeurs ou sur un site de vente. Grâce à Zawadi l'effort et le temps pour trouver le produit
                 qui vous convient est totalement éliminé.
             </div>
         </div>
@@ -253,8 +271,8 @@
             <div class="py-3 text-sm">
                 C'est simple. Lorsque vous prévoyez un produit qu'il soit urgent ou pas, vous n'avez qu'à remplir
                 le petit formulaire en haut et enregistrer la requête d'achat. Très vite les
-                meilleurs vendeurs de votre localité vont vous contacter (par Whatsapp, appel ou Email) et vous
-                présenter des produits de qualité. Il ne vous reste qu'à choisir.
+                meilleurs vendeurs avec les meilleurs prix de votre localité vont vous contacter (par Whatsapp, appel ou Email) et vous
+                présenter des produits de qualité. Il ne vous reste qu'à choisir durant votre temps libre.
             </div>
         </div>
         <div class="py-4 px-5">
@@ -313,6 +331,7 @@
                 potentiel pour eux.
             </div>
         </div>
+        <!---
         <div class="py-4 px-5">
             <div class="text-2xl ">
                 Comment gagner la <span class="font-semibold">récompense du jour</span> ?
@@ -327,6 +346,7 @@
                 maximum de requête dans la journée.
             </div>
         </div>
+        --->
         {% if feeds.count %}
         <div class="py-4 px-5">
             <div class="text-2xl ">
