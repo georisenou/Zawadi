@@ -1408,6 +1408,10 @@ input:checked + .toggle-bg {
   width: 3rem;
 }
 
+.w-16 {
+  width: 4rem;
+}
+
 .w-7 {
   width: 1.75rem;
 }
@@ -2296,10 +2300,6 @@ input:checked + .toggle-bg {
   padding-top: 0.25rem;
 }
 
-.pt-14 {
-  padding-top: 3.5rem;
-}
-
 .text-left {
   text-align: left;
 }
@@ -2495,6 +2495,11 @@ input:checked + .toggle-bg {
 .text-red-500 {
   --tw-text-opacity: 1;
   color: rgb(240 82 82 / var(--tw-text-opacity));
+}
+
+.text-gray-800 {
+  --tw-text-opacity: 1;
+  color: rgb(31 41 55 / var(--tw-text-opacity));
 }
 
 .text-rose-600 {
