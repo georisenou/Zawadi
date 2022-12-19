@@ -439,7 +439,8 @@ def compte(request):
 
 
 def customers(request):
-
+    from_ = request.GET.get('from')
+    if from_ : increment_value(from_)
     print(request.user)
     zawadi = get_value('zawadi')
     categories = Category.objects.all()
