@@ -443,12 +443,17 @@ def customers(request):
     from_ = request.GET.get('from')
     if from_ : increment_value(from_)
     print(request.user)
+    try :
+        ready = get_value('blog_ready') == 'yes'
+    except :
+        ready = False
     zawadi = get_value('zawadi')
     categories = Category.objects.all()
     has_user = request.user.is_authenticated
     cat_first = categories.first().pk
     feeds = Feedback.objects.all().filter(rank__lt = 0).order_by('rank')[:3]
     labels = Label.objects.all()
+    print(ready, "ready")
     demandes = []
     if has_user:
         demandes = ClientDemand.objects.filter(
@@ -461,6 +466,7 @@ def customers(request):
         'count': len(demandes),
         'feeds': feeds,
         "labels" : labels,
+        'ready' : ready,
         'has_user': has_user and Client.objects.filter(user=request.user).exists()
     })
 

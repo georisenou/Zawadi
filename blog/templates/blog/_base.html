@@ -796,6 +796,19 @@
                         },
                     }).then(resp => {
                         if (resp.data['done']) {
+                            localStorage.setItem('customers_info', JSON.stringify({
+                                first_name: th.first_name,
+                                last_name: th.last_name,
+                                email: th.email,
+                                country: th.country,
+                                town: th.town,
+                                number: th.number,
+                                whatsapp: th.whatsapp,
+                                quart: th.f_quart
+                            }))
+                            if('redirect' in resp.data){
+                                window.location.href = '/'
+                            }
                             th.sending = false
                             console.log(th.activity);
                             if (th.activity == 'norm') {
@@ -810,16 +823,7 @@
                             }, 4000)
                             th.sent = true
                             th.activity = 'norm'
-                            localStorage.setItem('customers_info', JSON.stringify({
-                                first_name: th.first_name,
-                                last_name: th.last_name,
-                                email: th.email,
-                                country: th.country,
-                                town: th.town,
-                                number: th.number,
-                                whatsapp: th.whatsapp,
-                                quart: th.f_quart
-                            }))
+                            
                             th.message = ''
                             th.comment = ''
                         }
