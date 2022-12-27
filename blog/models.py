@@ -1,7 +1,4 @@
-from pyexpat import model
-from turtle import title
 from django.db import models
-from django.test import client
 from app.models import *
 
 # Create your models here.
