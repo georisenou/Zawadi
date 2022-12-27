@@ -140,7 +140,7 @@ class ClientDemand(models.Model) :
     is_out = models.BooleanField(default=False)
     num = models.IntegerField(null=True, blank=True)
     files = models.ManyToManyField(MyFiles, blank=True)
-    num_vend = models.IntegerField(default=5)
+    num_vend = models.IntegerField(default=3)
     quart = models.TextField(null=True, blank=True)
     slug = models.TextField(null=True, blank=True)
     state = models.CharField(max_length=100, null=True, blank=True)
@@ -239,7 +239,7 @@ class WeekCustom(models.Model) :
         last_abn = self.seller.get_last_abn()
         if last_abn.is_freed and count < ls[0] :
             return 'free'
-        if count < ls[0]  :
+        if count < ls[0] :
             return 'first'
         elif count < ls[1] :
             return 'second'

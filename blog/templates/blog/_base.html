@@ -1,0 +1,775 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="theme-color" content="#fbbf24" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/x-icon" href="/static/blog/favicon.ico">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <title>{% block title %}Zawadi Blog{% endblock title %}</title>
+    
+    <!-- ios support -->
+    <meta name="apple-mobile-web-app-status-bar" content="#fbbf24" />
+    <link rel="apple-touch-icon" href="/static/achat/icons/icon-72x72.png" />
+    <link rel="apple-touch-icon" href="/static/achat/icons/icon-96x96.png" />
+    <link rel="apple-touch-icon" href="/static/achat/icons/icon-128x128.png" />
+    <link rel="apple-touch-icon" href="/static/achat/icons/icon-144x144.png" />
+    <link rel="apple-touch-icon" href="/static/achat/icons/icon-152x152.png" />
+    <link rel="apple-touch-icon" href="/static/achat/icons/icon-192x192.png" />
+    <link rel="apple-touch-icon" href="/static/achat/icons/icon-384x384.png" />
+    <link rel="apple-touch-icon" href="/static/achat/icons/icon-512x512.png" />
+    <!---<script src="/static/src/3.2.js"></script>--->
+    <link rel="stylesheet" href="{% static 'src/output.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <style>
+        .mh-screen {
+            min-height: 100vh;
+        }
+
+        .ah-screen {
+            height: 40vh;
+        }
+
+        .rh-screen {
+            min-height: 40vh;
+        }
+    </style>
+    <link rel="stylesheet" href="/static/blog/css/plyr.css" />
+</head>
+
+<body>
+    <div id="app" style="display: none;">
+        <div v-if="!is_menu">
+            <div id="navbar" style="z-index: 500;" class=" w-full shadow fixed ">
+                <div class="w-full h-2 "
+                    :class="{ 'bg-gradient-to-r from-rose-200 via-rose-300 to-yellow-200' : alter % 2 && alter, 'bg-gradient-to-r from-yellow-200 via-yellow-400 to-rose-400' : !(alter % 2) && alter, 'bg-yellow-400' : !alter }">
+
+                </div>
+                <div class="flex justify-center items-center px-3 pt-1 pb-3 ">
+                    <div class="mr-3">
+                        <img class="h-12" src="{% static 'blog/logo.png' %}" />
+                    </div>
+                    <div>
+                        <img src="{% static 'blog/title.png' %}" class="h-12 pt-3" />
+                    </div>
+                </div>
+            </div>
+            {% block content %}
+
+            {% endblock %}
+            <button title="Menu" @click="is_menu = !is_menu" style="z-index: 500;"
+                class="fixed bottom-10 right-8 bg-yellow-400 w-16 h-16 rounded-full drop-shadow-lg flex justify-center items-center text-white text-4xl hover:bg-yellow-700 hover:drop-shadow-2xl hover:animate-bounce duration-300">
+                <i class="material-icons">
+                    menu
+                </i>
+            </button>
+            <div class="w-full bg-yellow-100 text-center pt-4 pb-16">
+                Copyright &copy; 2022 <br>
+                All Right Reserved <a class="text-rose-500" href="#">Zawadi</a>
+            </div>
+        </div>
+        <div v-else>
+            <div class="w-full h-2 bg-yellow-400">
+
+            </div>
+            <div class="px-3 py-4 flex items-center justify-between ">
+                <div @click="is_menu = false" class="px-2 pb-1 pt-3 rounded hover:bg-gray-100">
+                    <span class="material-icons">
+                        close
+                    </span>
+                </div>
+                <div class="w-2/3 ">
+                    <div class="text-center text-2xl">
+                        MENU
+                    </div>
+                </div>
+            </div>
+            <div class="px-5 pt-3">
+                <div class="space-y-4">
+                    {% for m in menu %}
+                    <div>
+                        <div @click="go_to('/blog/subject/{{m.get_slug}}')"
+                            class=" hover:text-gray-700 cursor-pointer pb-3 text-yellow-400 text-xl font-bold">
+                            {{m.name}} <span class="material-icons"
+                                style="position: relative; top: 0.3rem;">arrow_forward_ios</span>
+                        </div>
+                        <div class="px-4 space-y-2">
+                            {% for n in m.subs.all %}
+                            <div @click="go_to('/blog/ssubject/{{n.get_slug}}')"
+                                class=" text-gray-900 hover:text-yellow-400 text-lg font-medium">
+                                {{n.name}}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <div>
+                        <div @click="go_to('/blog/subject/{{m.get_slug}}')"
+                            class=" hover:text-gray-700 cursor-pointer pb-3 text-yellow-400 text-xl font-bold">
+                            Avis sur Zawadi <span class="material-icons"
+                                style="position: relative; top: 0.3rem;">arrow_forward_ios</span>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!--Group Modal-->
+        <div class="">
+
+            <button id="join_group" style="display: none;" type="button" data-modal-toggle="crypto-modal"
+                class="text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700">
+                <svg aria-hidden="true" class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
+                    </path>
+                </svg>
+                Connect wallet
+            </button>
+
+            <!-- Main modal -->
+            <div id="crypto-modal" style="z-index: 1000;" tabindex="-1" aria-hidden="true"
+                class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
+                <div class="relative w-full h-full max-w-md md:h-auto">
+                    <!-- Modal content -->
+                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                        <button type="button"
+                            class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                            data-modal-toggle="crypto-modal">
+                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="sr-only">Close modal</span>
+                        </button>
+                        <!-- Modal header -->
+                        <div class="px-6 py-4 border-b rounded-t dark:border-gray-600">
+                            <h3 class="text-base font-semibold text-gray-900 lg:text-xl dark:text-white">
+                                Ne manquez plus nos résumés
+                            </h3>
+                        </div>
+                        <!-- Modal body -->
+                        <div class="p-6 space-y-3">
+                            <div class="text-xl font-semibold text-center ">
+                                Rejoignez notre communauté sur whatsapp
+                            </div>
+                            <div class="flex justify-around py-3">
+                                <img src="/static/blog/img/group5_.svg" alt="image" />
+                            </div>
+                            <div class="">
+                                <button type="button" @click="set_to_storage('has_join')"
+                                    class="w-full focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                    <div class="flex items-center justify-center">
+                                        <img src="/static/img/whatsapp.png" class="w-6 mr-2" />
+                                        <div>Je veux rejoindre</div>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- Modal User -->
+        <button style="display: none;" id="myBut"
+            class="block text-white bg-rose-700 hover:bg-rose-800 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-rose-600 dark:hover:bg-rose-700 dark:focus:ring-rose-800"
+            type="button" data-modal-toggle="authentication-modal">
+            Toggle modal
+        </button>
+        <!-- Main User -->
+        <div id="authentication-modal" style="z-index: 2000;" tabindex="-1" aria-hidden="true"
+            class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full justify-center items-center">
+            <div class="relative p-4 w-full max-w-md h-full md:h-auto">
+                <!-- Modal content -->
+                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                    <button type="button" id="closeModUs"
+                        class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                        data-modal-toggle="authentication-modal">
+                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                    <div class="py-6 px-6 lg:px-8">
+                        <h3 class="mb-4  font-medium text-gray-900 dark:text-white"> Aidez-nous à améliorer votre
+                            expérience </h3>
+                        <form class="space-y-6" @submit.prevent="send_dem()">
+                            <div class="grid grid-cols-2">
+                                <div class="mr-2">
+
+                                    <input type="text" id="first_name" name="first_name" v-model="first_name"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-rose-500 focus:border-rose-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-rose-500 dark:focus:border-rose-500"
+                                        placeholder="Nom" required>
+                                </div>
+                                <div>
+
+                                    <input type="text" id="last_name" name="last_name" v-model="last_name"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-rose-500 focus:border-rose-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-rose-500 dark:focus:border-rose-500"
+                                        placeholder="Prénom" required>
+                                </div>
+                            </div>
+                            <div>
+                                <input type="email" id="email" name="email" v-model="email"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="Email" required>
+                            </div>
+
+                            <div class="relative z-0">
+                                <input id="phone" required type="tel" name="phone" v-model="numb"
+                                    class="block py-3 px-0 mb-2 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-purple-500 focus:outline-none focus:ring-0 focus:border-purple-600 peer" />
+                            </div>
+                            <div v-show="is_what" class="flex items-center">
+                                <input id="checked-checkbox" v-model="is_what" type="checkbox"
+                                    class="w-4 h-4 text-rose-600 bg-gray-100 rounded border-gray-300 focus:ring-rose-500 dark:focus:ring-rose-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                <label for="checked-checkbox"
+                                    class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">C'est le même que
+                                    mon
+                                    numéro
+                                    Whatsapp</label>
+                            </div>
+                            <div v-show="!is_what">
+                                <div class="mb-1">Entrez le numéro whatsapp</div>
+                                <div class="relative z-0">
+                                    <input id="phonewhat" type="tel" name="phonewhat" v-model="whatsapp"
+                                        class="block py-3 px-0 mb-2 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-purple-500 focus:outline-none focus:ring-0 focus:border-purple-600 peer" />
+                                </div>
+                            </div>
+                            <div>
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">
+                                        Entrez le nom de votre
+                                        quartier ou d'un lieu connu proche de chez vous</label>
+                                    <div style="cursor: pointer;" @click="showquartMod(), activeMod()"
+                                        class=" hover:text-rose-500 flex items-center justify-between bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg active:ring-blue-500 active:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:active:ring-blue-500 dark:active:border-blue-500">
+                                        <span class="block text-gray-500" v-if="f_quart.name == ''">Aucun nom
+                                            entré</span> <span class="block" v-else>${f_quart.name}</span>
+                                        <div>
+                                            <span style="position: relative; top: 0.1rem;" class="material-icons">
+                                                place
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <button type="submit"
+                                class="w-full text-white bg-rose-700 hover:bg-rose-800 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-rose-600 dark:hover:bg-rose-700 dark:focus:ring-rose-800">Confirmer</button>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button id="quartMod" style="display: none;"
+            class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            type="button" data-modal-toggle="quartMod-modal">
+            Toggle modal
+        </button>
+        <!-- Quart Main modal -->
+        <div id="quartMod-modal" style="z-index: 2000;" tabindex="-1" aria-hidden="true"
+            class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 p-4 w-full md:inset-0 h-modal md:h-full">
+            <div class="relative w-full max-w-md h-full md:h-auto">
+                <!-- Modal content -->
+                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                    <button type="button" id="quartclose" @click="activeMod()"
+                        class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                        data-modal-toggle="quartMod-modal">
+                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                    <div class="py-3 px-6 lg:px-8">
+                        <h3 class="mb-2 mr-3 text-xl font-medium text-gray-900 dark:text-white">Entrez le nom de votre
+                            quartier ou d'un lieu connu proche de chez vous</h3>
+                        <div class="py-2  ">
+                            <div>
+
+
+                                <form class="flex items-center">
+                                    <label for="simple-search" class="sr-only">entrez...</label>
+                                    <div class="relative w-full">
+                                        <div
+                                            class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                            <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                                                fill="currentColor" viewBox="0 0 20 20"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd"
+                                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                                    clip-rule="evenodd"></path>
+                                            </svg>
+                                        </div>
+                                        <input type="text" id="searchcat" @input="e => quarti = e.target.value"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="entrez..." required>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+                        <div class="py-3" style="max-height: 50vh; overflow-y: scroll;">
+                            <div v-if="quart.name == '' && !quarts.length && quarti == ''">
+                                <div class="p-4 flex justify-around">
+                                    <img class="w-full" src="{% static 'img/city.svg' %}" />
+                                </div>
+                                <div class="text-center">
+                                    Veuillez entrer le nom de votre quartier et choisissez le resultat le plus proche de
+                                    chez
+                                    vous
+                                </div>
+                            </div>
+                            <div v-if="quarts.length">
+
+                                <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
+                                    <li class="p-3 sm:pb-4 hover:bg-gray-100" v-for="quar in quarts"
+                                        :key="slugify(quar)">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="flex-shrink-0">
+                                                <i class="material-icons">place</i>
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <label :for="slugify(quar)">
+                                                    <p class=" font-medium text-gray-900 dark:text-white">
+                                                        ${quar.name}
+                                                    </p>
+                                                </label>
+                                            </div>
+                                            <div
+                                                class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                                                <input
+                                                    :checked="quart.name == quar.name && quart.lat == quar.lat && quart.lng == quar.lng"
+                                                    :id="slugify(quar)" type="radio" name="quar_radio"
+                                                    @click="quart = quar"
+                                                    class="w-4 h-4 text-rose-600 bg-gray-100 border-gray-300 focus:ring-rose-500 dark:focus:ring-rose-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+
+                            </div>
+                            <div v-if="!quarts.length && quarti != '' && !isTyping">
+                                <div class="p-4 flex justify-around">
+                                    <img class="w-full" src="{% static 'img/r_city.svg' %}" />
+                                </div>
+                                <div class="text-center">
+                                    Nous ne trouvons pas de lieu correspondant
+                                </div>
+                            </div>
+                            <div v-if="!quarts.length && quarti != '' && isTyping">
+                                <div class="p-6 flex justify-around">
+                                    <div role="status">
+                                        <svg aria-hidden="true"
+                                            class="mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-rose-600"
+                                            viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                                fill="currentColor" />
+                                            <path
+                                                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                                fill="currentFill" />
+                                        </svg>
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="px-6 py-4">
+                        <button @click="activeMod(), f_quart = quart, showquartMod(), quarti = ''"
+                            v-if="quart.name != ''" type="button"
+                            class="text-white bg-gradient-to-r from-rose-400 via-rose-500 to-rose-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-rose-300 dark:focus:ring-rose-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 w-full text-center ">Valider</button>
+                        <button v-else type="button"
+                            class="text-white text-gray-400 bg-gray-100 focus:outline-none focus:ring-rose-300 dark:focus:ring-rose-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 w-full text-center ">Valider</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="global_load" style="margin-top: 35vh;">
+        <div class="flex  items-center justify-around mx-auto pb-2">
+            <a href="https://blog.zawadi.site/" class="flex items-center">
+                <img src="{% static 'blog/logo.png' %}" class="mr-3 h-8 sm:h-9" alt="Zawadi Logo">
+                <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Zawadi </span>
+            </a>
+        </div>
+        <div class="py-4 flex justify-around items-center">
+            <div role="status">
+                <svg class="inline mr-2 w-10 h-10 text-gray-200 animate-spin dark:text-gray-600 fill-yellow-600"
+                    viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                        fill="currentColor" />
+                    <path
+                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                        fill="currentFill" />
+                </svg>
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+
+    </div>
+    <div id="map" class="hidden">
+
+    </div>
+    <script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></script>
+    <script src="{% static 'vue.global.prod.js' %}"></script>
+    <script src="/static/blog/js/plyr_.js"></script>
+    <script async
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNoBJJXRj_p5miy5gSPGazRa4Mr-95D18&libraries=places&callback=initMap">
+        </script>
+    <script src="/static/axios.min.js"></script>
+    {% block script %}
+
+    <script>
+        const player = new Plyr('#player');
+        var map;
+        var service;
+        var infowindow;
+
+        function initMap() {
+            var sydney = new google.maps.LatLng(-33.867, 151.195);
+
+            infowindow = new google.maps.InfoWindow();
+
+            map = new google.maps.Map(
+                document.getElementById('map'), { center: sydney, zoom: 15 });
+            var service = new google.maps.places.PlacesService(map);
+            window.serviceMaps = service
+            //service.findPlaceFromQuery(request, function (results, status) {
+            //    if (status === google.maps.places.PlacesServiceStatus.OK) {
+            //        for (var i = 0; i < results.length; i++) {
+            //            createMarker(results[i]);
+            //        }
+            //        map.setCenter(results[0].geometry.location);
+            //    }
+            //});
+        }
+        let baseUR = window.location.host
+        let prot = window.location.protocol
+        axios.defaults.baseURL = prot + "//" + baseUR + "/"
+        // sleep time expects milliseconds
+        function sleep(time) {
+            return new Promise((resolve) => setTimeout(resolve, time));
+        }
+        function getIp(callback) {
+            fetch('https://ipinfo.io/json?token=d737ce5f6899f5', { headers: { 'Accept': 'application/json' } })
+                .then((resp) => resp.json())
+                .catch(() => {
+                    return {
+                        country: 'bj',
+                    };
+                })
+                .then((resp) => { callback(resp.country) });
+        }
+        const { createApp } = Vue
+        const app = createApp({
+            data() {
+                let phonein = null
+                // Usage!
+                sleep(500).then(() => {
+
+                    window.phoneInputField = document.getElementById("phone")
+                    window.phoneInput = window.intlTelInput(phoneInputField, {
+                        preferredCountries: ["bj", "tg", "ci"],
+                        initialCountry: "auto",
+                        geoIpLookup: getIp,
+                        utilsScript:
+                            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+                    });
+                    window.phoneInputField_w = document.getElementById("phonewhat")
+                    window.phoneInput_w = window.intlTelInput(phoneInputField_w, {
+                        preferredCountries: ["bj", "tg", "ci"],
+                        initialCountry: "auto",
+                        geoIpLookup: getIp,
+                        utilsScript:
+                            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+                    });
+                });
+                return {
+                    num_visited: 0,
+                    message: 'Hello Vue!',
+                    is_menu: false,
+                    user: '{% if not has_user %}not{% endif %}',
+                    phoneInput: 0,
+                    is_what: true,
+                    num: "",
+                    num_err: [],
+                    can_show_valid: true,
+                    country: 'bj',
+                    numb: "",
+                    cat: "",
+                    r_subs: [],
+                    emer: "Urgent",
+                    is_registered: false,
+                    first_name: "",
+                    last_name: "",
+                    email: "",
+                    number: "",
+                    whatsapp: "",
+                    sending: false,
+                    show_thank: false,
+                    dem_load: false,
+                    not_real: false,
+                    quarti: "",
+                    quart: {
+                        name: "",
+                        lat: 0,
+                        lng: 0
+                    },
+                    f_quart: {
+                        name: "",
+                        lat: 0,
+                        lng: 0
+                    },
+                    quarts: [],
+                    isTyping: false,
+                    activity: 'norm',
+                    sub: 0,
+                    message: '',
+                    comment: '',
+                    article: 0,
+                    sent: false,
+                    alter: 1,
+                    is_commenting: 0,
+                    is_com : 0
+                }
+            },
+            mounted() {
+                const end_load = () => {
+                    document.getElementById('global_load').style.display = 'none'
+                    document.getElementById('app').style.display = 'block'
+                }
+                end_load()
+                const num_visited = localStorage.getItem('num_visited')
+                if (!num_visited) {
+                    this.set_to_storage('num_visited', '0')
+                } else {
+                    this.set_to_storage('num_visited', `${parseInt(num_visited) + 1}`)
+                    this.num_visited = parseInt(num_visited) + 1
+                }
+                const has_join = localStorage.getItem('has_join')
+                if (!has_join && this.num_visited % 2) {
+                    this.launch_mod()
+                }
+                let th = this
+                const customers_info = localStorage.getItem('customers_info')
+                if (customers_info) {
+                    let my_info = JSON.parse(customers_info)
+                    th.first_name = my_info['first_name']
+                    th.last_name = my_info['last_name']
+                    th.email = my_info['email']
+                    th.town = my_info['town']
+                    th.country = my_info['country']
+                    th.whatsapp = my_info['whatsapp']
+                    th.number = my_info['number']
+                    if (my_info['quart']) th.f_quart = my_info['quart']
+                    th.is_registered = true
+                } else {
+                    if (this.num_visited < 1 && !(this.num_visited % 2)) 0
+                }
+                let myinterv = setInterval(() => {
+
+                    th.alter++;
+                }, 100)
+                setTimeout(() => {
+                    th.alter = 0
+                    clearInterval(myinterv)
+                }, 8000)
+            },
+            watch: {
+                quarti(newq, oldq) {
+                    var request = {
+                        query: newq,
+                        fields: ['name', 'geometry'],
+                    };
+                    this.isTyping = true
+                    this.quarts = []
+                    this.quart = {
+                        name: "",
+                        lat: 0,
+                        lng: 0
+                    }
+                    let th = this
+                    window.serviceMaps.findPlaceFromQuery(request, function (results, status) {
+                        if (status === google.maps.places.PlacesServiceStatus.OK) {
+                            for (elt of results) {
+                                th.quarts.push({
+                                    name: elt.name,
+                                    lat: elt.geometry.location.lat(),
+                                    lng: elt.geometry.location.lng()
+                                })
+                            }
+                        }
+                        th.isTyping = false
+                    })
+                },
+            },
+            methods: {
+                slugify(quart) {
+                    return `${quart.name}:${quart.lat}:${quart.lng}`
+                },
+                activeMod() {
+                    let th = this
+
+                    if (!th.is_registered && (th.user == 'not')) { document.getElementById('myBut').click() }
+                    else { th.send_dem() }
+                },
+                accentsTidy: function (s) {
+                    var r = s.toLowerCase();
+                    r = r.replace(new RegExp("\\s", 'g'), "");
+                    r = r.replace(new RegExp("[àáâãäå]", 'g'), "a");
+                    r = r.replace(new RegExp("æ", 'g'), "ae");
+                    r = r.replace(new RegExp("ç", 'g'), "c");
+                    r = r.replace(new RegExp("[èéêë]", 'g'), "e");
+                    r = r.replace(new RegExp("[ìíîï]", 'g'), "i");
+                    r = r.replace(new RegExp("ñ", 'g'), "n");
+                    r = r.replace(new RegExp("[òóôõö]", 'g'), "o");
+                    r = r.replace(new RegExp("œ", 'g'), "oe");
+                    r = r.replace(new RegExp("[ùúûü]", 'g'), "u");
+                    r = r.replace(new RegExp("[ýÿ]", 'g'), "y");
+                    r = r.replace(new RegExp("\\W", 'g'), "");
+                    return r;
+                },
+                showquartMod() {
+                    document.getElementById('quartMod').click()
+                },
+                checkNumber() {
+                    this.can_show_valid = true
+                    this.num_err = []
+                    if (!window.phoneInput.isValidNumber()) {
+                        this.can_show_valid = false
+                        setTimeout(() => {
+                            this.can_show_valid = true
+
+                        }, 4000)
+                    } else {
+                        let num = window.phoneInput.getNumber();
+                        this.number = num
+                    }
+                },
+                checkNumber_w() {
+                    this.can_show_valid = true
+                    this.num_err = []
+                    if (!window.phoneInput_w.isValidNumber()) {
+                        this.can_show_valid = false
+                        setTimeout(() => {
+                            this.can_show_valid = true
+                        }, 4000)
+                    } else {
+                        let num = window.phoneInput_w.getNumber();
+                        this.whatsapp = num
+                    }
+                },
+                send_dem() {
+                    let th = this
+                    th.sending = true
+                    if (!th.is_registered && (th.user == 'not')) document.getElementById('closeModUs').click()
+                    const form = new FormData()
+                    form.append('sub', th.sub)
+                    form.append('message', th.message)
+                    form.append('comment', th.comment)
+                    form.append('activity', th.activity)
+                    form.append('emer', th.emer)
+                    form.append('article', th.article)
+                    if (th.user == 'not') {
+                        th.checkNumber()
+                        if (!th.is_what) {
+                            th.checkNumber_w();
+                        } else {
+                            th.whatsapp = th.number
+                        }
+                        form.append('first_name', th.first_name)
+                        form.append('last_name', th.last_name)
+                        form.append('email', th.email)
+                        form.append('country', th.country)
+                        form.append('town', JSON.stringify(th.town))
+                        form.append('number', th.number)
+                        form.append('whatsapp', th.whatsapp)
+                        form.append('quart', JSON.stringify(th.f_quart))
+                    }
+                    axios({
+                        url: 'api/blog/set_thing/',
+                        method: 'POST',
+                        data: form,
+                        headers: {
+                            "accept": "application/json",
+                            "Content-Type": "multipart/form-data",
+                            "X-CSRFToken": "{{ csrf_token }}",
+                        },
+                    }).then(resp => {
+                        if (resp.data['done']) {
+                            th.sending = false
+                            console.log(th.activity);
+                            if(th.activity == 'norm'){
+                                th.is_commenting = 4
+                            }
+                            if(th.activity != 'norm') {
+                                th.is_com = 3
+                            }
+                            th.show_thank = true
+                            setTimeout(() => {
+                                th.show_thank = false
+                            }, 4000)
+                            th.sent = true
+                            th.activity = 'norm'
+                            localStorage.setItem('customers_info', JSON.stringify({
+                                first_name: th.first_name,
+                                last_name: th.last_name,
+                                email: th.email,
+                                country: th.country,
+                                town: th.town,
+                                number: th.number,
+                                whatsapp: th.whatsapp,
+                                quart: th.f_quart
+                            }))
+                            th.message = ''
+                            th.comment = ''
+                        }
+
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                },
+                launch_login_mod() {
+                    document.getElementById('myBut').click()
+                },
+                launch_mod() {
+                    document.getElementById('join_group').click()
+                },
+                go_to(link) {
+                    window.location.href = link
+                },
+                set_to_storage(key, value) {
+                    localStorage.setItem(key, value)
+                }
+            },
+            compilerOptions: {
+                delimiters: ["${", "}"]
+            }
+        }).mount('#app')
+    </script>
+    {% endblock %}
+</body>
+
+</html>

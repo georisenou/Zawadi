@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'django_hosts',
     'cloudinary',
     'cloudinary_storage',
+    'blog'
 ]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

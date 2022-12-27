@@ -1,6 +1,9 @@
 
 from django.urls import path
+from blog import views as blog_views
 from .views import achat_manifest, achat_offline, achat_serviceworker, coming_soon, customers, delete_demand, get_all_cats, get_demands, logout_view, offline, register_demand, set_num_vend
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('', customers, name="customers_index"),
@@ -14,4 +17,10 @@ urlpatterns = [
     path('api/get_all_cats/', get_all_cats, name = "get_all_cats"),
     path('api/set_num_vend/', set_num_vend, name="set_num_vend"),
     path('logout/', logout_view, name="logout"),
-]
+    path('blog/', blog_views.index, name="blog_v"),
+    path('testimonies/', blog_views.testimonies, name="testimonies"),
+    path('blog/<str:slug>/', blog_views.blog, name="blog"),
+    path('blog/subject/<str:slug>/', blog_views.get_subject, name="get_subject"),
+    path('blog/ssubject/<str:slug>/', blog_views.get_ssubject, name="get_ssubject"),
+    path('api/blog/set_thing/', blog_views.set_things, name="set_things")
+]+static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT )

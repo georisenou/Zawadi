@@ -1,0 +1,192 @@
+{% extends 'blog/_base.html' %}
+
+{% load static %}
+
+{% block title %}
+{{article.title}} | Zawadi Blog
+{% endblock title %}
+
+{% block content %}
+<div class="pt-16 mh-screen">
+    <img class="w-full" src="{{article.get_main_img}}" />
+    <div class="py-3 px-3">
+        <div class="text-xl text-gray-800 font-bold">
+            {{article.title}}
+        </div>
+        <div class="  mt-2 w-16 h-2 rounded-lg bg-yellow-400">
+
+        </div>
+        <div class="text-gray-800">
+            {{article.subtitle}} &bull; <span class="material-icons"
+                style="position: relative; top: 0.3rem;">visibility</span> {{article.vues}} vues
+        </div>
+    </div>
+    <div class="py-4 mb-3 px-3  text-base  rounded ">
+        <div v-if="article.get_video" style="margin-left: -0.7rem; margin-right: -0.7rem;">
+            <div class="mb-3" style="margin-top: -0.9rem;">
+                <div>
+                    <iframe class="w-full " style="height: 25vh;" src="{{article.get_video}}" allowfullscreen
+                        allowtransparency allow="autoplay"></iframe>
+                </div>
+            </div>
+        </div>
+        
+        <div class="whitespace-normal">
+            {{article.html|safe}}
+        </div>
+    </div>
+    <div class="pb-3 pt-6 px-4 ">
+        <div class="flex items-center">
+            <img src="/static/logo_client.png" class="w-12 h-12 mr-3 rounded-full" alt="zawadi">
+            <div class=" py-3 px-3 bg-yellow-100"
+                style="border-top-right-radius: 15px; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
+                {{article.dem}}
+            </div>
+        </div>
+        <div v-if="is_commenting != 4">
+            <div v-if="!sending && activity == 'norm'" @click="article = {{article.pk}}, sub = {{article.get_dem_pk}},activeMod()"
+                class="my-2 pb-3 pt-2 px-3 text-center w-full bg-yellow-400 hover:bg-yellow-700 hover:text-white rounded-xl text-gray-800">
+                <span class="material-icons" style="position: relative; top: 0.3rem;">check_circle</span> Envoyez une
+                demande
+            </div>
+            <div v-else-if="activity == 'norm'" class="py-3">
+                <div class="text-center">
+                    <div role="status">
+                        <svg class="inline mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                            viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                fill="currentColor" />
+                            <path
+                                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                fill="currentFill" />
+                        </svg>
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div v-else class="pb-3 pt-2 px-3 text-center">
+            <div class="p-4 mb-4 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800"
+                role="alert">
+                Votre demande a été envoyée avec succes.
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="px-6 pt-4" v-if="show_thank && is_com == 3">
+            <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800"
+                role="alert">
+                Votre commentaire a été ajouté à la liste d'attente avec succes.
+            </div>
+        </div>
+        
+        <div v-if="sending && activity == 'comment'" class="p-6">
+            <div class="text-center">
+                <div role="status">
+                    <svg class="inline mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                        viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                            fill="currentColor" />
+                        <path
+                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                            fill="currentFill" />
+                    </svg>
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+        </div>
+        <div class="px-6" v-else>
+            <div class="text-xl font-medium">Commentez ce résumé</div>
+            <form class="py-3 space-y-3" @submit.prevent="activity = 'comment', article = {{article.pk}} ,activeMod()">
+                <div>
+                    <textarea id="message" rows="4" v-model="comment"
+                        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Ecrivez ici..." required></textarea>
+                </div>
+                <button type="submit"
+                    class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
+                    Publier mon commentaire
+                </button>
+            </form>
+        </div>
+    </div>
+    {% if article.get_com_count %}
+    <section class="relative pt-6 pb-6 bg-white overflow-hidden">
+        <img class="absolute top-0 left-0" src="{% static 'blog/img/gradient.svg' %}" alt="">
+        <img class="absolute bottom-0 right-0" src="{% static 'blog/img/gradient2.svg' %}" alt="">
+        <div class="relative z-10 container px-4 mx-auto">
+            <h2 class="mb-6 text-2xl md:text-7xl font-bold font-heading text-center tracking-px-n leading-tight">
+                Commentaires
+            </h2>
+            <div class="flex flex-wrap -m-3">
+                {% for comment in article.get_comments %}
+                <div class="w-full md:w-1/2 lg:w-1/3 p-3">
+                    <div class="p-6 h-full bg-white bg-opacity-60 border rounded-4xl">
+                        <div class="flex flex-col justify-between h-full">
+                            <div class="mb-5 block">
+                                <div class="flex flex-wrap mb-4 -m-2">
+                                    <div class="w-auto p-2">
+                                        <img src="" alt="">
+                                    </div>
+                                    <div class="w-auto p-2">
+                                        <h3 class="font-semibold leading-normal">{{comment.get_name}}</h3>
+                                        <p class="text-gray-500 uppercase">{{comment.get_typ}}</p>
+                                    </div>
+                                </div>
+                                <p class="text-lg">{{comment.text}}</p>
+                            </div>
+                            <div class="block">
+                                <p class="text-sm text-gray-500 font-medium">{{comment.get_duration}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="py-4 px-4">
+            <button type="button"
+                class=" w-full text-center text-white bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:focus:ring-yellow-800 font-medium rounded-lg px-5 py-2.5 text-center mr-2 mb-2">Voir
+                tous les avis</button>
+        </div>
+    </section>
+    {% endif %}
+    <section class="relative pt-3 pb-12 bg-white overflow-hidden">
+        <img class="absolute top-0 left-0" src="{% static 'blog/img/gradient.svg' %}" alt="">
+        <img class="absolute bottom-0 right-0" src="{% static 'blog/img/gradient2.svg' %}" alt="">
+        <div class="relative z-10 container px-4 mx-auto">
+            <h2 class="mb-6 text-2xl md:text-7xl font-bold font-heading text-center tracking-px-n leading-tight">
+                <img class="inline rounded-full w-12 h-12" src="/static/logo_client.png" /> Ce que les gens disent sur
+                Zawadi
+            </h2>
+            <div class="flex flex-wrap -m-3">
+                {% for comment in comments %}
+                <div class="w-full md:w-1/2 lg:w-1/3 p-3">
+                    <div class="p-6 h-full bg-white bg-opacity-60 border rounded-4xl">
+                        <div class="flex flex-col justify-between h-full">
+                            <div class="mb-5 block">
+                                <div class="flex flex-wrap mb-4 -m-2">
+                                    <div class="w-auto p-2">
+                                        <img src="" alt="">
+                                    </div>
+                                    <div class="w-auto p-2">
+                                        <h3 class="font-semibold leading-normal">{{comment.get_name}}</h3>
+                                        <p class="text-gray-500 uppercase">{{comment.get_typ}}</p>
+                                    </div>
+                                </div>
+                                <p class="text-lg">{{comment.text}}</p>
+                            </div>
+                            <div class="block">
+                                <p class="text-sm text-gray-500 font-medium">{{comment.get_duration}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -439,6 +439,7 @@ def compte(request):
 
 
 def customers(request):
+    increment_value('zawadi_visits')
     from_ = request.GET.get('from')
     if from_ : increment_value(from_)
     print(request.user)
