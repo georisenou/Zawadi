@@ -5,20 +5,27 @@
     <div class="w-full ah-screen md:h-screen"
         style=" background-size: cover; background-position: top center; background-image: url('/static/img/backe.jpg'); ">
         <div class="py-4 flex justify-center px-2 text-lg  text-center font-semibold md:text-3xl ">
-            <div class="flex items-center justify-center" >
-                <div class="mr-3" >
+            <div class="flex items-center justify-center">
+                <div class="mr-3">
                     <img class="w-16 shadow rounded-lg" src="/static/logo_client.png" />
                 </div>
-                <div class="px-2 py-2 bg-gray-100 font-medium " style="border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; border-top-right-radius: 15px;" >
-                     Que prévoyez-vous acheter ?
+                <div v-show="!show_thank" class="px-2 py-2 bg-gray-100 font-medium "
+                    style="border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; border-top-right-radius: 15px;">
+                    Que prévoyez-vous acheter ?
                 </div>
+                <transition name="down">
+                    <div v-show="show_thank" class="px-1 py-1 text-sm bg-green-100 text-green-600 font-normal"
+                        style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; border-top-right-radius: 10px;">
+                        Bien reçu! Je vous enverrai très vite les meilleurs vendeurs.
+                    </div>
+                </transition>
             </div>
             <!---Dites-nous ce que vous prévoyez acheter et nous vous enverrons les meilleurs vendeurs--->
         </div>
         <div class="flex flex-col items-center justify-center px-6 py-6 md:py-0 mx-auto md:h-screen lg:py-0">
             <div
                 class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-                <div v-if="show_thank"
+                <div v-if="false"
                     class="flex p-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
                     role="alert">
                     <span class="material-icons " style="position: relative; bottom: 0.2rem; right: 0.1rem;">
@@ -216,6 +223,7 @@
                 </div>
             </div>
         </transition>
+
         <div class="py-3 flex justify-around ">
             <button type="button" @click="down = !down"
                 class=" relative py-2.5 px-5 mr-2 mb-2  text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-rose-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
@@ -229,12 +237,28 @@
                     </div>
                     <div>
                         <span> <span v-html="!down ? 'Voir' : 'Cacher'"></span> mes dernières demandes</span>
-                        
+
                     </div>
-                    
+
                 </div>
-                
+
             </button>
+        </div>
+        <div class="py-2 flex justify-around ">
+            <a href="/blog" type="button"
+                class="block relative py-2.5 px-5 mr-2 mb-2  text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-yellow-400 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                <div class="flex items-center">
+                    <div class="mr-2">
+                        <img src="/static/blog/logo.png" class="w-8" />
+                    </div>
+                    <div>
+                        <span>Voir le blog de Zawadi</span>
+
+                    </div>
+
+                </div>
+
+            </a>
         </div>
         <div class="py-4 px-5">
             <div class="text-2xl ">
@@ -244,7 +268,8 @@
 
             </div>
             <div class="py-3 text-sm">
-                Parce que nous pensons que votre temps est précieux et donc vous n'avez pas à rechercher des produits, ils doivent venir vers vous.
+                Parce que nous pensons que votre temps est précieux et donc vous n'avez pas à rechercher des produits,
+                ils doivent venir vers vous.
             </div>
         </div>
         <div class="py-4 px-5">
@@ -255,7 +280,9 @@
 
             </div>
             <div class="py-3 text-sm">
-                Zawadi a été conçu pour réduire totalement les tracas de recherche de produits. Grâce à Zawadi, vous pouvez faire vos achats comme un roi car il vous envoie les meilleurs vendeurs vous présenter leurs produits et vous n'avez plus qu'à prendre votre temps pour faire un choix que vous aimerez.
+                Zawadi a été conçu pour réduire totalement les tracas de recherche de produits. Grâce à Zawadi, vous
+                pouvez faire vos achats comme un roi car il vous envoie les meilleurs vendeurs vous présenter leurs
+                produits et vous n'avez plus qu'à prendre votre temps pour faire un choix que vous aimerez.
             </div>
         </div>
 
@@ -269,8 +296,10 @@
             <div class="py-3 text-sm">
                 C'est simple. Lorsque vous prévoyez un produit qu'il soit urgent ou pas, vous n'avez qu'à remplir
                 le petit formulaire en haut et enregistrer la requête d'achat. Très vite les
-                meilleurs vendeurs avec les meilleurs prix de votre localité vont vous contacter par Whatsapp ou par appel, Email si vous ne disposez pas d'un compte whatsapp, pour vous
-                présenter des produits de qualité. Vous pouvez faire votre choix parmi les produits des vendeurs et discuter avec ce dernier sur le prix et la récupération.
+                meilleurs vendeurs avec les meilleurs prix de votre localité vont vous contacter par Whatsapp ou par
+                appel, Email si vous ne disposez pas d'un compte whatsapp, pour vous
+                présenter des produits de qualité. Vous pouvez faire votre choix parmi les produits des vendeurs et
+                discuter avec ce dernier sur le prix et la récupération.
             </div>
         </div>
         <!---
@@ -299,7 +328,8 @@
 
             </div>
             <div class="py-3 text-sm">
-                Oui absolement car Zawadi vous envoie uniquement des vendeurs sérieux disposant de garantie. Cette garantie nous permet de vous rembourser automatiquement en cas d'imprévus.
+                Oui absolement car Zawadi vous envoie uniquement des vendeurs sérieux disposant de garantie. Cette
+                garantie nous permet de vous rembourser automatiquement en cas d'imprévus.
             </div>
         </div>
         <div class="py-4 px-5">
@@ -324,7 +354,8 @@
 
             </div>
             <div class="py-3 text-sm">
-                Non, les vendeurs envoyés par Zawadi comprennent que le besoin de l'achat peut ne pas être urgent et donc que
+                Non, les vendeurs envoyés par Zawadi comprennent que le besoin de l'achat peut ne pas être urgent et
+                donc que
                 vous ne disposez pas forcément de la totalité de l'argent. Vous constituez alors juste un acheteur
                 potentiel pour eux.
             </div>
@@ -1034,8 +1065,9 @@
                 <span class="sr-only">Close modal</span>
             </button>
             <div class="py-3 px-6 lg:px-8">
-                <h3 class="mb-2 text-xl font-medium text-gray-900 dark:text-white">Sélectionnez les produits que vous désirez</h3>
-                <div class="py-2  " >
+                <h3 class="mb-2 text-xl font-medium text-gray-900 dark:text-white">Sélectionnez les produits que vous
+                    désirez</h3>
+                <div class="py-2  ">
                     <div>
                         <form class="flex items-center">
                             <label for="simple-search" class="sr-only">Search</label>
@@ -1045,7 +1077,7 @@
                                     arrow_back
                                 </span>
                             </button>
-                            <div  v-if="false" class="relative w-full">
+                            <div v-if="false" class="relative w-full">
                                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                     <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400"
                                         fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -1063,15 +1095,14 @@
 
                     </div>
                 </div>
-                <div  class="py-3" style="max-height: 56vh; overflow-y: scroll;">
+                <div class="py-3" style="max-height: 56vh; overflow-y: scroll;">
                     <form>
                         <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
                             <li class="py-3 px-3 sm:pb-4" v-for="sb in all_subssubs" :key="sb.id">
                                 <div class="flex items-center space-x-4">
                                     <div class="flex-shrink-0">
                                         <input :value="sb.id" name="sub_radio" :checked="includes_subs(sb.id)"
-                                            :id="`sub${sb.id}`" type="checkbox"
-                                            @click="add_us(sb)"
+                                            :id="`sub${sb.id}`" type="checkbox" @click="add_us(sb)"
                                             class="w-4 h-4 text-rose-600 bg-gray-100 rounded border-gray-300 focus:ring-rose-500 dark:focus:ring-rose-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                     </div>
                                     <div class="flex-1 min-w-0 hover:bg-gray-50 ">
@@ -1101,8 +1132,7 @@
                                             </div>
                                         </label>
                                     </div>
-                                    <div style="cursor: pointer;"
-                                        @click="cur_sub = sb.id, setPrev()"
+                                    <div style="cursor: pointer;" @click="cur_sub = sb.id, setPrev()"
                                         class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white hover:bg-gray-100 hover:p-2 hover:rounded-lg hover:text-rose-500">
                                         <span class="material-icons">
                                             add_circle
@@ -1385,7 +1415,7 @@
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">
                                 Entrez le nom de votre
-                            quartier ou d'un lieu connu proche de chez vous</label>
+                                quartier ou d'un lieu connu proche de chez vous</label>
                             <div style="cursor: pointer;" @click="showquartMod(), activeMod()"
                                 class=" hover:text-rose-500 flex items-center justify-between bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg active:ring-blue-500 active:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:active:ring-blue-500 dark:active:border-blue-500">
                                 <span class="block text-gray-500" v-if="f_quart.name == ''">Aucun nom entré</span> <span
@@ -1822,7 +1852,7 @@
                         this.showsubsubMod()
                     } else {
                         this.add_us(sub)
-                        
+
                     }
                 }, 150)
             },
@@ -1925,7 +1955,7 @@
             },
             get_sub(id) {
                 for (sub of this.all_subs) {
-                    for(sb of sub.get_subs){
+                    for (sb of sub.get_subs) {
                         if (sb.id == id) return sb
                     }
                     if (sub.id == id) return sub
@@ -1971,7 +2001,7 @@
             },
             showsubsubMod(is_dir = true) {
 
-                if(is_dir) this.showsubMod();
+                if (is_dir) this.showsubMod();
                 document.getElementById('mySubSubMod').click()
             },
             go_to_sub() {
@@ -2119,7 +2149,7 @@
                     this.number = num
                 }
             },
-            checkNumber_w(){
+            checkNumber_w() {
                 this.can_show_valid = true
                 this.num_err = []
                 if (!window.phoneInput_w.isValidNumber()) {

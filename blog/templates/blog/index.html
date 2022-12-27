@@ -13,11 +13,11 @@
         </div>
         <div class="py-4 space-y-4">
             {% for art in arts %}
-            <div @click="go_to('/blog/{{art.get_slug}}/')" class=" w-full h-56 shadow-sm cursor-pointer hover:shadow-lg hover:h-60 rounded-2xl "
+            <a href="/blog/{{art.get_slug}}/" class="block w-full h-56 shadow-sm cursor-pointer hover:shadow-lg hover:h-60 rounded-2xl "
                 style="background-image: url('{{art.get_main_img}}'); background-position: center; background-size: cover; background-repeat: no-repeat; ">
                 <div class="w-full h-full rounded-2xl "
                     style="background-image: linear-gradient(to top, #fbbe24b8, #fbbe2451);">
-                    <div class="pt-28 px-6">
+                    <div class="pt-24 px-6">
                         <div class="text-white text-xl font-bold">
                             {{art.title}}
                         </div>
@@ -29,7 +29,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
             {% endfor %}
             <div class="pb-3 pt-6" >
                 <div class="flex justify-around" >
@@ -97,7 +97,7 @@
             </div>
         </div>
         <div class=" relative py-4 px-4 z-10" >
-            <button @click="go_to('/testimonies/')" type="button" class=" w-full text-center text-white bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:focus:ring-yellow-800 font-medium rounded-lg px-5 py-2.5 text-center mr-2 mb-2">Voir tous les avis</button>
+            <button href="/testimonies/" type="button" class=" w-full text-center text-white bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:focus:ring-yellow-800 font-medium rounded-lg px-5 py-2.5 text-center mr-2 mb-2">Voir tous les avis</button>
         </div>
     </section>
 </div>
