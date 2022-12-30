@@ -150,6 +150,8 @@ class ClientDemand(models.Model) :
         return [
             file.file.url for file in self.files.all()
         ]
+    def has_files(self) :
+        return len(self.get_files())
     def sends_num(self) :
         return self.weeks_in.count()
     def get_duration(self):

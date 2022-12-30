@@ -3,7 +3,7 @@
 {% block content %}
 <div class="md:grid md:grid-cols-2 pt-12">
     <div class="mh-screen">
-        {% if not has_abn  %}
+        {% if not has_abn %}
         <div class=" pt-4">
             <div class="text-center text-lg font-medium text-gray-500">
                 Liste de clients vide
@@ -62,7 +62,7 @@
             <div class="text-center text-lg py-3 font-medium text-gray-900">
                 Liste de demandes de la semaine
             </div>
-            <div class="my-2 px-4 flex justify-between items-center">
+            <div class="my-2 px-4 pb-3 flex justify-between items-center">
                 <a {% if week.prev %} href="/clients/{{week.prev}}/" {% endif %}
                     class="px-2 pb-1 pt-2  rounded-full {% if week.prev %} bg-gray-100 active:bg-gray-300 {% else %} bg-gray-50 text-gray-300 {% endif %}">
                     <span class="material-icons">
@@ -90,6 +90,7 @@
                 </div>
             </div>
             {% else %}
+
             <div class="py-4">
                 <div>
                     <div class="overflow-x-auto relative sm:rounded-lg">
@@ -100,13 +101,7 @@
                                     <th scope="col" class="py-3 px-6">
                                         Produit
                                     </th>
-                                    <th scope="col" class="py-3 px-6">
-                                        Client
-                                    </th>
-                                    <th scope="col" class="py-3 px-6">
-                                        Urgence
-                                    </th>
-                                    <th scope="col" class="py-3 px-6">
+                                    <th scope="col" class="py-3 px-6 text-center">
                                         Action
                                     </th>
                                 </tr>
@@ -118,21 +113,16 @@
                                         class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {{dem.subs.name}}
                                     </th>
-                                    <td class="py-4 px-6">
-                                        {{dem.client.get_complete_name}}
-                                    </td>
-                                    <td class="py-4 px-6">
-                                        <div class="flex items-center">
-                                            <div class="w-3 h-3 rounded-full {% if dem.emergency == 'Urgent' %} bg-red-500 {% elif dem.emergency == 'Peu urgent' %} bg-purple-600 {% elif dem.emergency == 'Pas urgent' %} bg-blue-600 {% endif %} mr-2"
-                                                style="min-width: 0.75rem;">
-                                            </div>
-                                            <div>
-                                                {{dem.emergency}}
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="py-4 px-6">
-                                        <a class="font-medium text-blue-600 dark:text-green-500 hover:underline"
+                                    <td class="py-4 px-6 flex items-center">
+                                        <button type="button"
+                                @click="go_to(`https://wa.me/{{dem.client.get_whatsapp}}/?text=J'espère que vous allez bien! J'ai reçu votre demande de ${curent.dem} par Zawadi. Voilà mes produits...`)"
+                                class="mr-3 block p-2 bg-gray-200 focus:ring-4 focus:ring-green-300 rounded-full dark:hover:bg-green-700 dark:focus:ring-green-800 " >
+                                
+                                    <img src="/static/img/whatsapp.png" class="w-6" />
+                                    
+                                
+                            </button>
+                                        <a class="block font-medium text-blue-600 dark:text-green-500 hover:underline"
                                             @click="showMod({whatsapp: '{{dem.client.get_whatsapp}}', phone: '{{dem.client.get_phone}}', email : '{{dem.client.get_email}}', dem : '{{dem.subs.name}}', emer : '{{dem.emergency}}', dem_pk : '{{dem.pk}}', point : '{{dem.point}}', budget : '{{dem.budget}}', detail : '{{dem.detail}}', num : '{{dem.num}}', get_files : {{dem.get_files}}, user : '{{dem.client.get_complete_name}}' })">Contacter</a>
                                     </td>
                                 </tr>
@@ -142,6 +132,136 @@
                     </div>
 
                 </div>
+            </div>
+            
+            <div class="hidden">
+                {% for dem in week.demandes.all %}
+
+                <div class="w-full h-3 bg-gray-100" >
+
+                </div>
+                <div class=" px-3 lg:px-20">
+                    <h3 style="display: none;" class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                        <div class=" inline  " style="position: relative; top: 0.1rem;">
+                            <span class="material-icons">
+                                person
+                            </span>
+                        </div> {{dem.client.get_complete_name}}
+                    </h3>
+                    <div class="flex justify-between items-center pb-3 pt-4">
+                        <div class="flex items-center">
+                            <div class="px-2 pb-1 pt-2 mr-2  bg-green-100 text-green-500 rounded-full  ">
+                                <span class="material-icons">
+                                    shopping_cart
+                                </span>
+                            </div>
+                            <div class="font-medium" >
+                                {{dem.subs.name}}
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full mr-2 {% if dem.emergency == 'Urgent' %} bg-red-500 {% else %} bg-green-600 {% endif %} "  >
+                                </div>
+                                <div >
+                                    {{dem.emergency}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="py-3 ">
+                        <dl
+                            class="max-w-md text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700">
+                            {% if dem.budget != None %}
+                            <div class="flex flex-col pb-3">
+                                <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Budget prévu</dt>
+                                <dd class="text-lg font-semibold">{{dem.budget}} F</dd>
+                            </div>
+                            {% endif %}
+                            {% if dem.num != None and dem.num != '1' %}
+                            <div class="flex flex-col py-3" >
+                                <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Nombre d'unité désiré</dt>
+                                <dd class="text-lg font-semibold">{{dem.num}} </dd>
+                            </div>
+                            {% endif %}
+                            {% if dem.detail != None %}
+                            <div class="flex flex-col pt-3" >
+                                <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Description du client</dt>
+                                <dd class="text-lg font-semibold">{{dem.detail}}</dd>
+                            </div>
+                            {% endif %}
+                            {% if dem.has_files %}
+                            <div class="flex flex-col pt-3" >
+                                <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Fichiers ajoutés pour plus
+                                    de précision
+                                </dt>
+                                <div class="text-lg font-semibold">
+                                    <ol class="pl-5 mt-2 space-y-1 list-decimal list-inside">
+                                        {% for f in dem.get_files %}
+                                        <li><a
+                                                class="text-blue-500 underline" href="{{f}}">Voir le
+                                                fichier N° {{forloop}}</a></li>
+                                        {% endfor %}
+                                    </ol>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </dl>
+                    </div>
+                    <div class="text-center font-medium">
+                        Contacts
+                    </div>
+                    <div class="py-3 space-y-2">
+                        <div>
+                            <button type="button"
+                                @click="go_to(`https://wa.me/{{dem.client.get_whatsapp}}/?text=J'espère que vous allez bien! J'ai reçu votre demande de ${curent.dem} par Zawadi. Voilà mes produits...`)"
+                                class="w-full focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                <div class="flex items-center justify-center">
+                                    <img src="/static/img/whatsapp.png" class="w-6 mr-2" />
+                                    <div>Whatsapp</div>
+                                </div>
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button" @click="go_to(`mailto:{{dem.client.get_email}}`)"
+                                class=" w-full  text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                                <div class="flex items-center justify-center">
+                                    <div class="flex items-center justify-center">
+                                        <img src="/static/img/gmail.png" class="w-6 mr-2" />
+                                        <div>Email</div>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button" @click="go_to(`tel:{{dem.client.get_phone}}`)"
+                                class=" w-full text-center focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">Appeler</button>
+                        </div>
+                    </div>
+                    <div class="py-3">
+                        <div class="text-center font-medium">
+                            Appréciation du client
+                        </div>
+                        <form class="pt-3" action="" method="POST">
+                            {% csrf_token %}
+                            <select id="small" required name="point"
+                                class="block p-2 mb-2  w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500">
+                                <option :selected="curent.point == '10'" value="10">Mauvais Client</option>
+                                <option :selected="curent.point == '20'" value="20">Client Moyen</option>
+                                <option :selected="curent.point == '35'" value="35">Très bon Client</option>
+                                <option :selected="curent.point == '50'" value="50">Client Parfait</option>
+                            </select>
+                            <input type="text" style="display: none;" name="dem" value="{{dem.pk}}" />
+                            <div>
+                                <button type="submit"
+                                    class=" w-full text-center text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2 text-center mr-2 mb-2">Valider</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                {% endfor %}
             </div>
             {% endif %}
         </div>
@@ -257,11 +377,13 @@
                 <span class="sr-only">Close modal</span>
             </button>
             <div class="py-6 px-6 lg:px-8">
-                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white"> <div class=" inline  " style="position: relative; top: 0.1rem;" >
-                    <span class="material-icons">
-                        person
-                    </span>
-                </div> ${curent.user}</h3>
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                    <div class=" inline  " style="position: relative; top: 0.1rem;">
+                        <span class="material-icons">
+                            person
+                        </span>
+                    </div> ${curent.user}
+                </h3>
                 <div class="flex justify-between items-center py-3">
                     <div class="flex items-center">
                         <div class="px-4 pb-2 pt-4 mr-2  bg-green-100 text-green-500 rounded-full  ">
@@ -300,7 +422,8 @@
                             <dd class="text-lg font-semibold">${curent.detail}</dd>
                         </div>
                         <div class="flex flex-col pt-3" v-if="curent.get_files.length">
-                            <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Fichiers ajoutés pour plus de précision
+                            <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Fichiers ajoutés pour plus de
+                                précision
                             </dt>
                             <div class="text-lg font-semibold">
                                 <ol class="pl-5 mt-2 space-y-1 list-decimal list-inside">
@@ -402,10 +525,10 @@
 {% block script %}
 <script src="/static/axios.min.js"></script>
 <script>
-    {% if not seller.whatsapp %}
-        setTimeout(() => {
-            window.location.href = '/for_sellers/?seller={{seller.pk}}'
-        }, 250)
+    {% if not seller.whatsapp and has_abn %}
+    setTimeout(() => {
+        window.location.href = '/for_sellers/?seller={{seller.pk}}'
+    }, 250)
     {% endif %}
     let baseUR = window.location.host
     let prot = window.location.protocol
@@ -417,7 +540,7 @@
             return {
                 message: 'Hello Vue!',
                 detail_load: false,
-                curent: {'get_files' : []},
+                curent: { 'get_files': [] },
                 notifying: false,
                 messaging: null,
                 is_what: '{% if seller.whatsapp %}yes{% else %}no{% endif %}',
