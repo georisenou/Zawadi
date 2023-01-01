@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.test import client
-from app.models import AbnFeature, AdminToken, Category, ClientDemand, Feedback, Label, MyFiles, SellerAccount, SubCategory, User, UserGame, WeekCustom, ZawadiDetail, Client, ident_generator
+from app.models import AbnFeature, AdminToken, Category, ClientDemand, Feedback, Label, MyFiles, SellerAccount, SubCategory, User, UserGame, WeekCustom, ZawadiDetail, Client, checking_token, ident_generator
 from django.contrib.auth import login, authenticate, logout
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -26,6 +26,8 @@ import subprocess
 from django.http import HttpResponse
 import os
 # Create your views here.
+
+
 
 def get_obj_from_paginator(arts, number, p, serializer):
     paginator = Paginator(arts, number)
@@ -894,4 +896,23 @@ def for_sellers(request) :
         return redirect('/clients/0/')
     return render(request, 'for_sellers.html', {
         'seller' : seller
+    })
+
+def unique_clients(request, token) :
+    has_abn = False
+    is_checked = checking_token(token) 
+    if is_checked[0] :
+        user = User.objects.get(pk = is_checked[1])
+        seller = user.accounts.first()
+        can_notif = FCMDevice.objects.filter(user=request.user).exists()
+        if seller :
+            has_abn = True and seller.rest > 0
+        return render(request, 'clients.html', {
+        'root': 'client',
+        'seller': seller,
+        'week': seller.get_week(),
+        'has_rank': False,
+        'contact' : ZawadiDetail.objects.get(key='contact:home'),
+        'can_notif': can_notif,
+        'has_abn' : has_abn
     })

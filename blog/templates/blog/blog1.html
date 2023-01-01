@@ -3,21 +3,21 @@
 {% load static %}
 
 {% block title %}
-{{article.title}} | Zawadi Blog
+3 min pour comprendre définitivement les avantages de l'achat avec Zawadi | Zawadi Blog
 {% endblock title %}
 
 {% block content %}
 <div class="pt-16 mh-screen">
-    <img class="w-full" src="{{article.get_main_img}}" />
+    <img class="w-full" src="/static/blog/img/main_img1.jpg" />
     <div class="py-3 px-3">
-        <div class="text-xl text-gray-800 font-bold">
-            {{article.title}}
+        <div class="text-2xl text-gray-800 font-bold">
+            3 min pour comprendre définitivement les avantages de l'achat avec Zawadi
         </div>
         <div class="  mt-2 w-16 h-2 rounded-lg bg-yellow-400">
 
         </div>
         <div class="text-gray-800">
-            {{article.subtitle}} &bull; <span class="material-icons"
+            3 min de lecture &bull; <span class="material-icons"
                 style="position: relative; top: 0.3rem;">visibility</span> {{article.vues}} vues
         </div>
     </div>
@@ -30,9 +30,86 @@
                 </div>
             </div>
         </div>
-        
-        <div >
-            {{article.html|safe}}
+
+        <div class="text-lg space-y-4 text-gray-800">
+            <div class="">
+                Depuis son lancement, <a href="/" class="underline text-blue-500 font-medium" >Zawadi</a> a amélioré la manière dont plusieurs personnes font des achats. Etant un
+                nouveau système, beaucoup se posent encore des questions sur les avantages que pourrait leur offrir
+                Zawadi. Dans cet article nous allons vous présenter les avantages que présente l'utilisation de Zawadi
+                afin de vous montrer ce que vous ratez à ne pas l'utiliser.
+            </div>
+            <div >
+                <img src="/static/blog/img/first1.gif" class="w-full" />
+            </div>
+            <div class="space-y-2">
+                <div class="text-xl font-bold">
+                    Qu'est-ce que Zawadi ?
+                </div>
+                <div class="">
+                    Si vous ne savez pas encore ce qu'est <a href="/" class="underline text-blue-500 font-medium" >Zawadi</a>, il s'agit d'un assistant virtuel qui vous permet
+                    d'acheter facilement, sans tracas et sans effort tout comme un roi. Vous devez juste lui dire ce que
+                    vous désirez et il enverra vers vous les meilleurs vendeurs par whatsapp( appel ou email si vous
+                    n'en avez pas ) pour vous présenter leurs produits exactement comme un serviteur qui envoie les
+                    vendeurs vers son roi pour ses besoins.
+                </div>
+            </div>
+            <div >
+                <img src="/static/blog/img/second1.gif" class="w-full" />
+            </div>
+            <div class="space-y-2">
+                <div class="text-xl font-bold">
+                    Une exemple concret...
+                </div>
+                <div class="">
+                    Maintenant pour comprendre les avantages de <a href="/" class="underline text-blue-500 font-medium" >Zawadi</a>, nous allons prendre un exemple concret.
+                    Supposons deux étudiants Béninois Jacque et Serge qui décident d'acheter un nouveau téléphone dans la même
+                    journée un lundi matin, mais ils ont peu de temps libre. Jacque pense à prendre une matinée libre
+                    pour rechercher le téléphone à acheter tandis que Serge va sur la plateforme Zawadi et prends 30
+                    secondes pour envoyer une demande de téléphone.
+                </div>
+                <div>
+                    Dans la soirée trois vendeurs envoyés par Zawadi ont contacté Serge, ils ont discuté avec lui et lui
+                    ont présenté de beaux téléphones en fonction de ses goûts. Serge a pris son temps et a parcouru tous
+                    les produits que lui proposaient les vendeurs. Le mercredi Soir il fait son choix et s'entend avec
+                    le vendeur sur un prix. Le lendemain soir ça lui prend juste 30 min pour aller recuperer le téléphone et
+                    payer car Zawadi selectionne les vendeurs aussi en fonction des plus proches.
+                </div>
+
+                <div class="py-2" >
+                    <img src="/static/blog/img/third1.gif" class="w-full" />
+                </div>
+                <div>
+                    Deux semaines après Jacque quant à lui n'avait pas encore trouvé du temps pour prendre le
+                    téléphone. Il decide alors un samedi à la sortie des cours à midi d'aller à la recherche d'un
+                    téléphone qui lui plaira. Il se rend à Cotonou et parcourt 4 boutiques pendant 2 longues heures avant de
+                    trouver un téléphone à son goût mais il n'est toutefois pas très sûre de son choix. Fatigué et ne
+                    voulant plus rechercher d'autres boutiques, il finit par prendre le téléphone juste pour vite rentrer
+                    et se reposer.
+                </div>
+            </div>
+            <div class="space-y-2">
+                <div class="text-xl font-bold">
+                    Que pouvons-nous retenir ?
+                </div>
+                <div class="">
+                    Comme vous pouvez le voir dans notre exemple, Serge a acheté son téléphone plus vite sans se
+                    tracasser et a pris son temps pour faire un choix qu'il aime tandis que jacques a dépensé plus
+                    d'énergie et d'argent a la recherche des boutiques et n'est finalement pas très sure qu'il aime le
+                    téléphone acheté. Qui selon vous a le plus apprécié l'expérience ? Qui s'est le plus senti valorisé
+                    ? Il s'agit évidemment de Serge qui a choisi d'utiliser <a href="/" class="underline text-blue-500 font-medium" >Zawadi</a>.
+                </div>
+                <div>
+                    Voilà donc les avantages de Zawadi, vous êtes considérés et valorisés tout comme un roi. Ce sont les
+                    vendeurs qui viennent vers vous et non le contraire. Vous pouvez prendre tout votre temps pour faire
+                    le bon choix et ensuite vous entendre avec le vendeur sur un prix. Vous allez vous sentir
+                    privilégié. Et comme cela vous allez adorer l'expérience avec Zawadi.
+                </div>
+
+                <div >
+                    <img src="/static/blog/img/fourth1.gif" class="w-full" />
+                </div>
+                
+            </div>
         </div>
     </div>
     <div class="pb-3 pt-6 px-4 ">
@@ -44,7 +121,8 @@
             </div>
         </div>
         <div v-if="is_commenting != 4">
-            <div v-if="!sending && activity == 'norm'" @click="article = {{article.pk}}, sub = {{article.get_dem_pk}},activeMod()"
+            <div v-if="!sending && activity == 'norm'"
+                @click="article = {{article.pk}}, sub = {{article.get_dem_pk}},activeMod()"
                 class="my-2 pb-3 pt-2 px-3 text-center w-full bg-yellow-400 hover:bg-yellow-700 hover:text-white rounded-xl text-gray-800">
                 <span class="material-icons" style="position: relative; top: 0.3rem;">check_circle</span> Envoyez une
                 demande
@@ -80,7 +158,7 @@
                 Votre commentaire a été ajouté à la liste d'attente avec succes.
             </div>
         </div>
-        
+
         <div v-if="sending && activity == 'comment'" class="p-6">
             <div class="text-center">
                 <div role="status">
@@ -98,7 +176,7 @@
             </div>
         </div>
         <div class="px-6" v-else>
-            <div class="text-xl font-medium">Commentez ce résumé</div>
+            <div class="text-xl font-medium">Commentez ce post</div>
             <form class="py-3 space-y-3" @submit.prevent="activity = 'comment', article = {{article.pk}} ,activeMod()">
                 <div>
                     <textarea id="message" rows="4" v-model="comment"

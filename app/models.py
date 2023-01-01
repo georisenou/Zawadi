@@ -6,6 +6,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
 from .managers import CustomUserManager
 import string
+from django_email import djemail
 import random
 from haversine import haversine, Unit
 all_characters = string.ascii_letters+string.digits+string.punctuation
@@ -15,6 +16,32 @@ from fcm_django.models import FCMDevice
 
 def get_value(key):
     return ZawadiDetail.objects.get(key=key).value
+
+def get_user_token(user) :
+    token = AdminToken.objects.create(name= f"alert:{user.pk}", token = ident_generator(50,90))
+    return token.token
+
+def checking_token(token) :
+    pk = 0
+    adtkn = AdminToken.objects.filter(token = token, is_checked = False)
+    if adtkn.exists() :
+        pk = int(adtkn.name.split(':')[1])
+        ad_tok = adtkn.first()
+        ad_tok.is_checked = True
+        ad_tok.save()
+    return adtkn.exists(), pk
+
+def send_email_notif(seller, dem) :
+    token = get_user_token(seller.user)
+    djemail.send_email(
+            to= seller.user.email,
+            template="email/alert_output",
+            context = {
+                'dem' : dem,
+                'seller' : seller
+            },
+            subject = "Zawadi | Nouvelle demande de {}".format(dem.subs.name)
+        )
 
 def send_notif(seller):
     try:
@@ -202,12 +229,14 @@ class SellerAccount(models.Model) :
     def is_freeing(self) :
         return self.get_last_abn().is_freed
     def get_latlng(self) :
+        print(self.user.quart)
         quart = json.loads(self.user.quart)
         return quart
     def add_dem(self, dem) :
         if not dem in self.get_week().demandes.all() :
             self.get_week().demandes.add(dem)
             send_notif(self)
+            send_email_notif(self, dem=dem)
         if dem.weeks_in.count() >= dem.num_vend and (not dem.is_out) :
             dem.is_out = True
             dem.save()
@@ -275,7 +304,8 @@ class AdminToken(models.Model) :
     token = models.TextField(null=True, blank=True)
     is_checked = models.BooleanField(default=False)
     def __str__(self) :
-        return self.for_
+        return self.name
+    
 
 class AbnFeature(models.Model) :
     seller = models.ForeignKey(SellerAccount, null=True, blank=True, on_delete=models.CASCADE, related_name="abns")

@@ -1,6 +1,6 @@
 from operator import imod
 from django.shortcuts import render
-from app.models import Client, ClientDemand, SubCategory, User, ident_generator
+from app.models import AdminToken, Client, ClientDemand, SubCategory, User, ident_generator
 from app.views import increment_value, valid_p, Paginator
 from blog.models import Articles, Comment, SubSubjects, Subject
 from rest_framework.decorators import api_view
@@ -11,7 +11,6 @@ from django.contrib.auth import login, authenticate, logout
 
 def get_menu():
     return Subject.objects.all()
-
 
 def get_queryset_from_paginator(arts, number, p):
     paginator = Paginator(arts, number)
@@ -162,7 +161,7 @@ def set_things(request):
         unique_slug = f"client:{client.pk}__{ident_generator(100, 250)}"
         sub = SubCategory.objects.get(pk=int(sub))
         article = Articles.objects.get(pk=int(article))
-        if 'produit' in article.dem:
+        if 'produit' in article.dem or 'teste' in article.dem or 'Lancez' in article.dem or 'essayez' in article.dem or 'essai' in article.dem :
             return Response({
                 'done': True,
                 'result': 'sub' if sub else 'com',
@@ -181,3 +180,5 @@ def set_things(request):
         'done': True,
         'result': 'sub' if sub else 'com'
     })
+
+
