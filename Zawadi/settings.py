@@ -50,14 +50,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'app',
     'rest_framework',
     'fcm_django',
     'django_hosts',
     'cloudinary',
     'cloudinary_storage',
-    'blog'
+    'blog',
 ]
+
+SITE_ID = 1
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = True
@@ -74,6 +77,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_hosts.middleware.HostsResponseMiddleware'
 ]
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_SSL = True
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'zawadi.vendeur@gmail.com'
+EMAIL_HOST_PASSWORD = 'ynooldxzpininpkr'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 AUTH_USER_MODEL = 'app.User'
 ROOT_URLCONF = 'Zawadi.urls'
