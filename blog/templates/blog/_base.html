@@ -52,14 +52,14 @@
                     :class="{ 'bg-gradient-to-r from-rose-200 via-rose-300 to-yellow-200' : alter % 2 && alter, 'bg-gradient-to-r from-yellow-200 via-yellow-400 to-rose-400' : !(alter % 2) && alter, 'bg-yellow-400' : !alter }">
 
                 </div>
-                <div class="flex justify-center items-center px-3 pt-1 pb-3 ">
+                <a href="/blog/" class=" block flex justify-center items-center px-3 pt-1 pb-3 ">
                     <div class="mr-3">
                         <img class="h-12" src="{% static 'blog/logo.png' %}" />
                     </div>
                     <div>
                         <img src="{% static 'blog/title.png' %}" class="h-12 pt-3" />
                     </div>
-                </div>
+                </a>
             </div>
             {% block content %}
 
@@ -483,7 +483,9 @@
 
     </div>
     <div id="map" class="hidden">
+        <div class="space-y-8 space-y-10 space-y-12 space-y-16 space-y-20" >
 
+        </div>
     </div>
     <script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></script>
     <script src="{% static 'vue.global.prod.js' %}"></script>
