@@ -39,6 +39,8 @@ class Articles( models.Model) :
     slug = models.TextField(null=True, blank=True)
     dem = models.CharField(max_length=180, null=True, blank=True)
     dem_pk = models.IntegerField(null=True, blank=True)
+    def __str__(self) -> str:
+        return self.slug
     def get_comments(self) :
         return self.comments.all().filter(is_published = True)
     def get_main_img(self) :
