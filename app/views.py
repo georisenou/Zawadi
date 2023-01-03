@@ -933,3 +933,23 @@ def register_demands_clicked(request, dem, seller) :
         'done' : True,
         'result' : []
     })
+
+def change_pass(request, token) :
+    token = AdminToken.objects.get(token = token, is_checked = False)
+    seller = SellerAccount.objects.get(user__pk = int(token.name.split(':')[1]))
+    if request.method == 'POST' :
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        if not password1 == password2 :
+            return render( request, 'change_pass.html', {
+                'seller' : seller,
+                'err' : 'Les mots de passes entrés ne sont pas identiques'
+            })
+        else :
+            seller.user.set_password(password1)
+            seller.user.save()
+            if seller.user.check_password(password2) :
+                return redirect('/clients/0/')
+    return render( request, 'change_pass.html', {
+        'seller' : seller
+    })
