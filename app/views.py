@@ -916,3 +916,13 @@ def unique_clients(request, token) :
         'can_notif': can_notif,
         'has_abn' : has_abn
     })
+
+@api_view(["GET", "POST"])
+def register_demands_clicked(request, dem, seller) :
+    cdem = ClientDemand.objects.get(pk = dem)
+    rseller = SellerAccount.objects.get(pk = seller)
+    cdem.clicked.add(rseller)
+    return Response({
+        'done' : True,
+        'result' : []
+    })

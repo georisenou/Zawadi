@@ -39,6 +39,7 @@ class Articles( models.Model) :
     slug = models.TextField(null=True, blank=True)
     dem = models.CharField(max_length=180, null=True, blank=True)
     dem_pk = models.IntegerField(null=True, blank=True)
+    whatsapp_title = models.CharField(max_length=65, null=True, blank=True)
     def __str__(self) -> str:
         return self.slug
     def get_comments(self) :

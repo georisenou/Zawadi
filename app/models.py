@@ -171,6 +171,7 @@ class ClientDemand(models.Model) :
     quart = models.TextField(null=True, blank=True)
     slug = models.TextField(null=True, blank=True)
     state = models.CharField(max_length=100, null=True, blank=True)
+    clicked = models.ManyToManyField("SellerAccount", related_name="has_clicked", blank=True )
     def get_quart(self) :
         return json.loads(self.quart)
     def get_files(self) :

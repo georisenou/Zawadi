@@ -115,12 +115,10 @@
                                     </th>
                                     <td class="py-4 px-6 flex items-center">
                                         <button type="button"
-                                @click="go_to(`https://wa.me/{{dem.client.get_whatsapp}}/?text=J'espère que vous allez bien! J'ai reçu votre demande de ${curent.dem} par Zawadi. Voilà mes produits...`)"
+                                @click="seller = {{seller.pk}}, cur_dem = {{dem.pk}}, go_to(`https://wa.me/{{dem.client.get_whatsapp}}/?text=J'espère que vous allez bien! J'ai reçu votre demande de ${curent.dem} par Zawadi. Voilà mes produits...`)"
                                 class="mr-3 block p-2 bg-gray-200 focus:ring-4 focus:ring-green-300 rounded-full dark:hover:bg-green-700 dark:focus:ring-green-800 " >
                                 
                                     <img src="/static/img/whatsapp.png" class="w-6" />
-                                    
-                                
                             </button>
                                         <a class="block font-medium text-blue-600 dark:text-green-500 hover:underline"
                                             @click="showMod({whatsapp: '{{dem.client.get_whatsapp}}', phone: '{{dem.client.get_phone}}', email : '{{dem.client.get_email}}', dem : '{{dem.subs.name}}', emer : '{{dem.emergency}}', dem_pk : '{{dem.pk}}', point : '{{dem.point}}', budget : '{{dem.budget}}', detail : '{{dem.detail}}', num : '{{dem.num}}', get_files : {{dem.get_files}}, user : '{{dem.client.get_complete_name}}' })">Contacter</a>
@@ -539,6 +537,8 @@
         data() {
             return {
                 message: 'Hello Vue!',
+                seller : 0,
+                cur_dem : 0,
                 detail_load: false,
                 curent: { 'get_files': [] },
                 notifying: false,
@@ -592,7 +592,22 @@
                 document.getElementById("myBut").click();
             },
             go_to(link) {
+                if(this.seller && this.cur_dem){
+                    this.register_clicked(this.cur_dem, this.seller)
+                }
                 window.location.href = link
+            },
+            register_clicked(dem, seller){
+                axios({
+                    url: `register_demands_clicked/${dem}/${seller}/`,
+                    method : 'GET',
+                }).then(resp => {
+                    if(resp.data['done']){
+                        console.log('Click successfully register');
+                    }
+                }).catch(err => {
+                    console.log(err);
+                })
             },
             send_token(token) {
                 let th = this

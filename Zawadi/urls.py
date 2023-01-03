@@ -18,9 +18,8 @@ from django import views
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls.static import static
-from django.urls.conf import include
 from django.conf import settings
-from app.views import activ_abn, activate, backup, clients, coming_soon, compte, create_devices, customers, daily_task, for_sellers, get_all_cats, index, login_view, logout_view, new_activate, offline, register_demand, register_view, vendeur_manifest, vendeur_serviceworker, very_new_activate
+from app.views import activ_abn, activate, backup, clients, coming_soon, compte, create_devices, customers, daily_task, for_sellers, get_all_cats, index, login_view, logout_view, new_activate, offline, register_demand, register_demands_clicked, register_view, unique_clients, vendeur_manifest, vendeur_serviceworker, very_new_activate
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -44,5 +43,7 @@ urlpatterns = [
     path('serviceworker.js', vendeur_serviceworker, name="vendeur_serviceworker"),
     path('beta/', coming_soon, name="coming_soon"),
     path('for_sellers/', for_sellers, name="for_sellers"),
-    path('testback/', backup, name="backup")
+    path('testback/', backup, name="backup"),
+    path('register_demands_clicked/<int:dem>/<int:seller>/', register_demands_clicked, name="register_demands_clicked"),
+    path('u_clients/<str:token>/', unique_clients, name="unique_clients"),
 ]+static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT )
