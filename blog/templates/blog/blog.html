@@ -2,13 +2,19 @@
 
 {% load static %}
 
+{% block og %}
+    <meta name="og:image" content="{{article.market_display}}" />
+    <meta name="og:title" content="{{article.whatsapp_title}}" />
+    <meta name="og:description" content="{{article.subtitle}}" />
+{% endblock %}
+
 {% block title %}
 {{article.title}} | Zawadi Blog
 {% endblock title %}
 
 {% block content %}
 <div class="pt-16 mh-screen">
-    <img class="w-full" src="{{article.get_main_img}}" />
+    <img class="w-full" src="{{article.market_display}}" />
     <div class="py-3 px-3">
         <div class="text-2xl text-gray-800 font-bold">
             {{article.title}}

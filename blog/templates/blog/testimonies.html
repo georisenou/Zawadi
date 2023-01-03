@@ -1,6 +1,12 @@
 {% extends 'blog/_base.html' %}
 {% load static %}
 
+{% block og %}
+    <meta name="og:image" content="https://www.zawadi.site/static/logo_client.png" />
+    <meta name="og:title" content="Zawadi: Avis honnête des utilisateurs" />
+    <meta name="og:description" content="Découvrez ce que les gens disent sur Zawadi" />
+{% endblock %}
+
 {% block title %}
     Les avis sur Zawadi | Ce que les gens pensent 
 {% endblock %}

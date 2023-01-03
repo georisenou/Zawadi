@@ -1,6 +1,8 @@
 from django.db import models
 from app.models import *
 
+# Create your models here.
+
 class Subject(models.Model) :
     name = models.CharField(max_length=150, null= True, blank=True)
     created_at = models.DateTimeField(auto_now=True)
@@ -44,6 +46,12 @@ class Articles( models.Model) :
         return self.comments.all().filter(is_published = True)
     def get_main_img(self) :
         return self.main_img.file.url 
+    def market_display( self) :
+        url_list = self.get_main_img().split("/upload/")
+        url = "/upload/q_auto:good/".join(url_list)
+        url_ls = url.split('.')
+        url_ls[-1] = 'png'
+        return '.'.join(url_ls)
     def get_dem(self) :
         return self.dem
     def get_dem_pk(self) :
