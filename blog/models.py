@@ -48,7 +48,7 @@ class Articles( models.Model) :
         return self.main_img.file.url 
     def market_display( self) :
         url_list = self.get_main_img().split("/upload/")
-        url = "/upload/q_auto:good/".join(url_list)
+        url = "/upload/q_auto:eco/".join(url_list)
         
         return url + '.png'
     def get_dem(self) :
