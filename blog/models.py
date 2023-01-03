@@ -49,9 +49,8 @@ class Articles( models.Model) :
     def market_display( self) :
         url_list = self.get_main_img().split("/upload/")
         url = "/upload/q_auto:good/".join(url_list)
-        url_ls = url.split('.')
-        url_ls[-1] = 'png'
-        return '.'.join(url_ls)
+        
+        return url + '.png'
     def get_dem(self) :
         return self.dem
     def get_dem_pk(self) :
