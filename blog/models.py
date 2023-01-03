@@ -50,7 +50,7 @@ class Articles( models.Model) :
         url_list = self.get_main_img().split("/upload/")
         url = "/upload/q_auto:eco/".join(url_list)
         
-        return url + '.png'
+        return url 
     def get_dem(self) :
         return self.dem
     def get_dem_pk(self) :
