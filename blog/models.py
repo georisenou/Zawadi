@@ -1,7 +1,6 @@
 from django.db import models
 from app.models import *
 
-# Create your models here.
 
 class Subject(models.Model) :
     name = models.CharField(max_length=150, null= True, blank=True)
