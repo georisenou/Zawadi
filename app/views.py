@@ -171,21 +171,26 @@ def get_value(key):
 
 def create_week(seller):
     for week in seller.weeks.all():
-        week.is_on = False
+        if week.end < datetime.date.today():
+            week.is_on = False
+            week.save()
+    wks = seller.weeks.all().filter(is_on = True)
+    if not wks.exists():
+        week = WeekCustom.objects.create(seller=seller)
+        week.begun = datetime.date.today()
+        week.end = datetime.date.today() + datetime.timedelta(days=7)
         week.save()
-    week = WeekCustom.objects.create(seller=seller)
-    week.begun = datetime.date.today()
-    week.end = datetime.date.today() + datetime.timedelta(days=7)
-    week.save()
-    last_week = seller.weeks.exclude(pk=week.pk).order_by('-end').first()
-    if last_week:
-        last_week.next = week.pk
-        last_week.save()
-        week.prev = last_week.pk
+        last_week = seller.weeks.exclude(pk=week.pk).order_by('-end').first()
+        if last_week:
+            last_week.next = week.pk
+            last_week.save()
+            week.prev = last_week.pk
+            week.save()
+        week.max = int(get_value(seller.type_of + ':max'))
+        week.max_urg = int(get_value(seller.type_of + ':max_urg'))
         week.save()
-    week.max = int(get_value(seller.type_of + ':max'))
-    week.max_urg = int(get_value(seller.type_of + ':max_urg'))
-    week.save()
+    else :
+        week = seller.get_week()
     return week
 
 
@@ -617,6 +622,7 @@ def register_demand(request):
     })
 
 
+
 def daily_task(request):
     mess = "Reussite !! "
     mess2 = " - Reusite"
@@ -629,8 +635,7 @@ def daily_task(request):
         sellers = SellerAccount.objects.all()
         for seller in sellers:
             seller = check_seller(seller)
-            for week in seller.weeks.all():
-                week = check_week_(week)
+            week = create_week(seller)
     except Exception as e:
         mess = str(e)
     try :
@@ -649,6 +654,8 @@ def daily_task(request):
         "tok" : adm_tok,
         'num' : num
     })
+
+
 
 def achat_manifest( request) :
     data = {
