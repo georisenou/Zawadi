@@ -1,6 +1,6 @@
 from operator import imod
 from django.shortcuts import render
-from app.models import AdminToken, Client, ClientDemand, SubCategory, User, ident_generator
+from app.models import AdminToken, Client, ClientDemand, SubCategory, User, get_value, ident_generator
 from app.views import increment_value, valid_p, Paginator
 from blog.models import Articles, Comment, SubSubjects, Subject
 from rest_framework.decorators import api_view
@@ -21,6 +21,12 @@ def get_queryset_from_paginator(arts, number, p):
         page = paginator.page(p)
         return page.object_list, not(total < int(p + 1))
 
+def get_group_link() :
+    try :
+        return get_value('whatsapp_link')
+    except :
+        return 0
+
 
 def index(request):
     has_user = False
@@ -40,6 +46,7 @@ def index(request):
         'can_con': can_con,
         'has_user': has_user,
         'menu': get_menu(),
+        'group' : get_group_link()
     })
 
 
@@ -52,7 +59,8 @@ def testimonies(request):
         'comments': comments,
         'has_user': request.user.is_authenticated,
         'menu': get_menu(),
-        'can_con': can_con
+        'can_con': can_con,
+        'group' : get_group_link()
     })
 
 
@@ -70,6 +78,7 @@ def blog(request, slug):
         'comments': comments,
         'has_user': request.user.is_authenticated,
         'menu': get_menu(),
+        'group' : get_group_link()
     })
 
 
@@ -90,7 +99,8 @@ def get_subject(request, slug):
         'p': p,
         'has_user': request.user.is_authenticated,
         'menu': get_menu(),
-        'name': name
+        'name': name,
+        'group' : get_group_link()
     })
 
 
@@ -113,6 +123,7 @@ def get_ssubject(request, slug):
         'p': p,
         'has_user': request.user.is_authenticated,
         'menu': get_menu(),
+        'group' : get_group_link()
     })
 
 

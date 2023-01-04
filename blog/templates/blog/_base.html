@@ -172,7 +172,7 @@
                                 <img src="/static/blog/img/group5_.svg" alt="image" />
                             </div>
                             <div class="">
-                                <button type="button" @click="set_to_storage('has_join')"
+                                <button type="button" @click="set_to_storage('has_join'), go_to('{{group}}')"
                                     class="w-full focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
                                     <div class="flex items-center justify-center">
                                         <img src="/static/img/whatsapp.png" class="w-6 mr-2" />
@@ -645,6 +645,7 @@
                 }
                 end_load()
                 const num_visited = localStorage.getItem('num_visited')
+                console.log(`num visited ${num_visited}`);
                 if (!num_visited) {
                     this.set_to_storage('num_visited', '0')
                 } else {
@@ -652,7 +653,7 @@
                     this.num_visited = parseInt(num_visited) + 1
                 }
                 const has_join = localStorage.getItem('has_join')
-                if (!has_join && this.num_visited % 2) {
+                if ( !has_join ) {
                     this.launch_mod()
                 }
                 let th = this
@@ -842,7 +843,10 @@
                     document.getElementById('myBut').click()
                 },
                 launch_mod() {
+                    setTimeout(() => {
+
                     document.getElementById('join_group').click()
+                    }, 5500)
                 },
                 go_to(link) {
                     window.location.href = link
