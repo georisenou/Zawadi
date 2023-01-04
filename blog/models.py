@@ -71,7 +71,7 @@ class Comment(models.Model) :
     created_at = models.DateTimeField(auto_now_add=True)
     is_published = models.BooleanField(default=False)
     def get_name(self) :
-        return f"{self.user.first_name} {self.user.last_name}"
+        return f"{self.user.username}"
     def get_typ(self) :
         client = Client.objects.filter(user = self.user)
         return 'acheteur de Zawadi' if client.exists() else 'vendeur de zawadi'
