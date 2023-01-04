@@ -86,5 +86,5 @@ class Comment(models.Model) :
         elif seconds < 24 * 3600:
             return  str(int(seconds / 3600)) + " h"
         else:
-            return  'il y quelques heures'
+            return 'il y a ' + str(int(seconds / (24*3600))) + " j"
 
