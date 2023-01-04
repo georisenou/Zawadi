@@ -69,6 +69,7 @@ class Comment(models.Model) :
     for_zawadi = models.BooleanField(default=False)
     point = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+    date_seen = models.DateTimeField(null=True, blank=True)
     is_published = models.BooleanField(default=False)
     def get_name(self) :
         return f"{self.user.username}"
@@ -76,7 +77,7 @@ class Comment(models.Model) :
         client = Client.objects.filter(user = self.user)
         return 'acheteur de Zawadi' if client.exists() else 'vendeur de zawadi'
     def get_duration(self):
-        duration = (timezone.now() - self.created_at)
+        duration = (timezone.now() - self.date_seen)
         seconds = duration.total_seconds()
         if seconds < 60:
             return "0 min"
