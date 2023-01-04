@@ -115,7 +115,7 @@
                                     </th>
                                     <td class="py-4 px-6 flex items-center">
                                         <button type="button"
-                                @click="seller = {{seller.pk}}, cur_dem = {{dem.pk}}, go_to(`whatsapp://send/?phone={{dem.client.get_whatsapp}}&text=J'espère que vous allez bien! J'ai reçu votre demande de ${curent.dem} par Zawadi. Voilà mes produits...`)"
+                                @click="seller = {{seller.pk}}, cur_dem = {{dem.pk}}, go_to(`whatsapp://send/?phone={{dem.client.get_whatsapp}}&text=J'espère que vous allez bien! J'ai reçu votre demande de {{dem.subs.name}} par Zawadi. Voilà mes produits...`)"
                                 class="mr-3 block p-2 bg-gray-200 focus:ring-4 focus:ring-green-300 rounded-full dark:hover:bg-green-700 dark:focus:ring-green-800 " >
                                 
                                     <img src="/static/img/whatsapp.png" class="w-6" />
@@ -439,7 +439,7 @@
                 <div class="py-3 space-y-2">
                     <div>
                         <button type="button"
-                        @click="seller = {{seller.pk}}, cur_dem = {{dem.pk}}, go_to(`whatsapp://send/?phone={{dem.client.get_whatsapp}}&text=J'espère que vous allez bien! J'ai reçu votre demande de ${curent.dem} par Zawadi. Voilà mes produits...`)"
+                            @click="seller = {{seller.pk}}, cur_dem = curent.dem_pk ,go_to(`whatsapp://send/?phone=${curent.whatsapp}&text=J'espère que vous allez bien! J'ai reçu votre demande de ${curent.dem} par Zawadi. Voilà mes produits...`)"
                             class="w-full focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
                             <div class="flex items-center justify-center">
                                 <img src="/static/img/whatsapp.png" class="w-6 mr-2" />
