@@ -1,14 +1,9 @@
 
 import datetime
 import json
-from lib2to3.pgen2 import token
-from turtle import speed
-from xmlrpc.client import Boolean
-from django.forms import models
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
-from django.test import client
 from app.models import AbnFeature, AdminToken, Category, ClientDemand, Feedback, Label, MyFiles, SellerAccount, SubCategory, User, UserGame, WeekCustom, ZawadiDetail, Client, checking_token, ident_generator
 from django.contrib.auth import login, authenticate, logout
 from rest_framework.decorators import api_view, permission_classes
