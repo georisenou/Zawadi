@@ -24,8 +24,8 @@
     <meta name="theme-color" content="#16a34a" />
     <title>Zawadi | Des clients a tout moment</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src="/static/src/3.2.js"></script> 
-    <!-- <link rel="stylesheet" href="{% static 'src/output.css' %}"> --->
+    <!--<script src="/static/src/3.2.js"></script> --->
+     <link rel="stylesheet" href="{% static 'src/output.css' %}"> 
 
     <style>
         .mh-screen {
@@ -1191,7 +1191,7 @@
                     th.transaction = "..."
                     if (th.dprice) {
                         openKkiapayWidget({
-                            amount: 1, position: "right",
+                            amount: th.dprice, position: "right",
                             data: "",
                             theme: "green",
                             key: "{{token}}",
