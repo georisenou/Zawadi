@@ -114,12 +114,14 @@
                                         {{dem.subs.name}}
                                     </th>
                                     <td class="py-4 px-6 flex items-center">
+                                        {% if seller %}
                                         <button type="button"
                                 @click="seller = {{seller.pk}}, cur_dem = {{dem.pk}}, go_to(`whatsapp://send/?phone={{dem.client.get_whatsapp}}&text=J'espère que vous allez bien! J'ai reçu votre demande de {{dem.subs.name}} par Zawadi. Voilà mes produits...`)"
                                 class="mr-3 block p-2 bg-gray-200 focus:ring-4 focus:ring-green-300 rounded-full dark:hover:bg-green-700 dark:focus:ring-green-800 " >
                                 
                                     <img src="/static/img/whatsapp.png" class="w-6" />
                             </button>
+                            {% endif %}
                                         <a class="block font-medium text-blue-600 dark:text-green-500 hover:underline"
                                             @click="showMod({whatsapp: '{{dem.client.get_whatsapp}}', phone: '{{dem.client.get_phone}}', email : '{{dem.client.get_email}}', dem : '{{dem.subs.name}}', emer : '{{dem.emergency}}', dem_pk : '{{dem.pk}}', point : '{{dem.point}}', budget : '{{dem.budget}}', detail : '{{dem.detail}}', num : '{{dem.num}}', get_files : {{dem.get_files}}, user : '{{dem.client.get_complete_name}}' })">Contacter</a>
                                     </td>
@@ -438,6 +440,7 @@
                 </div>
                 <div class="py-3 space-y-2">
                     <div>
+                        {% if seller %}
                         <button type="button"
                             @click="seller = {{seller.pk}}, cur_dem = curent.dem_pk ,go_to(`whatsapp://send/?phone=${curent.whatsapp}&text=J'espère que vous allez bien! J'ai reçu votre demande de ${curent.dem} par Zawadi. Voilà mes produits...`)"
                             class="w-full focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
@@ -446,6 +449,7 @@
                                 <div>Whatsapp</div>
                             </div>
                         </button>
+                        {% endif %}
                     </div>
                     <div>
                         <button type="button" @click="go_to(`mailto:${curent.email}`)"
