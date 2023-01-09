@@ -228,6 +228,16 @@ class SellerAccount(models.Model) :
     dprice = models.IntegerField(null=True, blank=True, default=50)
     damount = models.IntegerField(null=True, blank=True, default=250)
     damount_init = models.IntegerField(null=True, blank=True,default=250)
+    def send_test_notif(self, typeof = 'email') :
+        if typeof == 'email' :
+            djemail.send_email(
+            to= self.user.email,
+            template="email/test",
+            context = {
+                'seller' : self
+            },
+            subject = "Zawadi | Test de de notifications"
+        )
     def get_total_client(self) -> int :
         weeks = self.weeks.all()
         num = 0
