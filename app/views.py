@@ -191,7 +191,7 @@ def create_week(seller):
 
 
 def check_seller(seller):
-    if seller.expired_date < datetime.date.today():
+    if seller.damount < seller.dprice:
         seller.rest = 0
         if seller.get_week() :
             seller.get_week().is_on = False
@@ -689,6 +689,7 @@ def daily_task(request):
             week = create_week(seller)
     except Exception as e:
         mess = str(e)
+    """
     try :
         dems = ClientDemand.objects.filter(is_out = False)
         slugs = []
@@ -698,6 +699,7 @@ def daily_task(request):
             main(slug)
     except Exception as e :
         mess2 = f" - {e}"
+    """
     num_ = get_value('testors')
     num = len(json.loads(num_))
     return render(request, 'daily_task.html', {
