@@ -1,0 +1,2 @@
+            Cher {{seller.user.first_name}} {{seller.user.last_name}}, nous expérons que vous vous portez très bien.
+

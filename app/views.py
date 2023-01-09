@@ -2,6 +2,7 @@
 import datetime
 import json
 from lib2to3.pgen2 import token
+from turtle import speed
 from xmlrpc.client import Boolean
 from django.forms import models
 from django.http import JsonResponse
@@ -478,6 +479,61 @@ def customers(request):
         'has_user': has_user and Client.objects.filter(user=request.user).exists()
     })
 
+@api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+def charg_account(request) :
+    seller = SellerAccount.objects.get_or_create(user=request.user)[0]
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        r_subs = json.loads(request.POST.get('subs'))
+        cats = [
+            Category.objects.get(pk = int(s['cat'])) for s in r_subs
+        ]
+        subs = [
+            SubCategory.objects.get(pk = int(s['id'])) for s in r_subs
+        ]
+        dspeed = request.POST.get('dspeed')
+        dprice = request.POST.get('dprice')
+        amount = request.POST.get('amount')
+        transaction = request.POST.get('transaction')
+        status = False
+        if not dspeed == 'free' :
+            k = Kkiapay(get_value('kkiapay_public'), get_value(
+                'kkiapay_private'), get_value('kkiapay_secret'))
+            trans = k.verify_transaction(transaction_id=transaction)
+            status = trans.status == "SUCCESS"
+        if status or dspeed == 'free':
+            seller.name = name
+            for c in seller.category.all() :
+                seller.category.remove(c)
+            for c in cats :
+                seller.category.add(c)
+            for s in seller.subs.all():
+                seller.subs.remove(s)
+            for s in subs:
+                seller.subs.add(s)
+                seller.status = True
+                seller.last_abn = datetime.date.today()
+                seller.type_of = dspeed
+                seller.speed = int(get_value(dspeed + ':speed'))
+                seller.rest = 1
+                seller.dprice = int(dprice)
+                seller.damount = int(amount)
+                seller.damount_init = int(amount)
+                seller.save()
+            if not seller.weeks.filter(is_on=True).exists():
+                week = create_week(seller)
+            abn = AbnFeature.objects.create(
+                seller=seller, type_of=speed, transaction_id=transaction, expired_date=datetime.date.today() + datetime.timedelta(days=30))
+            if dspeed == 'free' :
+                seller.has_freed = True
+                abn.is_freed = True
+                abn.save()
+                seller.save()
+            return Response({
+                'done': True,
+                'result': abn.pk
+            })
 
 @api_view(["GET", "POST"])
 @permission_classes([IsAuthenticated])
@@ -952,4 +1008,15 @@ def change_pass(request, token) :
                 return redirect('/clients/0/')
     return render( request, 'change_pass.html', {
         'seller' : seller
+    })
+
+@api_view(["GET", "POST"])
+def compute_dprice(request) :
+    subs = json.loads(request.data.get('subs'))
+    price = 0
+    for s in subs :
+        price += Category.objects.get(pk = int(s['cat'])).dprice
+    return Response({
+        "done" : True,
+        "result" : price / len(subs)
     })

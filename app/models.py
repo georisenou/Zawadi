@@ -43,6 +43,18 @@ def send_email_notif(seller, dem) :
             subject = "Zawadi | Nouvelle demande de {}".format(dem.subs.name)
         )
 
+
+def send_email_finished_alert(seller, is_finished = True) :
+    token = get_user_token(seller.user)
+    djemail.send_email(
+            to= seller.user.email,
+            template="email/finished" if is_finished else 'email/almost_finished',
+            context = {
+                'seller' : seller
+            },
+            subject = "Zawadi | Alerte d'expiration"
+        )
+
 def send_notif(seller):
     try:
         device = FCMDevice.objects.get(user=seller.user)
@@ -137,6 +149,7 @@ class Label(models.Model) :
 class Category(models.Model) :
     name = models.CharField(null=True, blank=True, max_length=250)
     label = models.ForeignKey(Label, on_delete=models.CASCADE, null=True, blank=True, related_name="cats")
+    dprice = models.IntegerField(default=75)
     is_visible = models.BooleanField(default=True)
     def __str__(self) -> str:
         return self.name
@@ -175,7 +188,7 @@ class ClientDemand(models.Model) :
     def get_quart(self) :
         return json.loads(self.quart)
     def get_files(self) :
-        return [
+        return [  
             file.file.url for file in self.files.all()
         ]
     def has_files(self) :
@@ -212,6 +225,9 @@ class SellerAccount(models.Model) :
     expired_date = models.DateField(null=True, blank=True)
     has_freed = models.BooleanField(default=False)
     whatsapp = models.CharField(max_length=150, null=True, blank=True)
+    dprice = models.IntegerField(null=True, blank=True, default=50)
+    damount = models.IntegerField(null=True, blank=True, default=250)
+    damount_init = models.IntegerField(null=True, blank=True,default=250)
     def get_total_client(self) -> int :
         weeks = self.weeks.all()
         num = 0
@@ -236,11 +252,30 @@ class SellerAccount(models.Model) :
     def add_dem(self, dem) :
         if not dem in self.get_week().demandes.all() :
             self.get_week().demandes.add(dem)
-            send_notif(self)
-            send_email_notif(self, dem=dem)
+            try :
+                send_notif(self)
+                send_email_notif(self, dem=dem)
+            except Exception as e :
+                print('Mail exception => ', e)
+            self.damount -= self.dprice
+            self.save()
+            if self.damount <= self.damount_init * 0.2 :
+                try :
+                    send_email_finished_alert(seller=self, is_finished=False)
+                except Exception as e :
+                    print('Almost finished mail exception => ', e)
+            elif self.damount <= 0 :
+                try :
+                    send_email_finished_alert(self)
+                except Exception as e :
+                    print('Finished mail exception => ', e)
+                self.rest = 0
+                self.save()
         if dem.weeks_in.count() >= dem.num_vend and (not dem.is_out) :
             dem.is_out = True
             dem.save()
+    def get_sent_dem(self) : 
+        return int((self.damount_init - self.damount)/self.dprice)
     def get_distance(self, quart) :
         me = self.get_latlng()['lat'], self.get_latlng()['lng']
         dem = quart['lat'], quart['lng']

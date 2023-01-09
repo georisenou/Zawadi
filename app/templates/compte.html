@@ -33,7 +33,7 @@
 
         <div class=" p-3 rounded bg-blue-50 shadow">
             <div class="font-medium ">
-                Abonnement
+                Statut 
             </div>
             {% if not seller.is_freeing %}
             <div>
@@ -61,25 +61,19 @@
         </div>
         <div class="p-3 rounded bg-red-50 shadow">
             <div class="font-medium">
-                Date d'abonnement
+                Somme restante
             </div>
             <div class="text-lg">
-                ${format_to(last_day)}
+                {{seller.damount}} F
             </div>
         </div>
         <div class="p-3 rounded bg-green-50 shadow">
             <div class="font-medium">
-                Date d'expiration
+                Demandes envoyés
             </div>
-            {% if not seller.is_freeing %}
             <div class=" text-lg">
-                ${format_to(expired_date)}
+                {{seller.get_sent_dem}}
             </div>
-            {% else %}
-            <div class=" text-lg">
-                -:-
-            </div>
-            {% endif %}
         </div>
         <div class="p-3 rounded bg-yellow-50 shadow">
             <div class="font-medium ">
