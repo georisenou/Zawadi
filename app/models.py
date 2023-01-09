@@ -233,6 +233,14 @@ class SellerAccount(models.Model) :
         num = 0
         for w in weeks : num += w.demandes.count()
         return num
+    def already_receive(self, dem) :
+        weeks = self.weeks.all()
+        exists = False
+        for w in weeks :
+            if dem in w.demandes.all() :
+                exists = True
+        print(exists, dem.pk)
+        return exists
     def contains_sub(self ,sub) :
         return sub in self.subs.all()
     def get_last_abn(self) :
@@ -250,7 +258,7 @@ class SellerAccount(models.Model) :
         quart = json.loads(self.user.quart)
         return quart
     def add_dem(self, dem) :
-        if not dem in self.get_week().demandes.all() :
+        if not self.already_receive(dem) :
             self.get_week().demandes.add(dem)
             try :
                 send_notif(self)

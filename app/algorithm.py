@@ -2,7 +2,6 @@ from .models import PRICE_PER, ClientDemand, SellerAccount, ZawadiDetail
 
 
 def get_all_dems(slug_dem) :
-    print('First pass ==> ', ClientDemand.objects.filter(slug = slug_dem))
     return ClientDemand.objects.filter(slug = slug_dem)
 
 def get_macthed_sellers(dems) :
@@ -16,7 +15,6 @@ def get_macthed_sellers(dems) :
             if sub.pk in subs :
                 if not seller.pk in pks :
                     pks.append(seller.pk)
-    print('Second passed => ', SellerAccount.objects.filter(pk__in =pks))
     return SellerAccount.objects.filter(pk__in =pks)
 
 def get_price_spent(seller, dems) :
@@ -29,7 +27,6 @@ def get_price_spent(seller, dems) :
     return price
 
 def order_list(list) :
-    print('Super ordred =>', sorted(list, key= lambda e : e['spent']))
     return sorted(list, key= lambda e : e['spent'])
 
 def build_list(dems) :
@@ -51,7 +48,7 @@ def main(dem_slug) :
             seller = SellerAccount.objects.get(pk = seller['pk'])
             new_dem = ClientDemand.objects.get(pk = dem.pk)
             if not new_dem.is_out :
-                if seller.contains_sub(dem.subs) :
+                if seller.contains_sub(dem.subs) and seller.rest :
                     seller.add_dem(new_dem)
     return 0
 
