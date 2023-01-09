@@ -362,6 +362,7 @@ def new_activate(request):
     categories = Category.objects.all()
     return render(request, 'activate1.html', {
         'seller': seller,
+        'user' : request.user,
         'categories': categories,
         'token': ZawadiDetail.objects.get(key='kkiapay_public').value
     })

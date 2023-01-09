@@ -96,7 +96,7 @@
         </nav>
 
         <div class="pt-12 px-4 mh-screen">
-            {% if seller.can_freed %}
+            {% if user.can_freed %}
             <div v-if="!step" class="font-medium text-s3 py-3 text-center">
                 C'est le début d'une belle aventure...
             </div>
@@ -119,7 +119,7 @@
                 </div>
             </div>
             <transition name="slide-fade">
-                {% if seller.can_freed %}
+                {% if user.can_freed %}
                 <div class="pt-12 pb-4 px-4 space-y-3 " v-if="step == 0">
                     <div class="text-center text-lg ">
                         Démarrez aujourd'hui avec Zawadi et indiquez le nombre de clients que vous désirez
