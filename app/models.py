@@ -50,7 +50,7 @@ def send_email_finished_alert(seller, is_finished = True) :
             to= seller.user.email,
             template="email/finished" if is_finished else 'email/almost_finished',
             context = {
-                'seller' : seller
+                'seller' : seller,
             },
             subject = "Zawadi | Alerte d'expiration"
         )

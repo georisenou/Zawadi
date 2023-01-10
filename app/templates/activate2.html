@@ -353,7 +353,7 @@
                                 Combien de demandes de clients souhaitez-vous recevoir ?
                             </div>
                             <div class="flex items-center justify-between my-3 rounded border border-gray-500 px-3 py-4" >
-                                <div @click="remove_dprice(5)" class="px-2 pb-2 pt-3 active:text-gray-700 active:bg-gray-100 rounded" :class="{'bg-green-700 text-white' : dnum > 20, 'bg-gray-100' : dnum <= 20}" >
+                                <div @click="remove_dprice(5)" class="px-2 pb-2 pt-3 active:text-gray-700 active:bg-gray-100 rounded" :class="{'bg-green-700 text-white' : dnum > 15, 'bg-gray-100' : dnum <= 15}" >
                                     <span class="material-icons">
                                         remove
                                         </span>
@@ -991,7 +991,7 @@
                     return {
                         dspeed : 'basique',
                         dprice: 0,
-                        dnum: 20,
+                        dnum: 15,
                         dprice_ : 0,
                         temporary_off: false,
                         step: 0,
@@ -1073,7 +1073,7 @@
                     this.dnum += num
                 },
                 remove_dprice(num){
-                    if(this.dnum > 20) this.dnum -= num
+                    if(this.dnum > 15) this.dnum -= num
                 },
                 add_us(elt) {
                     if (this.includes_subs(elt.id)) {
@@ -1191,7 +1191,7 @@
                     th.transaction = "..."
                     if (th.dprice) {
                         openKkiapayWidget({
-                            amount: th.dprice, position: "right",
+                            amount: th.d_rprice, position: "right",
                             data: "",
                             theme: "green",
                             key: "{{token}}",
