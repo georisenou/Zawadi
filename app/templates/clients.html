@@ -123,7 +123,7 @@
                             </button>
                             {% endif %}
                                         <a class="block font-medium text-blue-600 dark:text-green-500 hover:underline"
-                                            @click="showMod({whatsapp: '{{dem.client.get_whatsapp}}', phone: '{{dem.client.get_phone}}', email : '{{dem.client.get_email}}', dem : '{{dem.subs.name}}', emer : '{{dem.emergency}}', dem_pk : '{{dem.pk}}', point : '{{dem.point}}', budget : '{{dem.budget}}', detail : '{{dem.detail}}', num : '{{dem.num}}', get_files : {{dem.get_files}}, user : '{{dem.client.get_complete_name}}' })">Contacter</a>
+                                            @click="showMod({whatsapp: '{{dem.client.get_whatsapp}}', phone: '{{dem.client.get_phone}}', email : '{{dem.client.get_email}}', dem : `{{dem.subs.name}}`, emer : `{{dem.emergency}}`, dem_pk : '{{dem.pk}}', point : '{{dem.point}}', budget : '{{dem.budget}}', detail : `{{dem.detail}}`, num : `{{dem.num}}`, get_files : {{dem.get_files}}, user : `{{dem.client.get_complete_name}}` })">Contacter</a>
                                     </td>
                                 </tr>
                                 {% endfor %}

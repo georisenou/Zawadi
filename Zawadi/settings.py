@@ -33,7 +33,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 if os.environ.get('ENV') == "PRODUCTION" :
     DEBUG = False
 else :
-    DEBUG = True
+    DEBUG = False
 
 
 ALLOWED_HOSTS = ["zawadi.herokuapp.com", "zawadi.site", "www.zawadi.site" ,"vendeur.zawadi.site"]

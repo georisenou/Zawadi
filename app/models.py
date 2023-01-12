@@ -31,6 +31,17 @@ def checking_token(token) :
         ad_tok.save()
     return adtkn.exists(), pk
 
+def send_each_notif(seller, dem) :
+    djemail.send_email(
+            to= seller.user.email,
+            template="email/single_dem",
+            context = {
+                'dem' : dem,
+                'seller' : seller
+            },
+            subject = "Zawadi | Alerte demande de {}".format(dem.subs.name)
+        )
+
 def send_email_notif(seller, dem) :
     token = get_user_token(seller.user)
     djemail.send_email(
@@ -228,6 +239,7 @@ class SellerAccount(models.Model) :
     dprice = models.IntegerField(null=True, blank=True, default=50)
     damount = models.IntegerField(null=True, blank=True, default=250)
     damount_init = models.IntegerField(null=True, blank=True,default=250)
+    dm_alert = models.BooleanField(default = False)
     def send_test_notif(self, typeof = 'email') :
         if typeof == 'email' :
             djemail.send_email(
@@ -273,6 +285,8 @@ class SellerAccount(models.Model) :
             try :
                 send_notif(self)
                 send_email_notif(self, dem=dem)
+                if self.dm_alert :
+                    send_each_notif(seller=self, dem=dem)
             except Exception as e :
                 print('Mail exception => ', e)
             self.damount -= self.dprice

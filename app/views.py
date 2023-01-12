@@ -21,6 +21,7 @@ from .algorithm import *
 import subprocess
 from django.http import HttpResponse
 import os
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 
