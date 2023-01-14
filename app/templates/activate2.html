@@ -996,6 +996,7 @@
                         temporary_off: false,
                         step: 0,
                         done: false,
+                        can_freed: '{% if user.can_freed %}can{% else %}not{% endif %}',
                         err: '',
                         total: null,
                         transaction: '',
@@ -1178,8 +1179,12 @@
                                 th.err = ''
                             }, 4000)
                         } else {
-                            th.step = 2
-                            th.compute_dprice()
+                            if(th.can_freed == 'can'){
+                                th.set_free()
+                            }else{ 
+                                th.compute_dprice();
+                                th.step = 2;
+                            }
                         }
                     }
                 },
@@ -1203,6 +1208,14 @@
                     } else {
                         th.send_data()
                     }
+                },
+                set_free(){
+                    let th = this
+                    th.dspeed = 'free'
+                    th.dprice = 100
+                    th.dnum = 2
+                    th.transaction = 'free_account'
+                    th.send_data()
                 },
                 send_data(){
                     let th = this

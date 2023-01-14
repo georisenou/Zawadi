@@ -521,7 +521,7 @@ def charg_account(request) :
             if not seller.weeks.filter(is_on=True).exists():
                 week = create_week(seller)
             abn = AbnFeature.objects.create(
-                seller=seller, type_of=speed, transaction_id=transaction, expired_date=datetime.date.today() + datetime.timedelta(days=30))
+                seller=seller, type_of=dspeed, transaction_id=transaction, expired_date=datetime.date.today() + datetime.timedelta(days=30))
             if dspeed == 'free' :
                 seller.has_freed = True
                 abn.is_freed = True
