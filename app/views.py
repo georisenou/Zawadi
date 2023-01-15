@@ -1017,3 +1017,25 @@ def compute_dprice(request) :
         "done" : True,
         "result" : price / len(subs)
     })
+
+def landing_page(request) :
+    feeds = Feedback.objects.all().order_by('-rank')
+    has_validate = False
+    if request.method == 'POST' :
+        whatsapp = request.POST.get('whatsapp')
+        pot_sellers = ZawadiDetail.objects.get_or_create(key = 'pot_sellers')
+        if pot_sellers[1] :
+            lis = []
+        else :
+            try :
+                lis = json.loads(pot_sellers[0].value)
+            except :
+                lis = []
+        lis.append(whatsapp)
+        pot_sellers[0].value = json.dumps(lis)
+        pot_sellers[0].save()
+        has_validate = True
+    return render(request, 'landing.html', {
+        'testimonies': feeds[:4],
+        'has_validate' : has_validate
+    })
