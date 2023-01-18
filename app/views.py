@@ -1050,7 +1050,7 @@ def verify_fb_token(token_sent, request):
     return HttpResponse('Invalid verification token')
 
 @csrf_exempt
-def bot_receive(request) :
+def fq_webhook(request) :
     if request.method == 'GET':
         token_sent = request.GET.get("hub.verify_token")
         return verify_fb_token(token_sent, request)
