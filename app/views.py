@@ -1039,3 +1039,18 @@ def landing_page(request) :
         'testimonies': feeds[:4],
         'has_validate' : has_validate
     })
+
+def verify_fb_token(token_sent, request):
+    #take token sent by facebook and verify it matches the verify token you sent
+    #if they match, allow the request, else return an error 
+    print(token_sent, " IS TOKEN")
+    if token_sent == get_value('MESSENGER_VERIFY_TOKEN'):
+        return HttpResponse(request.GET.get("hub.challenge"))
+
+    return HttpResponse('Invalid verification token')
+
+@csrf_exempt
+def bot_receive(request) :
+    if request.method == 'GET':
+        token_sent = request.GET.get("hub.verify_token")
+        return verify_fb_token(token_sent, request)
