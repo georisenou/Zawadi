@@ -1701,7 +1701,7 @@
                 th.whatsapp = my_info['whatsapp']
                 th.number = my_info['number']
                 if (my_info['quart']) th.f_quart = my_info['quart']
-                th.is_registered = true
+                if(th.email) th.is_registered = true
             }
             th.get_demandes()
         },
@@ -2016,9 +2016,23 @@
             get_demandes() {
                 let th = this
                 th.dem_load = true
+                const form = new FormData()
+                form.append('first_name', th.first_name)
+                form.append('last_name', th.last_name)
+                form.append('email', th.email)
+                form.append('country', th.country)
+                form.append('town', JSON.stringify(th.town))
+                form.append('number', th.number)
+                form.append('whatsapp', th.whatsapp)
                 axios({
                     url: `api/get_demands/?p=${th.dem_p}`,
-                    method: 'GET'
+                    method: 'POST',
+                    headers: {
+                        "accept": "application/json",
+                        "Content-Type": "multipart/form-data",
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    },
+                    data : form
                 }).then(resp => {
                     th.dem_load = false
                     th.can_load = resp.data['result'].length != 0

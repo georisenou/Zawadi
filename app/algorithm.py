@@ -1,6 +1,7 @@
 from .models import PRICE_PER, ClientDemand, SellerAccount, ZawadiDetail
 
 
+
 def get_all_dems(slug_dem) :
     return ClientDemand.objects.filter(slug = slug_dem)
 
@@ -50,5 +51,6 @@ def main(dem_slug) :
             if not new_dem.is_out :
                 if seller.contains_sub(dem.subs) and seller.rest :
                     seller.add_dem(new_dem)
+                    
     return 0
 

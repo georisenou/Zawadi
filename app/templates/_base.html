@@ -21,12 +21,19 @@
   <meta name="apple-mobile-web-app-status-bar" content="#16a34a" />
   <meta name="theme-color" content="#16a34a" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <!-- Facebook Pixel Code --><script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js'); fbq('init', '552872413545497'); fbq('track', 'PageView');</script><noscript> <img height="1" width="1" src="https://www.facebook.com/tr?id=552872413545497&ev=PageView&noscript=1"/></noscript><!-- End Facebook Pixel Code -->
+  <!-- Facebook Pixel Code -->
+  <script>!function (f, b, e, v, n, t, s) { if (f.fbq) return; n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments) }; if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = []; t = b.createElement(e); t.async = !0; t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s) }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js'); fbq('init', '552872413545497'); fbq('track', 'PageView');</script>
+  <noscript> <img height="1" width="1"
+      src="https://www.facebook.com/tr?id=552872413545497&ev=PageView&noscript=1" /></noscript>
+  <!-- End Facebook Pixel Code -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Zawadi | Des clients a tout moment</title>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <!--<script src="/static/src/3.2.js"></script>-->
-  <link rel="stylesheet" href="/static/src/output.css">
+  <script src="/static/src/3.2.js"></script>
+  <!--<link rel="stylesheet" href="/static/src/output.css">-->
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
   <style>
     .mh-screen {
       min-height: 100vh;
@@ -297,11 +304,42 @@
   {% block script %}
 
   <script>
+    let baseUR = window.location.host
+    let prot = window.location.protocol
+    axios.defaults.baseURL = prot + "//" + baseUR + "/"
+    // sleep time expects milliseconds
+    function sleep(time) {
+      return new Promise((resolve) => setTimeout(resolve, time));
+    }
+    function getIp(callback) {
+      fetch('https://ipinfo.io/json?token=d737ce5f6899f5', { headers: { 'Accept': 'application/json' } })
+        .then((resp) => resp.json())
+        .catch(() => {
+          return {
+            country: 'bj',
+          };
+        })
+        .then((resp) => { callback(resp.country) });
+    }
     const { createApp } = Vue
     const app = createApp({
       data() {
+        let phonein = null
+        // Usage!
+        sleep(500).then(() => {
+
+          window.phoneInputField = document.getElementById("phone")
+          window.phoneInput = window.intlTelInput(phoneInputField, {
+            preferredCountries: ["bj", "tg", "ci"],
+            initialCountry: "auto",
+            geoIpLookup: getIp,
+            utilsScript:
+              "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+          });
+          
         return {
-          message: 'Hello Vue!'
+          message: 'Hello Vue!',
+          whanum : 0,
         }
       },
       mounted() {

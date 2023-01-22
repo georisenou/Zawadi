@@ -13,6 +13,8 @@ all_characters = string.ascii_letters+string.digits+string.punctuation
 characters = string.ascii_letters+string.digits
 from firebase_admin.messaging import Message as Mss, Notification, AndroidNotification, WebpushConfig, WebpushFCMOptions, AndroidConfig, APNSConfig, APNSPayload, Aps
 from fcm_django.models import FCMDevice
+import requests
+
 
 def get_value(key):
     return ZawadiDetail.objects.get(key=key).value
@@ -53,6 +55,8 @@ def send_email_notif(seller, dem) :
             },
             subject = "Zawadi | Nouvelle demande de {}".format(dem.subs.name)
         )
+
+
 
 
 def send_email_finished_alert(seller, is_finished = True) :
@@ -240,6 +244,7 @@ class SellerAccount(models.Model) :
     damount = models.IntegerField(null=True, blank=True, default=250)
     damount_init = models.IntegerField(null=True, blank=True,default=250)
     dm_alert = models.BooleanField(default = False)
+    format_number = models.CharField(max_length=100, null=True, blank=True)
     def send_test_notif(self, typeof = 'email') :
         if typeof == 'email' :
             djemail.send_email(
@@ -282,6 +287,8 @@ class SellerAccount(models.Model) :
     def add_dem(self, dem) :
         if not self.already_receive(dem) :
             self.get_week().demandes.add(dem)
+            max_try = 10
+            send_whatsapp_notif(self, dem)
             try :
                 send_notif(self)
                 send_email_notif(self, dem=dem)
@@ -344,6 +351,8 @@ class WeekCustom(models.Model) :
             return 'second'
         elif count < ls[2] :
             return 'third'
+        else :
+            return 'first'
 
     def get_steps(self) :
         if self.seller.type_of == 'basique' :
@@ -497,4 +506,93 @@ def install_all_cats(is_real = False) :
     f.close()
     print('Files closed')
     
+
+
+PHONE_NUMBER_ID = get_value('WHATSAPP_PHONE_NUMBER_ID')
+
+ACCESS_TOKEN = get_value('WHATSAPP_ACCESS_TOKEN')
+
+ENDPOINT = f'https://graph.facebook.com/v15.0/{PHONE_NUMBER_ID}/messages'
+
+HEADERS = {
+    'Authorization': f'Bearer {ACCESS_TOKEN}',
+    'Content-Type': 'application/json'
+}
+
+
+def send_messages(data, slug):
+    resp = requests.post(url=ENDPOINT, headers=HEADERS, data=data)
+    logs = ZawadiDetail.objects.get(key = 'whatsapp_logs')
+    print(resp.status_code, resp.content)
+    logs.value += f"$${slug}:<!0{str(resp)}0!>"
+    logs.save()
+    return resp
+
+
+def get_slug(dem, seller):
+    return f"{seller.pk}-{dem.pk}"
+
+
+def get_message_data(dem, seller):
+    data = {
+        "messaging_product": "whatsapp",
+        "recipient_type": "individual",
+        "to": f"{seller.format_number}",
+        "type": "text",
+        "text": {
+            "preview_url": True,
+            "body": f"*Nouvelle demande de {dem.subs.name}* \n Veuillez repondre à la demande du client. https://vendeur.zawadi.site/clients/0/"
+        }
+    }
+    return json.dumps(data)
+
+def get_welcome_message(seller) :
+    data = {
+        "messaging_product": "whatsapp",
+        "recipient_type": "individual",
+        "to": f"{seller.format_number}",
+        "type": "template",
+        "template": {
+            "name": "welcomed_zawadi",
+            "language": {
+                "code": "fr"
+            }
+        }
+    }
     
+    return json.dumps(data)
+
+
+def get_template_message_data(dem, seller):
+    print(dem.subs.name)
+    data = {
+        "messaging_product": "whatsapp",
+        "recipient_type": "individual",
+        "to": f"{seller.format_number}",
+        "type": "template",
+        "template": {
+            "name": "demand_alert",
+            "language": {
+                "code": "fr"
+            },
+            "components": [
+                {
+                    "type": "body",
+                    "parameters": [
+                        {
+                            "type": "text",
+                            "text": f"{dem.subs.name}"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+    
+    return json.dumps(data)
+
+
+def send_whatsapp_notif(seller, dem) :
+    if seller.format_number :
+        resp = send_messages(get_template_message_data(dem, seller), get_slug(dem, seller))
+    return resp

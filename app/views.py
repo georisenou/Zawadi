@@ -4,7 +4,7 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
-from app.models import AbnFeature, AdminToken, Category, ClientDemand, Feedback, Label, MyFiles, SellerAccount, SubCategory, User, UserGame, WeekCustom, ZawadiDetail, Client, checking_token, ident_generator
+from app.models import AbnFeature, AdminToken, Category, ClientDemand, Feedback, Label, MyFiles, SellerAccount, SubCategory, User, UserGame, WeekCustom, ZawadiDetail, Client, checking_token, get_welcome_message, ident_generator, send_messages, send_whatsapp_notif
 from django.contrib.auth import login, authenticate, logout
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -24,7 +24,10 @@ import os
 from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
-
+def register_logs(slug, resp) :
+    logs = ZawadiDetail.objects.get('whatsapp_logs')
+    logs.value += f"$${slug}:<!0{json.dumps(resp)}0!>"
+    logs.save()
 
 def get_obj_from_paginator(arts, number, p, serializer):
     paginator = Paginator(arts, number)
@@ -866,9 +869,13 @@ def get_all_cats( request) :
 
 @api_view(["GET", "POST"])
 def get_demands(request) :
-    client = request.user.clients.first()
+    if request.user.is_authenticated :
+        client = request.user.clients.first()
+    else :
+        email = request.POST.get('email')
+        user = User.objects.filter(email__contains = email).first()
+        client = user.clients.first()
     demandes = client.demandes.all().order_by('-created_at')
-    
     obj = get_obj_from_paginator(demandes, 20, valid_p(request.GET.get('p')), DemandSerializer )
     return Response(obj)
 
@@ -1018,6 +1025,21 @@ def compute_dprice(request) :
         "result" : price / len(subs)
     })
 
+@api_view(["GET", "POST"])
+def set_whatsapp(request, pk) :
+    seller = SellerAccount.objects.get(pk = pk)
+    if request.method == 'POST' :
+        num = request.POST.get('num')
+        seller.format_number = num
+        seller.save()
+        send_messages(get_welcome_message(seller), slug=f'welcome-{seller.pk}')
+    return Response({
+        'done' : True,
+        'result' : pk
+    })
+
+
+
 def landing_page(request) :
     feeds = Feedback.objects.all().order_by('-rank')
     has_validate = False
@@ -1054,3 +1076,4 @@ def fq_webhook(request) :
     if request.method == 'GET':
         token_sent = request.GET.get("hub.verify_token")
         return verify_fb_token(token_sent, request)
+
