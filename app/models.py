@@ -86,11 +86,19 @@ def send_notif(seller):
 PRICE_PER = 80
 
 PRIORITY_REDUCTION = {
-    'free' : 0.25,
+    'last' : 0.04,
     'first' : 0.20,
     'second' : 0.10,
-    'third' :  0.5
+    'third' :  0.05
 }
+
+OPTION_C = {
+    'basique' : 0.01,
+    'pro' : 0.05,
+    'buisness' : 0.1,
+    'free' : 0.08
+}
+
 
 MONTHS = ['Jan', 'Fev', 'Mars', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sept' ,'Oct', 'Nov', 'Dec']
 
@@ -273,7 +281,7 @@ class SellerAccount(models.Model) :
     def get_last_abn(self) :
         return self.abns.order_by('-created_at').first()
     def get_week(self) :
-        return self.weeks.all().filter(is_on= True).first()
+        return self.weeks.all().filter(is_on= True).order_by('-begun').first()
     def __str__(self) -> str:
         return self.name
     def get_picture(self) :
@@ -315,13 +323,15 @@ class SellerAccount(models.Model) :
             dem.save()
     def get_sent_dem(self) : 
         return int((self.damount_init - self.damount)/self.dprice)
+    def get_all_dem(self) :
+        return int(self.damount_init / self.dprice)
     def get_distance(self, quart) :
         me = self.get_latlng()['lat'], self.get_latlng()['lng']
         dem = quart['lat'], quart['lng']
         return haversine(me, dem)
     
     def r_price(self, price) :
-        return price - price * PRIORITY_REDUCTION[self.get_week().get_level()]
+        return price - price * (PRIORITY_REDUCTION[self.get_week().get_level()] + OPTION_C[self.type_of])
 
 
 class WeekCustom(models.Model) :
@@ -340,11 +350,8 @@ class WeekCustom(models.Model) :
     def __str__(self) -> str:
         return self.seller.name + f":week:{self.pk}"
     def get_level(self) :
-        count = self.demandes.count()
+        count = self.seller.get_sent_dem()
         ls = self.get_steps()
-        last_abn = self.seller.get_last_abn()
-        if last_abn.is_freed and count < ls[0] :
-            return 'free'
         if count < ls[0] :
             return 'first'
         elif count < ls[1] :
@@ -352,18 +359,21 @@ class WeekCustom(models.Model) :
         elif count < ls[2] :
             return 'third'
         else :
-            return 'first'
+            return 'last'
 
     def get_steps(self) :
+        all_dem = self.seller.get_all_dem()
+        return [ int(all_dem / 4), int(all_dem/2), 3 * int(all_dem/4), all_dem]
+        """
         if self.seller.type_of == 'basique' :
             return [4, 10, 15]
         elif self.seller.type_of == 'pro' :
             return [6, 16, 31]
         elif self.seller.type_of == 'buisness' :
-            return [9, 20, 61]
+            return [15, 20, 61]
         elif self.seller.type_of == 'free' :
             return [10, 25, 60]
-
+        """
 
 class Feedback(models.Model) :
     user = models.CharField(max_length=250, null=True, blank=True)
@@ -559,7 +569,6 @@ def get_welcome_message(seller) :
             }
         }
     }
-    
     return json.dumps(data)
 
 
@@ -595,4 +604,4 @@ def get_template_message_data(dem, seller):
 def send_whatsapp_notif(seller, dem) :
     if seller.format_number :
         resp = send_messages(get_template_message_data(dem, seller), get_slug(dem, seller))
-    return resp
+        return resp

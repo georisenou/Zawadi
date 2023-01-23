@@ -24,6 +24,7 @@ def get_price_spent(seller, dems) :
         price += seller.r_price(dem.subs.default_price )
         if not dem.subs in seller.subs.all() :
             price += (seller.get_distance(dems[0].get_quart()) / 8) * PRICE_PER
+    
     print(f'Pass for seller {seller.name} => {price}')
     return price
 
