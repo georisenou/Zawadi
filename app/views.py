@@ -1076,4 +1076,6 @@ def fq_webhook(request) :
     if request.method == 'GET':
         token_sent = request.GET.get("hub.verify_token")
         return verify_fb_token(token_sent, request)
+    else :
+        return HttpResponse('Message processed')
 
