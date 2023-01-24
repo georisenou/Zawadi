@@ -957,9 +957,6 @@ def for_sellers(request) :
     pk = request.GET.get('seller')
     seller = SellerAccount.objects.get(pk = int(pk))
     if request.method == "POST" :
-        whtasapp = request.POST.get('whatsapp')
-        seller.whatsapp = whtasapp
-        seller.save()
         return redirect('/clients/0/')
     return render(request, 'for_sellers.html', {
         'seller' : seller
