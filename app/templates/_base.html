@@ -301,7 +301,8 @@
   </script>
   {% endblock %}
   {% block script %}
-
+  <script src="/static/axios.min.js"></script>
+  <script src="{% static 'vue.global.prod.js' %}"></script>
   <script>
     let baseUR = window.location.host
     let prot = window.location.protocol
