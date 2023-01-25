@@ -287,7 +287,7 @@ class SellerAccount(models.Model) :
     def get_picture(self) :
         return self.picture.url if self.picture else ZawadiDetail.objects.get(key = 'default:shop:picture:url').value
     def is_freeing(self) :
-        return self.get_last_abn().is_freed
+        return self.type_of == 'free'
     def get_latlng(self) :
         print(self.user.quart)
         quart = json.loads(self.user.quart)
@@ -306,7 +306,7 @@ class SellerAccount(models.Model) :
                 print('Mail exception => ', e)
             self.damount -= self.dprice
             self.save()
-            if self.damount <= self.damount_init * 0.2 :
+            if self.damount <= self.damount_init * 0.2 and self.damount > 0 :
                 try :
                     send_email_finished_alert(seller=self, is_finished=False)
                 except Exception as e :
