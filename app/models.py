@@ -189,6 +189,8 @@ class SubCategory( models.Model) :
         return self.subs.all()
     def is_subs(self) :
         return Boolean(self.sub_box)
+    def get_box(self) :
+        return self.sub_box.box.pk if self.sub_box else self.box.pk
 
 class ClientDemand(models.Model) :
     client = models.ForeignKey(Client, null=True, blank=True, on_delete=models.CASCADE, related_name="demandes")

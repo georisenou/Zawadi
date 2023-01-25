@@ -1006,7 +1006,7 @@
                         amount: 0,
                         cat: '{{seller.category.pk}}',
                         subs: [{% for s in seller.subs.all %} '{{s.name}}', {% endfor %}],
-                pre_subs: [{% for s in seller.subs.all %} { id: '{{s.pk}}', sub: '{{s.name}}', cat: '{{s.sub_box.box.pk}}' }, {% endfor %}],
+                pre_subs: [{% for s in seller.subs.all %} { id: '{{s.pk}}', sub: '{{s.name}}', cat: '{{s.get_box}}' }, {% endfor %}],
             r_subs: [],
                 cat_search: "",
                     sub_search: "",
@@ -1145,6 +1145,7 @@
                 },
                 compute_dprice(){
                     let th = this
+                    console.log(this.r_subs);
                     axios({
                         url : 'compute_dprice/',
                         method : 'POST',
