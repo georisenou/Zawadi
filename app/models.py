@@ -4,6 +4,7 @@ from xmlrpc.client import Boolean
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
+from pyparsing import re
 from .managers import CustomUserManager
 import string
 from django_email import djemail
@@ -112,6 +113,62 @@ def ident_generator(min, max):
 
 # Create your models here.
 
+class Parrain(models.Model) :
+    whatsapp = models.CharField(max_length=150, null=True, blank=True)
+    full_name = models.CharField(max_length=250, null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
+    ident = models.CharField(null=True, blank=True, max_length=150, unique=True)
+    money = models.IntegerField(default=0, null=True, blank=True)
+    current = models.IntegerField(default=0)
+    status = models.BooleanField(default=True)
+    tof = models.FileField(null=True, blank=True)
+    act_err = models.TextField(null=True, blank=True)
+    veracity = models.IntegerField(null=True, blank=True, default=100)
+    def get_tof(self) :
+        return self.tof.url if self.tof else "/static/user.png"
+    def get_dems(self):
+        return self.dems.count()
+    def __str__(self) -> str:
+        return self.full_name
+    def set_veracity(self) :
+        ver = 100
+        if not self.dems.count() : 
+            self.veracity = ver
+            self.save()
+            return 0
+        real = int(self.dems.filter(sold = True).count()/self.get_dems())
+        if real > 0.7 :
+            ver = 100
+        elif real > 0.5 :
+            ver = 70
+        elif real > 0.4 :
+            ver = 50
+        elif real > 0.3 :
+            ver = 40
+        else :
+            ver = 30
+        self.veracity = ver
+        self.save()
+        
+            
+class Retrait(models.Model) :
+    parrain = models.ForeignKey(Parrain, null=True,blank=True, on_delete=models.CASCADE, related_name="retraits")
+    created_at = models.DateTimeField(auto_now_add=True)
+    montant = models.IntegerField(null=True, blank=True)
+    solded = models.BooleanField(default=False)
+    def get_duration(self):
+        duration = (timezone.now() - self.created_at)
+        seconds = duration.total_seconds()
+        if seconds < 60:
+            return "a l'instant"
+        elif seconds < 3600:
+            return  str(int(seconds / 60)) + " min"
+        elif seconds < 24 * 3600:
+            return  str(int(seconds / 3600)) + " h"
+        else:
+            return  str(int(seconds / (24*3600))) + " j"
+
+
 class MyFiles(models.Model) :
     name = models.CharField(max_length=150, null=True, blank=True)
     file = models.FileField(upload_to='demandes/', null=True, blank=True)
@@ -191,7 +248,8 @@ class SubCategory( models.Model) :
         return Boolean(self.sub_box)
     def get_box(self) :
         return self.sub_box.box.pk if self.sub_box else self.box.pk
-
+    def get_dprice(self) :
+        return Category.objects.get(pk = self.get_box()).dprice
 class ClientDemand(models.Model) :
     client = models.ForeignKey(Client, null=True, blank=True, on_delete=models.CASCADE, related_name="demandes")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -210,8 +268,12 @@ class ClientDemand(models.Model) :
     slug = models.TextField(null=True, blank=True)
     state = models.CharField(max_length=100, null=True, blank=True)
     clicked = models.ManyToManyField("SellerAccount", related_name="has_clicked", blank=True )
+    parrain = models.ForeignKey(Parrain, null=True, blank=True, on_delete=models.CASCADE, related_name="dems")
+    sold = models.BooleanField(default=False)
     def get_quart(self) :
         return json.loads(self.quart)
+    def getbdg(self) :
+        return f"{self.budget} F" if self.budget else '-:-'
     def get_files(self) :
         return [  
             file.file.url for file in self.files.all()
@@ -224,7 +286,7 @@ class ClientDemand(models.Model) :
         duration = (timezone.now() - self.created_at)
         seconds = duration.total_seconds()
         if seconds < 60:
-            return "0 min"
+            return "a l'instant"
         elif seconds < 3600:
             return  str(int(seconds / 60)) + " min"
         elif seconds < 24 * 3600:
@@ -407,8 +469,6 @@ class AbnFeature(models.Model) :
     expired_date = models.DateField(null=True, blank=True)
     is_freed = models.BooleanField(default=False)
 
-
-
 class UserGame(models.Model) :
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="games", null=True, blank=True)
     value1 = models.CharField(max_length=150, null=True, blank=True)
@@ -536,7 +596,7 @@ def send_messages(data, slug):
     resp = requests.post(url=ENDPOINT, headers=HEADERS, data=data)
     logs = ZawadiDetail.objects.get(key = 'whatsapp_logs')
     print(resp.status_code, resp.content)
-    logs.value += f"$${slug}:<!0{str(resp)}0!>"
+    logs.value += f"$${slug}:<!0{str(resp.content)}0!>"
     logs.save()
     return resp
 
@@ -563,6 +623,21 @@ def get_welcome_message(seller) :
         "messaging_product": "whatsapp",
         "recipient_type": "individual",
         "to": f"{seller.format_number}",
+        "type": "template",
+        "template": {
+            "name": "welcomed_zawadi",
+            "language": {
+                "code": "fr"
+            }
+        }
+    }
+    return json.dumps(data)
+
+def get_alertwha_message(number) :
+    data = {
+        "messaging_product": "whatsapp",
+        "recipient_type": "individual",
+        "to": f"{number}",
         "type": "template",
         "template": {
             "name": "welcomed_zawadi",

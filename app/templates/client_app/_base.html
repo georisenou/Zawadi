@@ -208,13 +208,18 @@
             document.getElementById('installId').style.display = "none"
         }
     </script>
+
+  {% block script1 %}
+  {% endblock %}
     {% block script %}
     <script>
         const { createApp } = Vue
         const app = createApp({
             data() {
                 return {
-                    message: 'Hello Vue!'
+                    message: 'Hello Vue!',
+                    extern_errors : '',
+                    number : 0
                 }
             },
             mounted() {

@@ -1,10 +1,11 @@
 
 import datetime
 import json
+from django.forms import models
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
-from app.models import AbnFeature, AdminToken, Category, ClientDemand, Feedback, Label, MyFiles, SellerAccount, SubCategory, User, UserGame, WeekCustom, ZawadiDetail, Client, checking_token, get_welcome_message, ident_generator, send_messages, send_whatsapp_notif
+from app.models import AbnFeature, AdminToken, Category, ClientDemand, Feedback, Label, MyFiles, Parrain, Retrait, SellerAccount, SubCategory, User, UserGame, WeekCustom, ZawadiDetail, Client, checking_token, get_alertwha_message, get_welcome_message, ident_generator, send_messages, send_whatsapp_notif
 from django.contrib.auth import login, authenticate, logout
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -467,6 +468,7 @@ def customers(request):
     if has_user:
         demandes = ClientDemand.objects.filter(
             client__user=request.user).order_by('-created_at')[:25]
+    ident = request.GET.get('ident')
     return render(request, 'client_app/index.html', {
         'zawadi': zawadi,
         'categories': categories,
@@ -476,7 +478,8 @@ def customers(request):
         'feeds': feeds,
         "labels" : labels,
         'ready' : ready,
-        'has_user': has_user and Client.objects.filter(user=request.user).exists()
+        'has_user': has_user and Client.objects.filter(user=request.user).exists(),
+        'ident' : ident
     })
 
 @api_view(["GET", "POST"])
@@ -611,6 +614,9 @@ def logout_view(request):
 
 @api_view(["POST"])
 def register_demand(request):
+    ident = request.POST.get('ident')
+    bdg_h = request.POST.get('bdg_h')
+    print(ident)
     if not request.user.is_authenticated:
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
@@ -655,6 +661,16 @@ def register_demand(request):
         mysub = SubCategory.objects.get(pk = int(sub['id']))
         demand = ClientDemand.objects.create(
             client=client, subs= mysub , category = Category.objects.get(pk = int(cat)), emergency=emer, quart = request.user.quart, slug = unique_slug, state = state)
+        if bdg_h :
+            demand.budget = f"{bdg_h}"
+            demand.save()
+        if ident :
+            parrain = Parrain.objects.get(ident = ident)
+            demand.parrain = parrain
+            demand.save()
+            parrain.money += mysub.get_dprice()
+            parrain.current += mysub.get_dprice()
+            parrain.save()
         for det in sub_det :
             if det['id'] == mysub.pk :
                 if det.get('bdg') :
@@ -1077,4 +1093,55 @@ def fq_webhook(request) :
         return verify_fb_token(token_sent, request)
     else :
         return HttpResponse('Message processed')
+
+def parrain_view(request, ident) :
+    parrain = Parrain.objects.get(ident = ident)
+    parrain.set_veracity()
+    print(request.method, request.POST)
+    if request.method == 'POST' :
+        picture = request.FILES.get('picture')
+        if picture :
+            parrain.tof = picture
+            parrain.save()
+        montant = request.POST.get('montant')
+        print("Montant => " ,montant)
+        if montant :
+            montant = int(montant)
+            if montant <= parrain.current :
+                retrait = Retrait.objects.create(parrain = parrain, montant = montant)
+                send_messages(get_alertwha_message('+22961555705'), f'retrait:{parrain.full_name}')
+    return render(request, 'parrain.html', {
+        'parrain' : parrain
+    })
+            
+def register_parrain(request) :
+    if request.method == "POST" :
+        email = request.POST.get('email')
+        full_name = request.POST.get('full_name')
+        whatsapp = request.POST.get('whtasapp')
+        parrain = Parrain.objects.get_or_create(email = email, full_name = full_name, whatsapp = whatsapp, ident = ident_generator(3,4) )
+        return redirect(f'/parrain/{parrain[0].ident}/')
+    return render(request, 'register_parrain.html', {})
+    
+def charg_parrain(request) :
+    return render(request, 'charg_parrain.html', {})
+
+def p_home(request, ident) :
+    return redirect(f'/?ident={ident}')
+
+@api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+def set_sold(request, pk) :
+    dem = ClientDemand.objects.get(pk = pk)
+    seller = SellerAccount.objects.filter(user = request.user).first()
+    print(seller)
+    for week in dem.weeks_in.all() :
+        if week.seller == seller :
+            dem.sold = not dem.sold
+            dem.save()
+    return Response({
+        'done' : True,
+        'sold' : dem.sold
+    })
+
 

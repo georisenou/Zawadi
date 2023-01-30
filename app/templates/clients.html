@@ -99,32 +99,58 @@
                             <thead
                                 class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
-                                    <th scope="col" class="py-3 px-6">
+                                    <th scope="col" class="py-3 px-2">
                                         Produit
                                     </th>
-                                    <th scope="col" class="py-3 px-6 text-center">
+                                    <th scope="col" class="py-3 px-2">
+                                        Budget
+                                    </th>
+                                    <th scope="col" class="py-3 px-2 text-center">
                                         Action
+                                    </th>
+                                    <th scope="col" class="py-3 px-2 text-center">
+                                        Vendu
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for dem in week.demandes.all %}
-                                <tr class="bg-white border-b dark:bg-gray-900 dark:border-gray-700">
-                                    <th scope="row"
-                                        class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                <tr class=" {% if not seller in dem.clicked.all %} bg-orange-100 {% else %} bg-white {% endif %} border-b dark:bg-gray-900 dark:border-gray-700">
+                                    
+                                    <td scope="row"
+                                        class="py-4 px-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {{dem.subs.name}}
-                                    </th>
-                                    <td class="py-4 px-6 flex items-center">
+                                    </td>
+                                    <td scope="row"
+                                        class="py-4 px-2 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        {{dem.getbdg}}
+                                    </td>
+                                    <td class="py-4 px-2 flex items-center">
                                         {% if seller %}
                                         <button type="button"
                                             @click="seller = {{seller.pk}}, cur_dem = {{dem.pk}}, go_to(`whatsapp://send/?phone={{dem.client.get_whatsapp}}&text=J'espère que vous allez bien! J'ai reçu votre demande de {{dem.subs.name}} par Zawadi. Voilà mes produits...`)"
-                                            class="mr-3 block p-2 bg-gray-200 focus:ring-4 focus:ring-green-300 rounded-full dark:hover:bg-green-700 dark:focus:ring-green-800 ">
+                                            class=" hidden mr-3 block p-2 bg-gray-200 focus:ring-4 focus:ring-green-300 rounded-full dark:hover:bg-green-700 dark:focus:ring-green-800 ">
 
-                                            <img src="/static/img/whatsapp.png" class="w-6" />
+                                            <img src="/static/img/whatsapp.png" class="w-6" style="max-width: 1.5rem;" />
                                         </button>
                                         {% endif %}
                                         <a class="block font-medium text-green-600 dark:text-green-500 hover:underline"
                                             @click="showMod({whatsapp: '{{dem.client.get_whatsapp}}', phone: '{{dem.client.get_phone}}', email : '{{dem.client.get_email}}', dem : `{{dem.subs.name}}`, emer : `{{dem.emergency}}`, dem_pk : '{{dem.pk}}', point : '{{dem.point}}', budget : '{{dem.budget}}', detail : `{{dem.detail}}`, num : `{{dem.num}}`, get_files : {{dem.get_files}}, user : `{{dem.client.get_complete_name}}` })">Contacter</a>
+                                    </td>
+                                    <td scope="row"
+                                        class="py-4 px-2  font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <div v-if="current_sold_dem != {{dem.pk}}" class="flex justify-around items-center h-5">
+                                            <input id="helper-checkbox" @click="current_sold_dem = {{dem.pk}}" aria-describedby="vendu" type="checkbox" value="" :checked="sold_dems.includes({{dem.pk}})" class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        </div>
+                                        <div v-else class="flex justify-around" >
+                                            <div role="status">
+                                                <svg aria-hidden="true" class="w-4 h-4 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                                                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+                                                </svg>
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -441,19 +467,19 @@
 <!-- Modal toggle -->
 <button v-show="false"
     class="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-    id="myBut" type="button" data-modal-toggle="authentication-modal">
+    id="myBut" type="button" data-modal-toggle="contact-modal">
     Toggle modal
 </button>
 
 <!-- Main modal -->
-<div id="authentication-modal" tabindex="-1" aria-hidden="true"
+<div id="contact-modal" tabindex="-1" aria-hidden="true"
     class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full justify-center items-center">
     <div class="relative p-4 w-full max-w-md h-full md:h-auto">
         <!-- Modal content -->
         <div style="max-height: 85vh; overflow-y: scroll;" class="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <button type="button"
                 class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
-                data-modal-toggle="authentication-modal">
+                data-modal-toggle="contact-modal">
                 <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd"
@@ -503,7 +529,7 @@
                             <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Nombre d'unité désiré</dt>
                             <dd class="text-lg font-semibold">${curent.num} </dd>
                         </div>
-                        <div class="flex flex-col pt-3" v-if="curent.detail != 'None'">
+                        <div class="flex flex-col pt-3" v-if="curent.detail != 'None' && curent.detail != ''">
                             <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">Description du client</dt>
                             <dd class="text-lg font-semibold">${curent.detail}</dd>
                         </div>
@@ -553,7 +579,7 @@
                             class=" w-full text-center focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">Appeler</button>
                     </div>
                 </div>
-                <div class="py-3">
+                <div class="py-3 hidden">
                     <div class="text-center font-medium">
                         Appréciation du client
                     </div>
@@ -665,7 +691,38 @@
                 can_show_valid: true,
                 number: 0,
                 checking: false,
-                is_notified : false
+                is_notified : false,
+                sold_dems: [{% for dem in week.demandes.all %}{% if dem.sold %}{{dem.pk}},{% endif %}{% endfor %}],
+                current_sold_dem :0,
+            }
+        },
+        watch: {
+            current_sold_dem(news, olds){
+                let th = this
+                if (news) {
+                    const form = new FormData()
+                    form.append('pk', `${news}`)
+                    axios({
+                        url : 'set_sold/' + news + '/',
+                        method : 'POST',
+                        data : form,
+                        headers: {
+                        "accept": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}",
+                        },
+                    }).then(resp => {
+                        if(resp.data['done']){
+                            if(resp.data['sold']){
+                                th.sold_dems.push(news)
+                            }else {
+                                th.sold_dems = th.sold_dems.filter((e) => e != news)
+                            }
+                        }
+                        th.current_sold_dem = 0
+                    }).catch( err => {
+                        console.log(err);
+                    })
+                }
             }
         },
         mounted() {
@@ -673,7 +730,7 @@
                 document.getElementById('global_load').style.display = 'none'
                 document.getElementById('app').style.display = 'block'
             }
-            end_load()
+            end_load();
             const firebaseConfig = {
                 apiKey: "AIzaSyC5tw6eOAoi0vKT3hiyIAPND8ovAFp91Xs",
                 authDomain: "zawadi-fe511.firebaseapp.com",
@@ -700,6 +757,7 @@
 
         },
         methods: {
+
             checkNumber() {
                 this.can_show_valid = true
                 this.checking = true

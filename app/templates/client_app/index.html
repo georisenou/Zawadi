@@ -69,6 +69,16 @@
                             </select>
                         </div>
                         -->
+                        <div class="hidden">
+                            <div>
+                                <label for="bdg_h"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Budget maximal
+                                    prévu (FCFA)</label>
+                                <input type="number" name="bdg_h" id="bdg_h" v-model="bdg_h"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-rose-500 focus:border-rose-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                    placeholder="Somme que vous prévoyez utiliser">
+                            </div>
+                        </div>
                         <div>
                             <label for="small"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Choisissez
@@ -1131,7 +1141,8 @@
                                         </label>
                                     </div>
                                     <div style="cursor: pointer;" @click="cur_sub = sb.id, setPrev()"
-                                        class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white hover:bg-gray-100 hover:p-2 hover:rounded-lg hover:text-rose-500">
+                                        class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white hover:bg-gray-100 hover:p-2 hover:rounded-lg hover:text-rose-500"
+                                        :class="{ 'p-2 bg-rose-600 text-white rounded-lg shadow-xl': includes_subs(sb.id) }">
                                         <span class="material-icons">
                                             add_circle
                                         </span>
@@ -1451,11 +1462,58 @@
                     <button type="submit"
                         class="w-full text-white bg-rose-700 hover:bg-rose-800 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-rose-600 dark:hover:bg-rose-700 dark:focus:ring-rose-800">Confirmer</button>
 
+                    <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
+                        En validant, vous acceptez de recevoir des messages de la part de Zawadi par whatsapp
+                    </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<button id="indicate" type="button" data-modal-target="crypto-modal" data-modal-toggle="crypto-modal"
+    class="text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700">
+    <svg aria-hidden="true" class="hidden w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
+        </path>
+    </svg>
+    Comment
+</button>
+
+<!-- Main modal -->
+<div id="crypto-modal" tabindex="-1" aria-hidden="true"
+    class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
+    <div class="relative w-full h-full max-w-md md:h-auto">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+
+            <!-- Modal header -->
+            <div class="px-6 py-4 border-b rounded-t dark:border-gray-600">
+                <h3 class="text-base font-semibold text-gray-900 lg:text-xl dark:text-white">
+                    Le saviez-vous ?
+                </h3>
+            </div>
+            <!-- Modal body -->
+            <div class="p-6">
+                <p class="font-normal dark:text-gray-400 py-3">Vous pouvez mettre plus de précision sur vos demandes en
+                    ajoutant <strong > le budget ou une description</strong> pour mieux guider le vendeur </p>
+                <div class="py-4">
+                    <img src="/static/indicate.png" class="w-full" />
+                </div>
+                <div class=" py-4">
+                    Pour le faire vous devez juste cliquez le bouton <strong> + (en rouge)</strong> lorsque vous sélectionnez un produit( exemple sur l'image)
+                </div>
+                <div class="my-3">
+                    <button type="button" onclick="indicated()"
+                                    class="inline-flex w-full justify-center rounded-md border border-transparent bg-rose-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm">J'ai compris</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="map" style="display: none;">
 
 </div>
@@ -1495,6 +1553,23 @@
 <script async
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNoBJJXRj_p5miy5gSPGazRa4Mr-95D18&libraries=places&callback=initMap">
     </script>
+<script>
+    {% if ident %}
+    localStorage.setItem("ident", "{{ident}}")
+    {% endif %}
+
+    const indicated = () => {
+        localStorage.setItem('indicate', 'yes')
+        document.getElementById('indicate').click()
+    }
+
+    const indicate = localStorage.getItem('indicate')
+    if (!indicate) {
+        setTimeout(() => {
+            document.getElementById('indicate').click()
+        }, 30000)
+    }
+</script>
 <script>
     var map;
     var service;
@@ -1642,6 +1717,7 @@
                 all_cats: [],
                 cur_sub: 0,
                 bdg: null,
+                bdg_h: null,
                 detail: null,
                 num_prod: 1,
                 files: [],
@@ -1701,7 +1777,7 @@
                 th.whatsapp = my_info['whatsapp']
                 th.number = my_info['number']
                 if (my_info['quart']) th.f_quart = my_info['quart']
-                if(th.email) th.is_registered = true
+                if (th.email) th.is_registered = true
             }
             th.get_demandes()
         },
@@ -2017,6 +2093,7 @@
                 let th = this
                 th.dem_load = true
                 const form = new FormData()
+
                 form.append('first_name', th.first_name)
                 form.append('last_name', th.last_name)
                 form.append('email', th.email)
@@ -2032,12 +2109,11 @@
                         "Content-Type": "multipart/form-data",
                         "X-CSRFToken": "{{ csrf_token }}",
                     },
-                    data : form
+                    data: form
                 }).then(resp => {
                     th.dem_load = false
                     th.can_load = resp.data['result'].length != 0
                     if (resp.data['done']) {
-
                         th.demands = th.demands.concat(resp.data['result'])
                     }
                 }).catch(err => {
@@ -2086,6 +2162,9 @@
                         }
                     }
                 }
+                const ident = localStorage.getItem('ident')
+                if (ident) form.append('ident', ident)
+                if (th.bdg_h) form.append('bdg_h', th.bdg_h)
                 form.append('sub_det', JSON.stringify(this.sub_det))
                 form.append('state', th.state)
                 if (th.user == 'not') {
@@ -2095,6 +2174,7 @@
                     } else {
                         th.whatsapp = th.number
                     }
+
                     form.append('first_name', th.first_name)
                     form.append('last_name', th.last_name)
                     form.append('email', th.email)

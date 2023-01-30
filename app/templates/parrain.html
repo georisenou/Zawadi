@@ -1,0 +1,225 @@
+{% extends 'client_app/_base.html' %}
+
+{% block content %}
+<div class="pt-8">
+    <div class="w-full text-center py-4 font-bold text-xl bg-green-100">
+        Partenariat Zawadi
+    </div>
+</div>
+
+<div class="my-4">
+    <div class=" px-2 flex justify-around " style="height: 6.5rem;">
+        <div>
+            <div :style="{
+                width: '6rem',
+                height: '6rem',
+                'border-radius': '100%',
+                'background-size': 'cover',
+                'background-position': 'top center',
+                'background-image': `url('{{parrain.get_tof}}')`,
+            }"></div>
+            <button onclick="actMod()"
+                class="bg-green-600 p-2 text-white w-10 h-10 rounded-full active:bg-gray-100 active:text-gray-700"
+                style="position: relative; bottom: 2.3rem; left: 3.7rem;">
+                <span class="material-icons">
+                    photo_camera
+                </span>
+            </button>
+        </div>
+    </div>
+    <form style="display: none;" action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" accept="image/*" required name="picture" id="myBu" />
+        <button type="submit" id="sub">submit</button>
+    </form>
+    <div class="my-2">
+        <div class="text-center text-lg font-medium">
+            {{parrain.full_name}}
+        </div>
+    </div>
+</div>
+<div class="px-3 space-y-3">
+    <div class="text-lg shadow my-3 flex justify-between items-center border border-gray-700 rounded-lg p-3">
+        <div class="">
+            Statut
+        </div>
+        {% if parrain.status %}
+        <div class="text-green-500">
+            Actif
+        </div>
+        {% else %}
+        <div class="text-red-500">
+            Bloqué
+        </div>
+        {% endif %}
+    </div>
+    <div class="text-lg my-3 flex justify-between items-center border border-gray-700 rounded-lg p-3">
+        <div class="">
+            Gain total
+        </div>
+        <div class="font-medium">
+            {{parrain.money}}F
+        </div>
+    </div>
+    <div class="text-lg my-3 flex justify-between items-center border border-gray-700 rounded-lg p-3">
+        <div class="">
+            Somme courant
+        </div>
+        <div class="font-medium">
+            {{parrain.current}}F
+        </div>
+    </div>
+    <div class="text-lg my-3 flex justify-between items-center border border-gray-700 rounded-lg p-3">
+        <div class="">
+            Véracité
+        </div>
+        <div class="font-medium">
+            {{parrain.veracity}}%
+        </div>
+    </div>
+    <div class="text-lg my-3 flex justify-between items-center border border-gray-700 rounded-lg p-3">
+        <div class="">
+            Demandes totales
+        </div>
+        <div class="font-medium">
+            {{parrain.get_dems}}
+        </div>
+    </div>
+
+</div>
+<div class="my-4 mx-3" >
+    <div class="text-center font-medium text-lg mb-2" >
+        Url de partage
+    </div>
+    <div class="text-lg my-3  border border-gray-700 hover:shadow-xl hover:text-white hover:bg-black rounded-lg p-3">
+        <div class=" text-center">
+            www.zawadi.site/{{parrain.ident}}
+        </div>
+    </div>
+</div>
+<div class="mt-4 mb-24">
+    <div class="text-center font-bold text-lg">
+        Historique des retraits
+    </div>
+    {% if parrain.retraits.count %}
+    {% for ret in parrain.retraits.all %}
+    <div class="my-3 px-3">
+        <div class="py-3 px-4 bg-gray-50 rounded shadow">
+            <div class="flex justify-between items-center">
+                <div class="font-medium">
+                    Retrait de {{ret.montant}} F
+                </div>
+                {% if ret.solded %}
+                <div class="text-green-700">
+                    Envoyé
+                </div>
+                {% else %}
+                <div class="text-orange-700">
+                    En cours...
+                </div>
+                {% endif %}
+            </div>
+            <div class="py-2 italic">
+                {{ret.get_duration}}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class=" my-3 px-3">
+        <div class="py-4 flex justify-around">
+            <img src="/static/data.svg" class="w-2/3" />
+        </div>
+        <div class="text-center font-medium">
+            Pas de retraits pour le moment
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+
+<!-- Modal toggle -->
+<button id="retrait" data-modal-target="authentication-modal" data-modal-toggle="authentication-modal"
+    class="hidden block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+    type="button">
+    Toggle modal
+</button>
+
+<!-- Main modal -->
+<div id="authentication-modal" tabindex="-1" aria-hidden="true"
+    class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
+    <div class="relative w-full h-full max-w-md md:h-auto">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button type="button" onclick="actDiag()"
+                class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                data-modal-hide="authentication-modal">
+                <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Entrez le montant à retirer</h3>
+                <form onsubmit="return check_can()" class="space-y-6" id="form_retrait" action="" method="POST">
+                    {% csrf_token %}
+                    <div>
+                        <input type="number" v-model="number" name="montant" id="montant"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                            placeholder="500" required>
+                    </div>
+                    <button type="submit"
+                        class="w-full text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Confirmer</button>
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- component -->
+<div class=" w-full">
+
+    <!-- <section id="bottom-navigation" class="md:hidden block fixed inset-x-0 bottom-0 z-10 bg-white shadow"> // if shown only tablet/mobile-->
+    <section id="bottom-navigation" class="block fixed inset-x-0 bottom-0 z-10 bg-white shadow md:hidden bg-white p-3">
+        <button type="button" onclick="actDiag()"
+            class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-center w-full px-5 py-2.5 ">Retirer</button>
+    </section>
+</div>
+
+{% endblock %}
+
+{% block script1 %}
+<script>
+    localStorage.setItem('parrain_ident', "{{parrain.ident}}")
+    const actMod = () => {
+        document.getElementById('myBu').click()
+    }
+    setTimeout(() => {
+        document.getElementById('myBu').addEventListener('change', (e) => {
+
+            document.getElementById('sub').click()
+        })
+    }, 1000)
+    const rest = 1500
+    const actDiag = (e) => {
+        document.getElementById('retrait').click()
+    }
+    
+    const check_can = (e) => {
+        const value = document.getElementById('montant').value
+        try{
+            if (!(parseInt(value) && parseInt(value) <= {{parrain.current}}  )){
+                alert('Veuillez entrer un montant valide.')
+                return false
+            } 
+        }catch{
+            console.log('Something went wrong');
+        }
+    }
+</script>
+{% endblock %}
