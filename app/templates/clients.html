@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="md:grid md:grid-cols-2 pt-12">
-    <div class="mh-screen">
+    <div class="mh-screen bg-gray-50">
         {% if not has_abn %}
         <div class=" pt-4">
             <div class="text-center text-lg font-medium text-gray-500">
@@ -12,7 +12,10 @@
                 <img src="/static/img/not.svg" class="lg:w-1/2 w-3/4" />
             </div>
             <div class="text-sm text-center px-6 py-4">
-                Il se peut que vous ne disposiez pas d'abonnenments ou que ce dernier a expiré.
+                Ooops ! Votre pack de clients est épuisé. Pour acceder à votre liste de clients veuillez activer un autre pack.
+                <div class="py-2" >
+                    Si vous étiez en <strong >essai gratuit</strong> alors les demandes de clients gratuites ont toutes déjà été envoyés.
+                </div>  
             </div>
             <div class="pt-4 flex justify-around">
                 <div>
@@ -20,6 +23,20 @@
                         class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Activer
                         ma liste de clients &RightArrow; </a>
                 </div>
+            </div>
+            <div class="my-3 flex justify-around" >
+
+            <a type="button" href="whatsapp://send/?phone=+22958929661"
+            class="py-2.5 px-5 mr-2 mb-2  text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-green-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+            <div class="flex items-center">
+                <div class="mr-2">
+                    <img src="/static/socialShare/whatsapp.png" class="w-8" />
+                </div>
+                <div>
+                    <span >Contacter le service client</span>
+                </div>
+            </div>
+        </a>
             </div>
             <div class="pt-3 flex justify-around">
                 <div>

@@ -28,4 +28,5 @@ urlpatterns = [
     path('p/<str:ident>/', p_home, name="p_home" ),
     path('parrain/<str:ident>/', parrain_view, name="parrain"),
     path('register_parrain/', register_parrain, name="register_parrain"),
+    
 ]+static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT )

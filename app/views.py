@@ -5,7 +5,7 @@ from django.forms import models
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
-from app.models import AbnFeature, AdminToken, Category, ClientDemand, Feedback, Label, MyFiles, Parrain, Retrait, SellerAccount, SubCategory, User, UserGame, WeekCustom, ZawadiDetail, Client, checking_token, get_alertwha_message, get_welcome_message, ident_generator, send_messages, send_whatsapp_notif
+from app.models import AbnFeature, AdminToken, Category, ClientDemand, Feedback, Label, MyFiles, Parrain, Retrait, SellerAccount, SubCategory, User, UserGame, WeekCustom, ZawadiDetail, Client, checking_token, get_alertwha_message, get_market_client_message, get_welcome_message, ident_generator, send_messages, send_whatsapp_notif
 from django.contrib.auth import login, authenticate, logout
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -520,7 +520,7 @@ def charg_account(request) :
                 seller.type_of = dspeed
                 seller.speed = int(get_value(dspeed + ':speed'))
                 seller.rest = 1
-                seller.dprice = int(dprice)
+                seller.dprice = int(float(dprice))
                 seller.damount = int(amount)
                 seller.damount_init = int(amount)
                 seller.save()
@@ -1145,3 +1145,13 @@ def set_sold(request, pk) :
     })
 
 
+def send_marketing_alert(limits = 50) :
+    clients = Client.objects.exclude(whatsapp = None)
+    print(f"We have now {clients.count()} clients contactable.")
+    clients = clients[:50]
+    for client in clients :
+        print(f"Sending massage to client {client.user} ....")
+        send_messages(get_market_client_message(client.whatsapp), '', can_log=False)
+        print("Done")
+        print("\n")
+    
