@@ -468,7 +468,7 @@ def customers(request):
     if has_user:
         demandes = ClientDemand.objects.filter(
             client__user=request.user).order_by('-created_at')[:25]
-    ident = request.GET.get('ident')
+    ident = request.GET.get('ident') if request.GET.get('ident') else request.GET.get('i')
     return render(request, 'client_app/index.html', {
         'zawadi': zawadi,
         'categories': categories,
