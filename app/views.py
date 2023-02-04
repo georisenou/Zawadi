@@ -1,5 +1,6 @@
 
 import datetime
+from django.utils import timezone
 import json
 from django.forms import models
 from django.http import JsonResponse
@@ -533,6 +534,15 @@ def charg_account(request) :
                 abn.is_freed = True
                 abn.save()
                 seller.save()
+            def add_client() :
+                pks = [
+                    s.pk for s in seller.subs.all()
+                ]
+                dems = ClientDemand.objects.filter(subs__pk__in = pks).filter(created_at__gte = datetime.datetime.now() - datetime.timedelta(3)).annotate(weeks = Count('weeks_in')).filter(weeks__lt = 3)
+                for dem in dems :
+                    seller.add_dem(dem)
+                    seller.save()
+            send_by_thread(add_client)
             return Response({
                 'done': True,
                 'result': abn.pk

@@ -5,18 +5,24 @@
     <div class="mh-screen bg-gray-50">
         {% if not has_abn %}
         <div class=" pt-4">
-            <div class="text-center text-lg font-medium text-gray-500">
-                Liste de clients vide
+            <div class="text-center text-lg  font-medium text-orange-600">
+                Abonnement épuisé, activez un nouveau
             </div>
             <div class="px-4 py-8 flex justify-around ">
                 <img src="/static/img/not.svg" class="lg:w-1/2 w-3/4" />
             </div>
+            {% if seller %}
             <div class="text-sm text-center px-6 py-4">
                 Ooops ! Votre pack de clients est épuisé. Pour acceder à votre liste de clients veuillez activer un autre pack.
                 <div class="py-2" >
                     Si vous étiez en <strong >essai gratuit</strong> alors les demandes de clients gratuites ont toutes déjà été envoyés.
                 </div>  
             </div>
+             {% else %}
+            <div class="text-sm text-center px-6 py-4" >
+                Votre liste de clients n'est pas encore active. Si vous venez de vous inscrire veuillez activer votre liste de clients. C'est <strong class="text-green-600" >gratuit.</strong>
+            </div>
+             {% endif %}
             <div class="pt-4 flex justify-around">
                 <div>
                     <a href="/activate" type="button"
