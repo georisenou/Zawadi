@@ -54,6 +54,24 @@
                     <a href="whatsapp://send/?phone={{seller.format_number}}" class="font-medium text-green-600 dark:text-green-500 hover:underline"> Whatsapp</a>
                 </td>
             </tr>
+            {% empty %}
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  {{dem.pk}} - {{dem.subs.name}}
+                </th>
+                <td class="px-6 py-4">
+                    Pas de vendeur
+                </td>
+                <td class=" px-6 py-4">
+                    NaN
+                </td>
+                <td class="px-6 py-4">
+                    NaN
+                </td>
+                <td class="px-6 py-4 text-right">
+                    NaN
+                </td>
+            </tr>
             {% endfor %}
             {% endfor %}
             
