@@ -1,0 +1,56 @@
+{% extends 'client_app/_base.html' %}
+
+{% block content %}
+<div class="pt-8">
+    <div class="w-full text-center py-4 font-bold text-xl bg-green-100">
+        Partenariat Zawadi
+    </div>
+</div>
+
+<div class="my-4">
+    <div class=" px-2 flex justify-around " style="height: 6.5rem;">
+        <div>
+            <div :style="{
+                width: '6rem',
+                height: '6rem',
+                'border-radius': '100%',
+                'background-size': 'cover',
+                'background-position': 'top center',
+                'background-image': `url('{{parrain.get_tof}}')`,
+            }"></div>
+            <button onclick="actMod()"
+                class="bg-green-600 p-2 text-white w-10 h-10 rounded-full active:bg-gray-100 active:text-gray-700"
+                style="position: relative; bottom: 2.3rem; left: 3.7rem;">
+                <span class="material-icons">
+                    photo_camera
+                </span>
+            </button>
+        </div>
+    </div>
+    <form style="display: none;" action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" accept="image/*" required name="picture" id="myBu" />
+        <button type="submit" id="sub">submit</button>
+    </form>
+    <div class="my-2">
+        <div class="text-center text-lg font-medium">
+            {{parrain.full_name}}
+        </div>
+    </div>
+</div>
+
+<div class="py-12 px-4">
+    <form action="" method="POST">
+        {% csrf_token %}
+        <div class="mb-6">
+            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Numéro whatsapp</label>
+            <input type="text" id="email" name="whatsapp"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
+                 required>
+        </div>
+        <div >
+            <button type="submit" class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Soumettre</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

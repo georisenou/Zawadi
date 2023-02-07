@@ -374,7 +374,7 @@ class SellerAccount(models.Model):
     damount_init = models.IntegerField(null=True, blank=True, default=250)
     dm_alert = models.BooleanField(default=False)
     format_number = models.CharField(max_length=100, null=True, blank=True)
-
+    
     def send_test_notif(self, typeof='email'):
         if typeof == 'email':
             djemail.send_email(

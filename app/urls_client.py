@@ -1,7 +1,7 @@
 
 from django.urls import path
 from blog import views as blog_views
-from .views import achat_manifest, achat_offline, achat_serviceworker, charg_parrain, coming_soon, customers, delete_demand, get_all_cats, get_demands, landing_page, logout_view, offline, p_home, parrain_view, register_demand, register_parrain, set_num_vend
+from .views import achat_manifest, achat_offline, achat_serviceworker, chang_parrain, charg_parrain, coming_soon, customers, delete_demand, get_all_cats, get_demands, landing_page, logout_view, offline, p_home, parrain_view, register_demand, register_parrain, set_num_vend
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -28,5 +28,5 @@ urlpatterns = [
     path('p/<str:ident>/', p_home, name="p_home" ),
     path('parrain/<str:ident>/', parrain_view, name="parrain"),
     path('register_parrain/', register_parrain, name="register_parrain"),
-    
+    path('chang_parrain/<str:ident>/<str:token>/', chang_parrain, name="chang_parrain"),
 ]+static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT )

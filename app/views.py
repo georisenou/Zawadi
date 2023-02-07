@@ -1108,6 +1108,16 @@ def parrain_view(request, ident) :
     parrain = Parrain.objects.get(ident = ident)
     parrain.set_veracity()
     print(request.method, request.POST)
+    err = parrain.act_err
+    is_warning = 0
+    is_error = 0
+    if err :
+        err_lis = err.split(':')
+        if err_lis[0] == 'error' :
+            is_error = True
+        elif err_lis[0] == 'warning' :
+            is_warning = True
+        err = err_lis[1]
     if request.method == 'POST' :
         picture = request.FILES.get('picture')
         if picture :
@@ -1121,14 +1131,18 @@ def parrain_view(request, ident) :
                 retrait = Retrait.objects.create(parrain = parrain, montant = montant)
                 send_messages(get_alertwha_message('+22961555705'), f'retrait:{parrain.full_name}')
     return render(request, 'parrain.html', {
-        'parrain' : parrain
+        'parrain' : parrain,
+        'err' : err,
+        'is_warning' : is_warning,
+        'is_error' : is_error,
+        'adtok' : AdminToken.objects.get(name = "chang_parrain").token
     })
             
 def register_parrain(request) :
     if request.method == "POST" :
         email = request.POST.get('email')
         full_name = request.POST.get('full_name')
-        whatsapp = request.POST.get('whtasapp')
+        whatsapp = request.POST.get('whatsapp')
         parrain = Parrain.objects.get_or_create(email = email, full_name = full_name, whatsapp = whatsapp, ident = ident_generator(3,4) )
         return redirect(f'/parrain/{parrain[0].ident}/')
     return render(request, 'register_parrain.html', {})
@@ -1165,3 +1179,16 @@ def send_marketing_alert(limits = 50) :
         print("Done")
         print("\n")
     
+def chang_parrain(request, ident, token) :
+    adtok = AdminToken.objects.filter(token = token, is_checked = False)
+    if adtok.exists() :
+        parrain = Parrain.objects.get(ident = ident)
+    if request.method == 'POST' :
+        whatsapp = request.POST.get('whatsapp')
+        if whatsapp :
+            parrain.whatsapp = whatsapp
+            parrain.save()
+            return redirect(f'/parrain/{parrain.ident}/')
+    return render(request, 'chang_parrain.html', {
+        'parrain' : parrain
+    })
