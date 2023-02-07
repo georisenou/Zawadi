@@ -1406,7 +1406,7 @@
                             class="block py-3 px-0 mb-2 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-purple-500 focus:outline-none focus:ring-0 focus:border-purple-600 peer" />
                     </div>
                     <div v-show="is_what" class="flex items-center">
-                        <input id="checked-checkbox" v-model="is_what" type="checkbox"
+                        <input id="checked-checkbox"  v-model="is_what" type="checkbox"
                             class="w-4 h-4 text-rose-600 bg-gray-100 rounded border-gray-300 focus:ring-rose-500 dark:focus:ring-rose-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                         <label for="checked-checkbox"
                             class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">C'est le même que mon
@@ -1416,7 +1416,7 @@
                     <div v-show="!is_what">
                         <div class="mb-1">Entrez le numéro whatsapp</div>
                         <div class="relative z-0">
-                            <input id="phonewhat" type="tel" name="phonewhat" v-model="whatsapp"
+                            <input id="phonewhat" required type="tel" name="phonewhat" v-model="whatsapp"
                                 class="block py-3 px-0 mb-2 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-purple-500 focus:outline-none focus:ring-0 focus:border-purple-600 peer" />
                         </div>
                     </div>
@@ -1777,6 +1777,10 @@
                 th.number = my_info['number']
                 if (my_info['quart']) th.f_quart = my_info['quart']
                 if (th.email) th.is_registered = true
+                if(!my_info['whatsapp']){
+                    th.user = 'not'
+                    th.is_registered = false
+                }
             }
             th.get_demandes()
         },
@@ -2105,8 +2109,6 @@
                     method: 'POST',
                     headers: {
                         "accept": "application/json",
-                        "Content-Type": "multipart/form-data",
-                        "X-CSRFToken": "{{ csrf_token }}",
                     },
                     data: form
                 }).then(resp => {

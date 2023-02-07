@@ -222,7 +222,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         sellers = self.accounts.count()
         return not sellers
 
-
 class Client(models.Model):
     user = models.ForeignKey(User, null=True, blank=True,
                              on_delete=models.CASCADE, related_name="clients")

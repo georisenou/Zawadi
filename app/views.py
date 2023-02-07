@@ -453,7 +453,15 @@ def customers(request):
     increment_value('zawadi_visits')
     from_ = request.GET.get('from')
     if from_ : increment_value(from_)
-    print(request.user)
+    print(request.user.is_authenticated)
+    if request.user.is_authenticated :
+        client = Client.objects.filter(user = request.user)
+        if client.exists() :
+            for cl in client :
+                print(cl)
+                if not cl.whatsapp :
+                    logout(request)
+                    break
     try :
         ready = get_value('blog_ready') == 'yes'
     except :
@@ -628,6 +636,7 @@ def register_demand(request):
     bdg_h = request.POST.get('bdg_h')
     print(ident)
     if not request.user.is_authenticated:
+        print(request.POST)
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
@@ -653,12 +662,14 @@ def register_demand(request):
     else:
         clients = Client.objects.get_or_create(user=request.user)
         client = clients[0]
+        """
         if clients[1]:
             number = request.POST.get('number')
             whatsapp = request.POST.get('whatsapp')
             client.phone = number
             client.whatsapp = whatsapp
             client.save()
+        """
     cat = request.POST.get('cat')
     subs = json.loads(request.POST.get('subs'))
     emer = request.POST.get('emer')
