@@ -16,6 +16,8 @@ from haversine import haversine, Unit
 all_characters = string.ascii_letters+string.digits+string.punctuation
 characters = string.ascii_letters+string.digits
 
+def get_slug(dem, seller):
+    return f"{seller.pk}-{dem.pk}"
 
 def get_value(key):
     return ZawadiDetail.objects.get(key=key).value
@@ -133,7 +135,7 @@ class Parrain(models.Model):
     tof = models.FileField(null=True, blank=True)
     act_err = models.TextField(null=True, blank=True)
     veracity = models.IntegerField(null=True, blank=True, default=100)
-
+    
     def get_tof(self):
         return self.tof.url if self.tof else "/static/user.png"
 
@@ -316,7 +318,12 @@ class ClientDemand(models.Model):
     parrain = models.ForeignKey(
         Parrain, null=True, blank=True, on_delete=models.CASCADE, related_name="dems")
     sold = models.BooleanField(default=False)
-
+    def a_contacte(self, seller) :
+        return seller in self.clicked.all()
+    def a_ete_notifie(self, seller) :
+        logs = ZawadiDetail.objects.get(key = "whatsapp_logs")
+        slug = get_slug(self, seller)
+        return f"$${slug}:<!0" in logs.value
     def get_quart(self):
         return json.loads(self.quart)
 

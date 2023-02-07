@@ -1,0 +1,66 @@
+{% extends 'client_app/_base.html' %}
+{% load a_contacte %}
+{% load a_ete_notifie %}
+{% block content %}
+<div class="pt-8">
+    <div class="w-full text-center py-4 font-bold text-xl bg-green-100">
+        Nos dernières demandes
+    </div>
+</div>
+
+<div class="py-12" >
+
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Demande
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Vendeur
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Notifié
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Contacté
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Contact
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dem in dems %}
+            {% for w in dem.weeks_in.all %}
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  {{dem.pk}} - {{dem.subs.name}}
+                </th>
+                <td class="px-6 py-4">
+                    {{w.seller.name}}
+                </td>
+                <td class=" px-6 py-4">
+                    {% a_ete_notifie dem w.seller as notif %}
+                    {{notif}}
+                </td>
+                <td class="px-6 py-4">
+                    {% a_contacte dem w.seller as contac %}
+                    {{contac}}
+                </td>
+                <td class="px-6 py-4 text-right">
+                    <a href="tel:{{seller.format_number}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Appeler</a> 
+                    <a href="whatsapp://send/?phone={{seller.format_number}}" class="font-medium text-green-600 dark:text-green-500 hover:underline"> Whatsapp</a>
+                </td>
+            </tr>
+            {% endfor %}
+            {% endfor %}
+            
+        </tbody>
+    </table>
+</div>
+
+</div>
+
+{% endblock %}

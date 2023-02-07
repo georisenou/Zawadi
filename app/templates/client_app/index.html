@@ -1567,7 +1567,7 @@
     if (!indicate) {
         setTimeout(() => {
             document.getElementById('indicate').click()
-        }, 15000)
+        }, 5000)
     }
 </script>
 <script>
@@ -2199,7 +2199,6 @@
                         th.dem_p = 1
                         th.demands = []
                         th.r_subs = []
-                        th.get_demandes()
                         setTimeout(() => {
                             th.show_thank = false
                         }, 3500)
@@ -2214,6 +2213,7 @@
                         whatsapp: th.whatsapp,
                         quart: th.f_quart
                     }))
+                        th.get_demandes()
                 }).catch(err => {
                     console.log(err);
                 })

@@ -24,7 +24,7 @@ import subprocess
 from django.http import HttpResponse
 import os
 from django.views.decorators.csrf import csrf_exempt
-# Create your views here.
+
 
 def register_logs(slug, resp) :
     logs = ZawadiDetail.objects.get('whatsapp_logs')
@@ -1191,4 +1191,11 @@ def chang_parrain(request, ident, token) :
             return redirect(f'/parrain/{parrain.ident}/')
     return render(request, 'chang_parrain.html', {
         'parrain' : parrain
+    })
+
+def last_dems(request) :
+    dems = ClientDemand.objects.order_by('-created_at')
+    
+    return render(request, "last_dems.html", {
+        'dems' : dems
     })
