@@ -1112,7 +1112,7 @@ def parrain_view(request, ident) :
     is_warning = 0
     is_error = 0
     if err :
-        err_lis = err.split(':')
+        err_lis = err.split('::')
         if err_lis[0] == 'error' :
             is_error = True
         elif err_lis[0] == 'warning' :
