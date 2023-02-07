@@ -2105,12 +2105,8 @@
                 form.append('number', th.number)
                 form.append('whatsapp', th.whatsapp)
                 axios({
-                    url: `api/get_demands/?p=${th.dem_p}`,
-                    method: 'POST',
-                    headers: {
-                        "accept": "application/json",
-                    },
-                    data: form
+                    url: `api/get_demands/?p=${th.dem_p}&email=${th.email}`,
+                    method: 'GET',
                 }).then(resp => {
                     th.dem_load = false
                     th.can_load = resp.data['result'].length != 0

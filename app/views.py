@@ -904,17 +904,19 @@ def get_all_cats( request) :
         'result' : LabelSerializer(labels, many = True).data
     })
 
+@csrf_exempt
 @api_view(["GET", "POST"])
 def get_demands(request) :
     if request.user.is_authenticated :
         client = request.user.clients.first()
     else :
-        email = request.POST.get('email')
+        email = request.GET.get('email')
         user = User.objects.filter(email__contains = email).first()
         client = user.clients.first()
     demandes = client.demandes.all().order_by('-created_at')
     obj = get_obj_from_paginator(demandes, 20, valid_p(request.GET.get('p')), DemandSerializer )
     return Response(obj)
+
 
 @api_view(["GET", "POST"])
 def delete_demand(request, pk) :
