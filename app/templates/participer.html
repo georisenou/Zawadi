@@ -1,0 +1,57 @@
+{% extends '_base.html' %}
+
+{% block content %}
+<div class="pt-12 px-4">
+    <div class="w-full px-4 py-2 flex justify-between items-center bg-gray-50">
+        <div class="flex items-center">
+            <div class="pr-2 ">
+                <div :style="{
+                width: '1.5rem',
+                height: '1.5rem',
+                'border-radius': '100%',
+                'background-size': 'cover',
+                'background-position': 'top center',
+                'background-image': `url('{{seller.get_picture}}')`,
+            }"></div>
+            </div>
+            <div class="font-medium">
+                {{seller.name}}
+            </div>
+        </div>
+        {% if week.is_on %}
+        <div class="text-green-500">
+            &bull; Recherche
+        </div>
+        {% else %}
+        <div class="text-green-500">
+            &bull; Terminé
+        </div>
+        {% endif %}
+    </div>
+    <div class="py-12">
+        <div class="flex justify-around py-4">
+            <img class="w-full" src="/static/bonus.svg" />
+        </div>
+        <div class="text-xl text-center ">
+            Démarrer avec le programme <span class="font-bold">BONUS+</span>
+        </div>
+        <div class="py-3 ">
+            <div>
+                <span class="material-icons text-green-600">
+                    check
+                </span> Jusqu'à <strong>10 demandes de clients</strong> gratuitement
+            </div>
+        </div>
+        <div>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <input name="tok" type="hidden" value="yes" />
+                <button type="submit"
+                    class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm w-full text-center px-5 py-2.5 text-center mr-2 mb-2">Participer</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

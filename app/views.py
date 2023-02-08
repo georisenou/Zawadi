@@ -1212,3 +1212,27 @@ def last_dems(request) :
     return render(request, "last_dems.html", {
         'dems' : dems
     })
+
+@login_required(login_url='/login')
+def participer(request, name) :
+    seller = request.user.accounts.all().first()
+    cur_week = seller.get_week()
+    if request.method == 'POST' :
+        reg, has_created = ZawadiDetail.objects.get_or_create(key = "BONUS+")
+        print(reg)
+        if has_created :
+            reg.value = f"{seller.pk}-{seller}::"
+            reg.save()
+        else :
+            reg.value += f"{seller.pk}-{seller}::"
+            reg.save()
+        seller.rest = 1
+        seller.damount = 500
+        seller.damount_init = 500
+        seller.dprice = 100
+        seller.save()
+        return redirect('/clients/0/')
+    return render(request, 'participer.html', {
+        'seller' : seller,
+        'week': cur_week
+    })

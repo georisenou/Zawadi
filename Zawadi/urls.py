@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls.static import static
 from django.conf import settings
-from app.views import activ_abn, activate, backup, change_pass, charg_account, clients, coming_soon, compte, compute_dprice, create_devices, customers, daily_task, for_sellers, fq_webhook, get_all_cats, index, landing_page, last_dems, login_view, logout_view, new_activate, offline, parrain_view, register_demand, register_demands_clicked, register_parrain, register_view, set_sold, set_whatsapp, unique_clients, vendeur_manifest, vendeur_serviceworker, very_new_activate
+from app.views import activ_abn, activate, backup, change_pass, charg_account, clients, coming_soon, compte, compute_dprice, create_devices, customers, daily_task, for_sellers, fq_webhook, get_all_cats, index, landing_page, last_dems, login_view, logout_view, new_activate, offline, parrain_view, participer, register_demand, register_demands_clicked, register_parrain, register_view, set_sold, set_whatsapp, unique_clients, vendeur_manifest, vendeur_serviceworker, very_new_activate
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -54,5 +54,6 @@ urlpatterns = [
     path('set_whatsapp/<int:pk>/', set_whatsapp, name="set_whatsapp"),
     path('register_parrain/', register_parrain, name="register_parrain"),
     path('set_sold/<int:pk>/', set_sold, name="set_sold"),
-    path('dems/', last_dems, name="last_dems")
+    path('dems/', last_dems, name="last_dems"),
+    path('participer/<str:name>/', participer, name="participer")
 ]+static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT )
