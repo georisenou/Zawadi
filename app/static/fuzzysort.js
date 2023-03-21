@@ -31,7 +31,6 @@
 
     var searchBitflags = preparedSearch.bitflags
     if((searchBitflags & target._bitflags) !== searchBitflags) return NULL
-    console.log('good there');
     return algorithm(preparedSearch, target)
   }
 

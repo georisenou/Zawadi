@@ -58,6 +58,9 @@ INSTALLED_APPS = [
     'cloudinary',
     'cloudinary_storage',
     'blog',
+    'corsheaders',
+    'appv2',
+    'rest_framework_simplejwt'
 ]
 
 SITE_ID = 1

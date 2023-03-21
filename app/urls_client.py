@@ -1,11 +1,18 @@
 
 from django.urls import path
 from blog import views as blog_views
-from .views import achat_manifest, achat_offline, achat_serviceworker, chang_parrain, charg_parrain, coming_soon, customers, delete_demand, get_all_cats, get_demands, landing_page, logout_view, offline, p_home, parrain_view, register_demand, register_parrain, set_num_vend
+from .views import achat_manifest, achat_offline, achat_serviceworker, chang_parrain, charg_parrain, coming_soon, customers, delete_demand, get_all_cats, get_demands, landing_page, logout_view, offline, p_home, parrain_view, register_demand, register_parrain, search_place, set_num_vend
 from django.conf.urls.static import static
 from django.conf import settings
+from django.urls.conf import include
+from django.contrib import admin
+from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
 
 urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('v2/', include('appv2.urls')),
+    path('api/token/', TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name="token_refresh"),
     path('', customers, name="customers_index"),
     path('manifest.json/', achat_manifest, name="achat_manifest"),
     path('offline/', achat_offline, name="offline"),
@@ -29,4 +36,5 @@ urlpatterns = [
     path('parrain/<str:ident>/', parrain_view, name="parrain"),
     path('register_parrain/', register_parrain, name="register_parrain"),
     path('chang_parrain/<str:ident>/<str:token>/', chang_parrain, name="chang_parrain"),
+    path('search_place/<str:name>/', search_place, name="search_place")
 ]+static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT )

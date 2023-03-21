@@ -19,11 +19,15 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls.static import static
 from django.conf import settings
+from django.urls.conf import include
 from app.views import activ_abn, activate, backup, change_pass, charg_account, clients, coming_soon, compte, compute_dprice, create_devices, customers, daily_task, for_sellers, fq_webhook, get_all_cats, index, landing_page, last_dems, login_view, logout_view, new_activate, offline, parrain_view, participer, register_demand, register_demands_clicked, register_parrain, register_view, set_sold, set_whatsapp, unique_clients, vendeur_manifest, vendeur_serviceworker, very_new_activate
+from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index, name='index'),
+    path('api/token/', TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name="token_refresh"),
     path('clients/<int:pk>/', clients, name="clients"),
     path('login/', login_view, name="login"),
     path('register/', register_view, name="register"),
@@ -55,5 +59,5 @@ urlpatterns = [
     path('register_parrain/', register_parrain, name="register_parrain"),
     path('set_sold/<int:pk>/', set_sold, name="set_sold"),
     path('dems/', last_dems, name="last_dems"),
-    path('participer/<str:name>/', participer, name="participer")
+    path('participer/<str:name>/', participer, name="participer"),
 ]+static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT )

@@ -1,12 +1,13 @@
 
 import datetime
+from unittest import result
 from django.utils import timezone
 import json
 from django.forms import models
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
-from app.models import AbnFeature, AdminToken, Category, ClientDemand, Feedback, Label, MyFiles, Parrain, Retrait, SellerAccount, SubCategory, User, UserGame, WeekCustom, ZawadiDetail, Client, checking_token, get_alertwha_message, get_market_client_message, get_welcome_message, ident_generator, send_messages, send_whatsapp_notif
+from app.models import AbnFeature, AdminToken, Category, ClientDemand, Feedback, Label, MyFiles, Parrain, Retrait, SellerAccount, SubCategory, User, UserGame, WeekCustom, ZawadiDetail, Client, checking_token, get_alertwha_message, get_market_client_message, get_market_seller_message, get_welcome_message, ident_generator, send_messages, send_whatsapp_notif
 from django.contrib.auth import login, authenticate, logout
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -24,6 +25,7 @@ import subprocess
 from django.http import HttpResponse
 import os
 from django.views.decorators.csrf import csrf_exempt
+import requests
 
 
 def register_logs(slug, resp) :
@@ -1191,6 +1193,14 @@ def send_marketing_alert(limits = 50) :
         send_messages(get_market_client_message(client.whatsapp), '', can_log=False)
         print("Done")
         print("\n")
+
+def send_prog(name) :
+    seller = SellerAccount.objects.filter(type_of__icontains="free")
+    print(f'Selling to {seller.count()} sellers.')
+    for s in seller :
+        print('Sending to ' + s.name + '...')
+        resp = send_messages(get_market_seller_message(name, s), f'sending-bonus+(){s.pk}', can_log=False )
+        print(f"Sending done with resp => {resp}")
     
 def chang_parrain(request, ident, token) :
     adtok = AdminToken.objects.filter(token = token, is_checked = False)
@@ -1235,4 +1245,13 @@ def participer(request, name) :
     return render(request, 'participer.html', {
         'seller' : seller,
         'week': cur_week
+    })
+
+@api_view(["GET"])
+def search_place(rqt, name) :
+    req = requests.get(f'https://maps.googleapis.com/maps/api/place/textsearch/json?key=AIzaSyDNoBJJXRj_p5miy5gSPGazRa4Mr-95D18&query={name}')
+    results = json.loads(req.content)['results']
+    return Response({
+        'done' : True,
+        'result' : results
     })

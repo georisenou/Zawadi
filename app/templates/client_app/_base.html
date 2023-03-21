@@ -38,17 +38,55 @@
         .mh-screen {
             min-height: 100vh;
         }
+
         .ah-screen {
             height: 40vh;
         }
+
         .rh-screen {
             min-height: 40vh;
         }
-        .down-enter-active{
-            transition: opacity 1s ;
+
+        .down-enter-active {
+            transition: opacity 1s;
         }
-        .down-enter-from, .down-leave-to{
+
+        .down-enter-from,
+        .down-leave-to {
             opacity: 0;
+        }
+
+        .link_but:active {
+            background: rgb(233, 233, 233);
+        }
+
+        .link_but {
+            padding: 1rem;
+            border-radius: 10px;
+        }
+
+        .link_text {
+            padding-left: 1rem;
+            padding-right: 0.5rem;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            width: 100%;
+            white-space: nowrap;
+            overflow: scroll;
+        }
+
+        .link {
+            margin-right: 1.5rem;
+            margin-left: 1.5rem;
+            border-style: solid;
+            border-width: 1px;
+            border-radius: 10px;
+            border-color: rgb(41, 41, 41);
+            color: rgb(41, 41, 41);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 100%;
         }
     </style>
 </head>
@@ -182,7 +220,7 @@
                     .catch(err => console.log("service worker not registered", err))
             })
         }
-
+        `
         let deferredPrompt = null
         window.addEventListener('beforeinstallprompt', (e) => {
             // Prevent Chrome 67 and earlier from automatically showing the prompt
@@ -203,14 +241,14 @@
                 set_dis()
             })
         }
-
+        `
         const set_dis = () => {
             document.getElementById('installId').style.display = "none"
         }
     </script>
 
-  {% block script1 %}
-  {% endblock %}
+    {% block script1 %}
+    {% endblock %}
     {% block script %}
     <script>
         const { createApp } = Vue
@@ -218,8 +256,8 @@
             data() {
                 return {
                     message: 'Hello Vue!',
-                    extern_errors : '',
-                    number : 0
+                    extern_errors: '',
+                    number: 0
                 }
             },
             mounted() {

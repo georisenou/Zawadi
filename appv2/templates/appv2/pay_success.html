@@ -1,0 +1,119 @@
+{% extends 'client_app/_base.html' %}
+
+{% block content %}
+<div style="min-height: 95vh;" >
+    <div class="pt-8">
+        <div class="w-full text-center py-4 font-bold text-xl bg-green-100">
+            {{dis.amount}} FCFA payé avec succes
+        </div>
+    </div>
+    <div class=" ">
+        <div class="w-full px-4 py-2 flex justify-between items-center bg-gray-50">
+            <div class="flex items-center">
+                <div class="pr-2 ">
+                    <div :style="{
+                width: '1.5rem',
+                height: '1.5rem',
+                'border-radius': '100%',
+                'background-size': 'cover',
+                'background-position': 'top center',
+                'background-image': `url('/static/user.png')`,
+            }"></div>
+                </div>
+                <div class="font-medium">
+                    {{dis.demand.client.user.full_name}}
+                </div>
+            </div>
+            <div class="text-green-500">
+                &cap; Paiement effectué
+            </div>
+        </div>
+
+        <div class="py-12 px-4">
+            <div class="flex justify-around py-4">
+                <img style="width: 100%; height: auto;" src="/static/success.svg" />
+            </div>
+            <div class=" text-center py-3">
+                Vous avez effectué avec success un paiement pour la {{dis.demand.get_subs}}.
+            </div>
+            <div style="
+            padding-top: 0.8rem;
+            text-align: center;
+            padding-bottom: 0.9rem;
+          " class="font-bold">
+                Id de transaction
+            </div>
+            <div class="link">
+                <div class="link_text">
+                    <div class="text-center" style="width: 100%">
+                        {{transaction_id}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="my-3 flex justify-around">
+
+        <a type="button" href="whatsapp://send/?phone={{pay_serv}}"
+            class="py-2.5 px-5 mr-2 mb-2  text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-green-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+            <div class="flex items-center">
+                <div class="mr-2">
+                    <img src="/static/socialShare/whatsapp.png" class="w-8" />
+                </div>
+                <div>
+                    <span>Contacter le service client</span>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+<div class="w-full bg-gray-100 text-center pt-4 pb-16">
+    Copyright &copy; 2022 <br>
+    All Right Reserved <a class="text-rose-500" href="#">Elife Global</a>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.kkiapay.me/k.js"></script>
+<script>
+    const { createApp } = Vue
+    const app = createApp({
+        data() {
+            return {
+                message: 'Hello Vue!',
+                extern_errors: '',
+                number: 0
+            }
+        },
+        mounted() {
+            const end_load = () => {
+                document.getElementById('global_load').style.display = 'none'
+                document.getElementById('app').style.display = 'block'
+            }
+            end_load()
+        },
+        methods: {
+            pay() {
+                this.number = 1
+                openKkiapayWidget({
+                    amount: "1", position: "right", callback: "http://vendeur.localhost:8000/v2/pay/{{token}}/",
+                    data: "",
+                    theme: "red",
+                    url: "https://www.zawadi.site/static/logo_client.png",
+                    key: "{{pay_token}}"
+                })
+            }
+        },
+        compilerOptions: {
+            delimiters: ["${", "}"]
+        }
+    }).mount('#app')
+</script>
+{% endblock %}
+
+{% block script1 %}
+<script>
+
+</script>
+
+{% endblock %}

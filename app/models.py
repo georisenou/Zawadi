@@ -1,9 +1,10 @@
 
+from re import A
+from xmlrpc.client import Boolean
 import requests
 from fcm_django.models import FCMDevice
 from firebase_admin.messaging import Message as Mss, Notification, AndroidNotification, WebpushConfig, WebpushFCMOptions, AndroidConfig, APNSConfig, APNSPayload, Aps
 import json
-from xmlrpc.client import Boolean
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
@@ -16,12 +17,16 @@ from haversine import haversine, Unit
 all_characters = string.ascii_letters+string.digits+string.punctuation
 characters = string.ascii_letters+string.digits
 
+API_URL = "http://192.168.43.244:8000"
+
 def get_slug(dem, seller):
     return f"{seller.pk}-{dem.pk}"
 
 def get_value(key):
     return ZawadiDetail.objects.get(key=key).value
 
+def default_image() :
+    return ZawadiDetail.objects.get(key = 'default:cat').value
 
 def get_user_token(user):
     token = AdminToken.objects.create(
@@ -190,7 +195,8 @@ class MyFiles(models.Model):
     name = models.CharField(max_length=150, null=True, blank=True)
     file = models.FileField(upload_to='demandes/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
+    def get_file(self) :
+        return self.file.url
     def __str__(self):
         return self.name
 
@@ -198,7 +204,6 @@ class MyFiles(models.Model):
 class ZawadiDetail(models.Model):
     key = models.CharField(max_length=250, null=True, blank=True)
     value = models.TextField(null=True, blank=True)
-
     def __str__(self) -> str:
         return self.key
 
@@ -217,10 +222,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
     country = models.CharField(max_length=15, null=True, blank=True)
     towns = models.CharField(max_length=250, null=True, blank=True)
-
+    def full_name(self) :
+        return f"{self.first_name} {self.last_name}"
     def can_freed(self):
         sellers = self.accounts.count()
         return not sellers
+    def get_quart(self) :
+        return json.loads(self.quart)
 
 class Client(models.Model):
     user = models.ForeignKey(User, null=True, blank=True,
@@ -251,7 +259,9 @@ class Client(models.Model):
 class Label(models.Model):
     name = models.CharField(max_length=150, null=True, blank=True)
     is_on = models.BooleanField(default=True)
-
+    picture = models.OneToOneField(MyFiles, null=True, blank=True, on_delete=models.CASCADE)
+    def get_picture(self) :
+        return self.picture.file.url if self.picture else default_image()
     def __str__(self):
         return self.name
 
@@ -262,6 +272,10 @@ class Category(models.Model):
         Label, on_delete=models.CASCADE, null=True, blank=True, related_name="cats")
     dprice = models.IntegerField(default=75)
     is_visible = models.BooleanField(default=True)
+    picture = models.OneToOneField(MyFiles, null=True, blank=True, on_delete=models.CASCADE)
+    prefix = models.CharField(max_length=150, null=True, blank=True)
+    def get_picture(self) :
+        return self.picture.file.url if self.picture else default_image()
 
     def __str__(self) -> str:
         return self.name
@@ -274,11 +288,39 @@ class SubCategory(models.Model):
         Category, on_delete=models.CASCADE, null=True, blank=True, related_name="subs")
     sub_box = models.ForeignKey(
         "SubCategory", null=True, blank=True, related_name="subs", on_delete=models.CASCADE)
+    prefix = models.CharField(max_length=150, null=True, blank=True)
     default_price = models.IntegerField(null=True, blank=True, default=2500)
-
+    picture = models.OneToOneField(MyFiles, null=True, blank=True, on_delete=models.CASCADE)
+    def get_name(self) :
+        pref = "" if not self.get_pref() else f"{self.get_pref()} "
+        return pref + self.name
+    def get_pref(self) -> str :
+        if self.box :
+            return self.box.prefix
+        else :
+            return self.sub_box.prefix if self.sub_box.prefix else self.sub_box.box.prefix
+    def get_recoms(self) :
+        if self.sub_box :
+            return [
+                sub.pk for sub in self.sub_box.subs.all()
+            ]
+        else :
+            return []
+    def get_default_price(self) :
+        if self.sub_box:
+            return self.default_price
+        else :
+            d_price = 0
+            for s in self.subs.all() :
+                d_price += s.default_price
+            return d_price / self.subs.count()
+            
+    def get_picture(self) :
+        return self.picture.file.url if self.picture else default_image()
     def __str__(self) -> str:
         return self.name
-
+    def get_cat(self) :
+        return self.box if self.box else self.sub_box.box
     def get_subs(self):
         return self.subs.all()
 
@@ -424,7 +466,7 @@ class SellerAccount(models.Model):
         return self.picture.url if self.picture else ZawadiDetail.objects.get(key='default:shop:picture:url').value
 
     def is_freeing(self):
-        return self.type_of == 'free'
+        return self.type_of == 'free' 
 
     def get_latlng(self):
         print(self.user.quart)
@@ -467,7 +509,7 @@ class SellerAccount(models.Model):
     def get_all_dem(self):
         return int(self.damount_init / self.dprice)
 
-    def get_distance(self, quart):
+    def get_distance(self, quart) -> int :
         me = self.get_latlng()['lat'], self.get_latlng()['lng']
         dem = quart['lat'], quart['lng']
         return haversine(me, dem)
@@ -751,6 +793,44 @@ def get_alertwha_message(number):
     return json.dumps(data)
 
 
+def get_market_seller_message(name, seller):
+    file = MyFiles.objects.get(name = name)
+    data = {
+        "messaging_product": "whatsapp",
+        "recipient_type": "individual",
+        "to": f"{seller.format_number}",
+        "type": "template",
+        "template": {
+            "name": "bonus_prog",
+            "language": {
+                "code": "fr"
+            },
+            "components": [
+                {
+                    "type": "header",
+                    "parameters": [
+                        {
+                            "type": "image",
+                            "image": {
+                                "link": "https://res.cloudinary.com/achat-en-gros/image/upload/v1/media/demandes/png_20230208_153425_0000_s3f662",
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "body",
+                    "parameters": [
+                        {
+                            "type": "text",
+                            "text" : "Somme",
+                        }
+                    ]
+                },
+            ]
+        }
+    }
+    return json.dumps(data)
+
 def get_market_client_message(number):
     file = MyFiles.objects.get(name = "market1")
     data = {
@@ -780,9 +860,62 @@ def get_market_client_message(number):
     }
     return json.dumps(data)
 
+def get_patner_data( patner) :
+    data = {
+        "messaging_product": "whatsapp",
+        "recipient_type": "individual",
+        "to": f"{patner.whatsapp}",
+        "type": "template",
+        "template": {
+            "name": "patner_dem",
+            "language": {
+                "code": "fr"
+            }
+        }
+    }
+    return json.dumps(data)
+
+def get_payment_template(amount , f_name, number ) :
+    data = {
+        "messaging_product": "whatsapp",
+        "recipient_type": "individual",
+        "to": f"{number}",
+        "type": "template",
+        "template": {
+            "name": "seller_pay",
+            "language": {
+                "code": "fr"
+            },
+            "components": [
+                {
+                    "type": "header",
+                    "parameters": [
+                        {
+                            "type": "text",
+                            "text": f"{amount} FCFA"
+                        }
+                    ]
+                },
+                {
+                    "type": "body",
+                    "parameters": [
+                        {
+                            "type": "text",
+                            "text": f"{amount} FCFA"
+                        },
+                        {
+                            "type": "text",
+                            "text": f"{f_name}"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+    return json.dumps(data)
+
 
 def get_template_message_data(dem, seller):
-    print(dem.subs.name)
     data = {
         "messaging_product": "whatsapp",
         "recipient_type": "individual",
