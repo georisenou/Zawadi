@@ -38,7 +38,6 @@ else :
 
 ALLOWED_HOSTS = ["zawadi.herokuapp.com", "zawadi.site", "www.zawadi.site" ,"vendeur.zawadi.site", "api.zawadi.site", "v1.zawadi.site"]
 
-
 DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
 
 # Application definition
