@@ -36,7 +36,7 @@ else :
     DEBUG = False
 
 
-ALLOWED_HOSTS = ["zawadi.herokuapp.com", "zawadi.site", "www.zawadi.site" ,"vendeur.zawadi.site"]
+ALLOWED_HOSTS = ["zawadi.herokuapp.com", "zawadi.site", "www.zawadi.site" ,"vendeur.zawadi.site", "api.zawadi.site", "v1.zawadi.site"]
 
 
 DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
