@@ -36,7 +36,7 @@ else :
     DEBUG = False
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
 
