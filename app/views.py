@@ -240,6 +240,7 @@ def index(request):
             print(e)
     if from_ and (not request.user.is_authenticated) :
         direct_regist = True
+    """
     return render(request, 'index.html', {
         'root': 'home',
         'feeds': feeds[:4],
@@ -249,6 +250,7 @@ def index(request):
         "direct" : direct_regist,
         "trial" : check_token(essai) if check_token(essai) else 0
     })
+    """
 
 
 @login_required(login_url='/login')
