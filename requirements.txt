@@ -63,7 +63,6 @@ importlib-metadata==0.18
 incremental==21.3.0
 joblib==1.1.0
 kiwisolver==1.4.4
-matplotlib==3.5.3
 mock==3.0.5
 more-itertools==7.1.0
 MouseInfo==0.1.3
