@@ -1,5 +1,8 @@
 # Zawadi
 **Développé par ENOUHERAN Georis**
+## Capture d'ecran
+
+![Capture d'écran](https://res.cloudinary.com/achat-en-gros/image/upload/v1/media/demandes/Capture_d%C3%A9cran_du_2024-07-03_20-40-18_ufb61j)
 
 ## Introduction
 Zawadi est une plateforme à but non lucratif conçue pour permettre aux étudiants de commander des produits de première nécessité de manière simple et efficace. Cette application vise à résoudre le problème courant des étudiants qui ont besoin d'accéder rapidement à des articles essentiels sans les tracas habituels des achats en personne.
