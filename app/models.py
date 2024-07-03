@@ -719,14 +719,21 @@ def install_all_cats(is_real=False):
     print('Files closed')
 
 
-PHONE_NUMBER_ID = get_value('WHATSAPP_PHONE_NUMBER_ID')
+try : 
+    PHONE_NUMBER_ID = get_value('WHATSAPP_PHONE_NUMBER_ID')
 
-ACCESS_TOKEN = get_value('WHATSAPP_ACCESS_TOKEN')
+    ACCESS_TOKEN = get_value('WHATSAPP_ACCESS_TOKEN')
+
+except :
+    PHONE_NUMBER_ID =""
+
+    ACCESS_TOKEN = ""
+    print("DATABASE NOT READY YET...")
 
 ENDPOINT = f'https://graph.facebook.com/v15.0/{PHONE_NUMBER_ID}/messages'
 
 HEADERS = {
-    'Authorization': f'Bearer {ACCESS_TOKEN}',
+        'Authorization': f'Bearer {ACCESS_TOKEN}',
     'Content-Type': 'application/json'
 }
 
@@ -745,7 +752,6 @@ def send_messages(data, slug, can_log=True):
 
 def get_slug(dem, seller):
     return f"{seller.pk}-{dem.pk}"
-
 
 def get_message_data(dem, seller):
     data = {
@@ -947,3 +953,4 @@ def send_whatsapp_notif(seller, dem):
         resp = send_messages(get_template_message_data(
             dem, seller), get_slug(dem, seller))
         return resp
+
