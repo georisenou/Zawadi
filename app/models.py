@@ -728,7 +728,6 @@ except :
     PHONE_NUMBER_ID =""
 
     ACCESS_TOKEN = ""
-    print("DATABASE NOT READY YET...")
 
 ENDPOINT = f'https://graph.facebook.com/v15.0/{PHONE_NUMBER_ID}/messages'
 
